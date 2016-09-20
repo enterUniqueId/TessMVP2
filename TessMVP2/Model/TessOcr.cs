@@ -37,7 +37,7 @@ namespace TessMVP2.Model
             try
             {
 
-                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
+                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "deu", EngineMode.Default))
                 {
 
                     using (Pix img = Pix.LoadFromFile( _mainModel.ImgPath ) )
@@ -53,6 +53,8 @@ namespace TessMVP2.Model
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                Application.Exit();
+                Environment.Exit(0);
             }
         }
     }

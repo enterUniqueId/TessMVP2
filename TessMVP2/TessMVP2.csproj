@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Dict.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
     <Compile Include="View\FormStart.cs">

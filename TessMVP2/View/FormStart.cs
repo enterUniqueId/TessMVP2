@@ -21,7 +21,6 @@ namespace TessMVP2
             set { textBox1.Text = value; }
         }
 
-
         public string RichTextBoxText
         {
             get { return richTextBox1.Text; }
@@ -38,6 +37,7 @@ namespace TessMVP2
 
             //evtl Attach hierher?
             button1.Click += (sender, e) => callback.OnButtonClick();
+            textBox1.Text = "cd1.jpg";
         }
 
         public void Attach(IMyPresenterViewCallbacks callback)
