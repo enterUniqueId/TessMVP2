@@ -16,7 +16,7 @@ namespace TessMVP2.Model
         private Dictionary<string, List<string>> _resDict;
         public Dictionary<string, List<string>> ResDict
         {
-            get { return _resDict; } 
+            get { return _resDict; }
             set { this._resDict = value; }
         }
 
@@ -32,40 +32,58 @@ namespace TessMVP2.Model
             //GetEmail();
             SearchKeyWords();
             GetField();
+            foreach (KeyValuePair<string, List<string>> kvp in _resDict)
+            {
+                foreach (string sr in kvp.Value)
+                    MessageBox.Show("key: " + kvp.Key + "value: " + sr);
+            }
         }
 
         private void splitString()
         {
+            //liste mit gängigen ocr fehlern; zu erweitern
+            var emailReplaceList = new Dictionary<string, string>() { { "—", "-" } };
+            string sr;
+
             _specificStrings = this._ocrResult.Split('\n').ToList();
 
+            //leere array-felder entfernen
             while (_specificStrings.Contains("") || _specificStrings.Contains(" "))
             {
                 _specificStrings.Remove("");
                 _specificStrings.Remove(" ");
-                
-            }            
+            }
+
+            for (int i = 0; i < _specificStrings.Count; i++)
+            {
+                foreach (KeyValuePair<string, string> kvp in emailReplaceList)
+                {
+                    sr = _specificStrings[i].Replace(kvp.Key, kvp.Value);
+                    _specificStrings[i] = sr;
+                }
+            }
         }
-                
+
         public void SearchKeyWords()
         {
             _resDict = new Dictionary<string, List<string>>();
 
-            foreach(KeyValuePair<string, List<string>> kvp in Dict.SearchDict)
+
+
+            foreach (KeyValuePair<string, List<string>> kvp in Dict.SearchDict)
             {
-                foreach(string searchValue in kvp.Value)
+                //geforderte Felder anlegen
+                _resDict.Add(kvp.Key, new List<string>());
+
+                foreach (string searchValue in kvp.Value)
                 {
-                    for(int j=0;j<_specificStrings.Count;j++)
+                    for (int j = 0; j < _specificStrings.Count; j++)
                     {
-                        if (_specificStrings[j].ToLower().Contains(searchValue)){
-                            if(!_resDict.ContainsKey(kvp.Key))
-                            {
-                                _resDict.Add(kvp.Key, new List<string> { _specificStrings[j] });
-                            }
-                            else
-                            {
-                                _resDict[kvp.Key].Add(_specificStrings[j]);
-                            }
-                           // MessageBox.Show(sr + " <-kartenstring  " + kvp.Key);
+                        //für manche, speziell kurze strings (AG) sind case insensitive conditions ungeeignet
+                        if (_specificStrings[j].ToLower().Contains(searchValue))
+                        {
+                            _resDict[kvp.Key].Add(_specificStrings[j]);
+                            // MessageBox.Show(sr + " <-kartenstring  " + kvp.Key);
                         }
                     }
                 }
@@ -80,57 +98,141 @@ namespace TessMVP2.Model
                 switch (kvp.Key.ToLower())
                 {
                     case "e-mail":
-                    {
-                            //bekannte Fehler in der OCR ersetzen
-                            var emailReplaceList = new Dictionary<string, string>(){ { "—","-"} };
-                            var mail = new Regex(@"([\w\.\-]+)@([\w\-]+)((\.(\w){2,5})+)");
-                            CleanString(kvp.Value, mail,emailReplaceList,kvp.Key);
-                            break;
-                    }
-                    case "Telefon":
                         {
-                            var telReplaceList= new Dictionary<string, string>() { { "—", ""  }};
-                            var tel = new Regex(@"([\+]+)@([\w\-]+)((\.(\w){2,5})+)");
+                            var mail = new Regex(@"([\w\.\-]+)@([\w\-]+)((\.(\w){2,4})+)");
+                            //wenn mit dem wörterbuchvergleich schon etwas gefunden wurde
+                            if (kvp.Value.Count > 0)
+                            {
+                                CheckRegEx(mail, kvp.Key, kvp.Value);
+                            }
+                            //wenn nicht komplett mit dem spezifischen RegEx suchen
+                            else
+                            {
+                                CheckRegEx(mail, kvp.Key, _specificStrings);
+                            }
                             break;
                         }
+                    case "telefon":
+                    case "fax":
+                    case "mobil":
+                        {
+                            //mindestens 8 Stellen entspricht 3 Stellen nach Vorwahl
+
+                            if (kvp.Value.Count > 0)
+                            {
+                                var tel = new Regex(@"^(\+\d{2}|0\d{4})\d+");
+                                string replacePattern = @"([^\d\+]+)";
+                                for (int i = kvp.Value.Count - 1; i >= 0; i--)
+                                {
+                                    kvp.Value[i] = Regex.Replace(kvp.Value[i], replacePattern, "");
+                                }
+                                CheckRegEx(tel, kvp.Key, kvp.Value);
+                            }
+                            else
+                            {
+                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4})\d{3}");
+                                CheckRegEx(telsearch, kvp.Key, _specificStrings);
+                            }
+                            break;
+                        }
+                    case "inet":
+                        {
+                            var inet = new Regex(@"^(w{3}\.|https?:\/{2}).*(\.[a-z]{2,4})$");
+                            if (kvp.Value.Count > 0)
+                            {
+                                CheckRegEx(inet, kvp.Key, kvp.Value);
+                            }
+                            else
+                            {
+                                CheckRegEx(inet, kvp.Key, _specificStrings);
+                            }
+                            break;
+                        }
+                    case "firma":
+                        {
+                            if (kvp.Value.Count > 0)
+                            {
+                                string inetReplacePattern = @"^(w{3}\.|https?:\/{2})";
+                                if (_resDict["Inet"].Count >= 0 && (CrossCompare("Inet", kvp.Value, inetReplacePattern) >= 0))
+                                {
+                                    inetReplacePattern = @"(\.[a-z]+)$";
+                                    int res = CrossCompare("Inet", kvp.Value, inetReplacePattern);
+                                    if (res >= 0){
+                                        string resString = _resDict["Firma"][res];
+                                        _resDict["Firma"].Clear();
+                                        _resDict["Firma"].Add(resString);
+                                   }
+                                }
+                                else
+                                {
+                                    string emailReplacePattern = @"^(.*\@)";
+                                    if (_resDict["E-Mail"].Count >= 0 && CrossCompare("E-Mail", kvp.Value, emailReplacePattern)>=0)
+                                    {
+                                        emailReplacePattern = @"(\.[a-z]+)$";
+                                        int res = CrossCompare("E-Mail", kvp.Value, emailReplacePattern);
+                                        if (res >= 0)
+                                        {
+                                            string resString = _resDict["Firma"][res];
+                                            _resDict["Firma"].Clear();
+                                            _resDict["Firma"].Add(resString);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
                 }
-            }
+
+
+
+            } //end switch
         }
 
-        public void CleanString(List<string> values, Regex reg, Dictionary<string, string> replaceList, string field)
+
+        private int CrossCompare(string dictField, List<string> stringsToCompare, string replacePattern)
         {
-            string cleanString;
-            
-            Match match;
-
-            foreach (string sr in values)
+            bool replaced = false;
+            int i = stringsToCompare.Count - 1;
+            do
             {
-                foreach(KeyValuePair<string,string> kvp in replaceList)
+                foreach (string sr in _resDict[dictField])
                 {
-                    //wenn in Ersatzliste dann ersetzen
-                    if (sr.Contains(kvp.Key))
+                    if (sr.Contains(stringsToCompare[i]))
                     {
-                        cleanString = sr.Replace(kvp.Key, kvp.Value);
-                        match = reg.Match(cleanString);
-                       
-                    }
-                    else
-                    {
-                        cleanString = sr;
-                    }
-                    match = reg.Match(cleanString);
-                    if (match.Success)
-                    {
-                        //problem, wenn nach der prüfung noch 2 matches vorhanden sind!
-                        _resDict.Remove(field);
-                        _resDict.Add(field, new List<string>() { cleanString });
-                        MessageBox.Show(cleanString);
+                        stringsToCompare[i] = Regex.Replace(stringsToCompare[i], replacePattern, "");
+                        replaced = true;
+                        break;
+
+
                     }
                 }
-            }
-            
-
+                i--;
+            } while (!replaced && i >= 0);
+            if (replaced)
+                return i;
+            else
+                return -1;
         }
+
+        public void CheckRegEx(Regex reg, string field, List<string> searchList)
+        {
+            Match match;
+            for (int i = searchList.Count - 1; i >= 0; i--)
+            {
+                match = reg.Match(searchList[i]);
+                if (match.Success)
+                {
+                    //problem, wenn nach der prüfung noch 2 matches vorhanden sind!
+                    //_resDict.Remove(field);
+                    //_resDict.Add(field, new List<string>() { sr });
+                    _resDict[field].Clear();
+                    _resDict[field].Add(match.Value);
+
+                    //MessageBox.Show(match.Value);
+                }
+            }
+        }
+
 
     }//class end
 }  //namespace end

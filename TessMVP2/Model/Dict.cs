@@ -15,8 +15,9 @@ namespace TessMVP2.Model
                 {"Mobil", new List<string> {"mobile","mobil" } },
                 {"E-Mail", new List<string> {"e-mail","mail" } },
                 {"Strasse", new List<string> {"weg","straße","strasse","allee","chaussee","rue","street","platz","str." } },
-                {"Firma", new List<string> {"gmbh","ag","cokg","ohg","ltd","corp" } },
-                {"Position", new List<string> {"einkauf","marketing","it","business","personal","abteilung","leiter","department" } }
+                {"Firma", new List<string> {"gmbh","AG","cokg","oHG","ltd","corp" } },
+                {"Position", new List<string> {"einkauf","marketing","business","personal","abteilung","leiter","department","management","consultant","logistik" } },
+                {"Inet", new List<string> {"www.", "http://" } }
         };
     }
 }
