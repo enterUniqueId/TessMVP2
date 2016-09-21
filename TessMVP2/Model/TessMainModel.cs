@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Tesseract;
-using TessMVP2.Controller.Interfaces;
+using TessMVP2.Presenter.Interfaces;
 using TessMVP2.Model.Interfaces;
 
 namespace TessMVP2.Model
@@ -21,7 +21,8 @@ namespace TessMVP2.Model
         private string _imgPath;
         private TessOcr _ocr;
         private StringProcessor _stringProcessor;
-        public string OcrResult { get; set; }
+        public string OcrResult { get; private set; }
+        public Dictionary<string,List<string>> StringResult { get; private set; }
         public string ImgPath
         {
             get { return _imgPath; }
@@ -56,13 +57,15 @@ namespace TessMVP2.Model
             this. OcrResult = this._ocr.OcrResult;
             if (this.OcrResultChanged != null)
                 this.OcrResultChanged(this, EventArgs.Empty);
+
             this._stringProcessor = new StringProcessor(this);
             this.FinishedStringChanged += (sender, e) => callback.OnStringFinished();
             this._stringProcessor.Start();
-
+            this.StringResult = _stringProcessor.ResDict;
             if (this.FinishedStringChanged != null)
                 this.FinishedStringChanged(this, EventArgs.Empty);
 
+            
         }   
 
 

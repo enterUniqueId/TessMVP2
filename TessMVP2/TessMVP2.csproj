@@ -51,8 +51,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Dict.cs" />
+    <Compile Include="Presenter\BuildFormFieldControl.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
+    <Compile Include="View\FormFieldControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\FormFieldControl.Designer.cs">
+      <DependentUpon>FormFieldControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\FormStart.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,8 +76,12 @@
     <Compile Include="Presenter\TessPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\Interfaces\IMyView.cs" />
+    <Compile Include="View\Interfaces\IMyViewFormFieldControl.cs" />
+    <Compile Include="View\Interfaces\IMyViewFormStart.cs" />
     <Compile Include="View\Interfaces\IView.cs" />
+    <EmbeddedResource Include="View\FormFieldControl.resx">
+      <DependentUpon>FormFieldControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\FormStart.resx">
       <DependentUpon>FormStart.cs</DependentUpon>
     </EmbeddedResource>

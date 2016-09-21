@@ -8,8 +8,10 @@ namespace TessMVP2.Presenter.Interfaces
 {
     public interface IPresenter
     {
-        void Initialize();
-        object UI { get; }
+        //
+        //void Initialize();
+        object View1 { get; }
+        object View2 { get; }
         object Model { get; }
     }
 }

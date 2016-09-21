@@ -8,7 +8,7 @@ using Tesseract;
 using System.Windows.Forms;
 using TessMVP2.Model;
 using TessMVP2.Model.Interfaces;
-using TessMVP2.Controller.Interfaces;
+using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {

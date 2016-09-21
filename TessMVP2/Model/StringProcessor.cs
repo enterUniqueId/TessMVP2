@@ -14,17 +14,15 @@ namespace TessMVP2.Model
         private TessMainModel _mainModel;
         private string _ocrResult;
         private Dictionary<string, List<string>> _resDict;
-        public Dictionary<string, List<string>> ResDict
-        {
-            get { return _resDict; }
-            set { this._resDict = value; }
-        }
 
         public StringProcessor(TessMainModel parentModel)
         {
             this._mainModel = parentModel;
             this._ocrResult = _mainModel.OcrResult;
         }
+        public Dictionary<string,List<string>> ResDict { get { return this._resDict; } }
+
+
 
         public void Start()
         {
@@ -152,21 +150,22 @@ namespace TessMVP2.Model
                         {
                             if (kvp.Value.Count > 0)
                             {
-                                string inetReplacePattern = @"^(w{3}\.|https?:\/{2})";
+                                string inetReplacePattern = @"^(.*w{3}\.|https?:\/{2})";
                                 if (_resDict["Inet"].Count >= 0 && (CrossCompare("Inet", kvp.Value, inetReplacePattern) >= 0))
                                 {
                                     inetReplacePattern = @"(\.[a-z]+)$";
                                     int res = CrossCompare("Inet", kvp.Value, inetReplacePattern);
-                                    if (res >= 0){
+                                    if (res >= 0)
+                                    {
                                         string resString = _resDict["Firma"][res];
                                         _resDict["Firma"].Clear();
                                         _resDict["Firma"].Add(resString);
-                                   }
+                                    }
                                 }
                                 else
                                 {
                                     string emailReplacePattern = @"^(.*\@)";
-                                    if (_resDict["E-Mail"].Count >= 0 && CrossCompare("E-Mail", kvp.Value, emailReplacePattern)>=0)
+                                    if (_resDict["E-Mail"].Count >= 0 && CrossCompare("E-Mail", kvp.Value, emailReplacePattern) >= 0)
                                     {
                                         emailReplacePattern = @"(\.[a-z]+)$";
                                         int res = CrossCompare("E-Mail", kvp.Value, emailReplacePattern);
@@ -179,8 +178,53 @@ namespace TessMVP2.Model
                                     }
                                 }
                             }
+                            break;
                         }
-                        break;
+                    case "postfach":
+                        {
+                            if (kvp.Value.Count >= 0)
+                            {
+                                var pfach = new Regex(@"([\d|\d ]+)");
+                                CheckRegEx(pfach, kvp.Key, kvp.Value);
+                            }
+                            break;
+                        }
+                    case "ort":
+                        {
+
+                            if (kvp.Value.Count > 0)
+                            {
+                                //
+                            }
+                            //wenn nicht komplett mit dem spezifischen RegEx suchen
+                            else
+                            {
+                                //oft kommen straße, plz und ort in einer zeile vor
+                                //evtl. mit ^(.*)(?<!\d{5}
+                                var city = new Regex(@"^([\w\-üäöÜÄÖß \.]+)([\d|\d\/\d]+)([ \-| \/| \,|\|]+)?(\d{4})([ \w\-\.]+)$");  //{d4} nur zur Probe ==>ändern in der final !!!!
+                                if (CheckRegEx(city, kvp.Key, _specificStrings))
+                                {
+                                    FillStreetCity();
+
+                                }
+                                else
+                                {
+                                    //negative lookahead => sucht nach nach 5-stelliger Nummer+ws, welche nicht durch andere nummer gefolgt werden darf
+                                    city = new Regex(@"(?<![\d|\-])(\d{4})(?![\d])");                //{4} ändern
+                                    foreach (string s in _specificStrings)
+                                    {
+                                        Match match = city.Match(s);
+                                        if (match.Success)
+                                        {
+                                            _resDict["Ort"].Clear();
+                                            _resDict["Ort"].Add(s);
+                                            FillStreetCity();
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
                 }
 
 
@@ -188,7 +232,17 @@ namespace TessMVP2.Model
             } //end switch
         }
 
-
+        private void FillStreetCity()
+        {
+            var street = new Regex(@"^([\w\-üäöÜÄÖß \.]+)([\d|\d\/\d]+)");
+            CheckRegEx(street, "Strasse", _resDict["Ort"]);
+            var plz = new Regex(@"(\d{4})");                                          //{4} ändern
+            CheckRegEx(plz, "Plz", _resDict["Ort"]);
+            var ort = new Regex(@"([a-zA-ZäöüÖÄÜß])([ \w\-]+)$");
+            CheckRegEx(ort, "Ort", _resDict["Ort"]);
+            _resDict["Ort"][0] = _resDict["Ort"][0].Trim();
+            _resDict["Ort"][0] = _resDict["Ort"][0].Replace("0", "o");
+        }
         private int CrossCompare(string dictField, List<string> stringsToCompare, string replacePattern)
         {
             bool replaced = false;
@@ -202,24 +256,22 @@ namespace TessMVP2.Model
                         stringsToCompare[i] = Regex.Replace(stringsToCompare[i], replacePattern, "");
                         replaced = true;
                         break;
-
-
                     }
                 }
                 i--;
             } while (!replaced && i >= 0);
             if (replaced)
-                return i;
+                return i + 1;
             else
                 return -1;
         }
 
-        public void CheckRegEx(Regex reg, string field, List<string> searchList)
+        public bool CheckRegEx(Regex reg, string field, List<string> searchList)
         {
-            Match match;
+            bool didMatch = false;
             for (int i = searchList.Count - 1; i >= 0; i--)
             {
-                match = reg.Match(searchList[i]);
+                Match match = reg.Match(searchList[i]);
                 if (match.Success)
                 {
                     //problem, wenn nach der prüfung noch 2 matches vorhanden sind!
@@ -227,10 +279,12 @@ namespace TessMVP2.Model
                     //_resDict.Add(field, new List<string>() { sr });
                     _resDict[field].Clear();
                     _resDict[field].Add(match.Value);
+                    didMatch = true;
 
                     //MessageBox.Show(match.Value);
                 }
             }
+            return didMatch;
         }
 
 

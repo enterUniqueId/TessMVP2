@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TessMVP2.Controller.Interfaces;
+using TessMVP2.Presenter.Interfaces;
 using TessMVP2.View.Interfaces;
 
-namespace TessMVP2
+namespace TessMVP2.View
 {
-    public partial class FormStart : Form, IMyView
+    public partial class FormStart : Form, IMyViewFormStart
     {
 
         public string TextBoxText
@@ -30,23 +30,34 @@ namespace TessMVP2
                 richTextBox1.AppendText(value);
             }
         }
+        public Button Form1Btn1
+        {
+            get { return this.button1; }
+        }
 
-        public FormStart(IMyPresenterViewCallbacks callback)
+        public Form Form1 { get { return this; } }
+        
+        public FormStart()
         {
             InitializeComponent();
 
             //evtl Attach hierher?
-            button1.Click += (sender, e) => callback.OnButtonClick();
+            //button1.Click += (sender, e) => callback.OnButtonClick();
             textBox1.Text = "cd1.jpg";
         }
 
-        public void Attach(IMyPresenterViewCallbacks callback)
+        public void Attach()
         {
             //_textBox1.TextChanged += (sender, e) => callback.OnTextChange();
             //_button1Clicked += (sender, e) => callback.OnButtonClick();
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormStart_FormClosed(object sender, FormClosedEventArgs e)
         {
 
         }

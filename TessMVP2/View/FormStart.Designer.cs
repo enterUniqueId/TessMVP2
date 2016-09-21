@@ -1,4 +1,4 @@
-﻿namespace TessMVP2
+﻿namespace TessMVP2.View
 {
     partial class FormStart
     {
@@ -69,6 +69,7 @@
             this.Controls.Add(this.button1);
             this.Name = "FormStart";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormStart_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
