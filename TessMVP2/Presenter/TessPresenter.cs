@@ -23,10 +23,10 @@ namespace TessMVP2.Presenter
         public TessPresenter()
         {
             FormStart view = new FormStart();
+            this._view1 = view;
             view.Show();
             TessMainModel model = new TessMainModel(this);
-         
-            this._view1 = view;
+            
             this._model = model;
             wireView1Events();
 
@@ -65,9 +65,9 @@ namespace TessMVP2.Presenter
 
         public void OnStringFinished()
         {
-            FormFieldControl view = new FormFieldControl();
-            this._view2 = view;
-            var bffc = new BuildFormFieldControl(_model.StringResult, this._view2.Form2);
+            //FormFieldControl view = new FormFieldControl();
+            //this._view2 = view;
+            var bffc = new BuildFormFieldControl(_model.StringResult);
             
             this._view1.Form1.Hide();
 
