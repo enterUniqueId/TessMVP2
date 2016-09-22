@@ -17,7 +17,7 @@ namespace TessMVP2.View
 
         public FormFieldControl()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
     }
 }

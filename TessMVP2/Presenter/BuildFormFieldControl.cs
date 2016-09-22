@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TessMVP2.Model;
 using TessMVP2.View;
 using TessMVP2.View.Interfaces;
+using System.Windows;
 
 namespace TessMVP2.Presenter
 {
@@ -15,30 +16,105 @@ namespace TessMVP2.Presenter
 
         private IMyViewFormFieldControl _view2;
 
-        public object View2 { get { return this._view2; } }
+        public object View2 { get { return _view2; } }
+        
         private Dictionary<string, List<string>> _resDict;
+        private TessPresenter _mainPresenter;
+        //public FormFieldControl View2 { get; private set; }
 
-
-        public BuildFormFieldControl(Dictionary<string, List<string>> fieldDict)
+        public BuildFormFieldControl(Dictionary<string, List<string>> fieldDict, TessPresenter mainPres)
         {
             var view = new FormFieldControl();
             this._view2 = view;
-            this._resDict = fieldDict;            
+            this._resDict = fieldDict;
+            this._mainPresenter = mainPres;
+            SetFormProps();
+            AddControls();
+
         }
 
+        private void SetFormProps()
+        {
+            _view2.Form2.AutoSize = true;
+            _view2.Form2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            _view2.Form2.Text = "Zuordnungen";
+            
+        }
+
+        private void SetTextboxProps(TextBox tb)
+        {
+            tb.Width = 300;
+            //tb.Height = 70;
+            tb.Margin = new Padding(5);
+        }
+
+        private void SetLabelProps(Label lbl)
+        {
+            lbl.Width = 200;
+            //lbl.Height = 50;
+            lbl.Margin = new Padding(5);
+        }
+        private void SetDefaultPanelProps(FlowLayoutPanel pan)
+        {
+            pan.AutoSize = true;
+            pan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            pan.FlowDirection = FlowDirection.TopDown;
+            pan.Margin = new Padding(10);
+            pan.MaximumSize = new System.Drawing.Size(1920, 1080);
+        }
+
+        private void SetDefaultRTBoxProps(RichTextBox rtb)
+        {
+            
+        }
+
+        private void SetDefaultGBoxProps(GroupBox gb)
+        {
+            gb.AutoSize = true;
+            gb.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        }
         private void AddControls()
         {
-            foreach(KeyValuePair<string, List<string>> kvp in this._resDict)
+            var newFlowPanel = new FlowLayoutPanel();
+            SetDefaultPanelProps(newFlowPanel);
+            _view2.Form2.Controls.Add(newFlowPanel);
+
+
+
+
+            foreach (KeyValuePair<string, List<string>> kvp in this._resDict)
             {
-                var newTextbox = new TextBox();
-                newTextbox.Name = "F2tb"+kvp.Key;
-                newTextbox.Text = kvp.Value[0];
+                var gb = new GroupBox();
+                //SetDefaultGBoxProps(gb);
                 var newLabel = new Label();
+                SetLabelProps(newLabel);
                 newLabel.Name = "F2lbl" + kvp.Key;
                 newLabel.Text = kvp.Key;
-                this._view2.Form2.Controls.Add(newTextbox);
-                this._view2.Form2.Controls.Add(newLabel);
+                var newTextbox = new TextBox();
+                SetTextboxProps(newTextbox);
+                newTextbox.Name = "F2tb" + kvp.Key;
+                if (kvp.Value.Count > 0)
+                {
+                    newTextbox.Text = kvp.Value[0];
+
+                }
+                newFlowPanel.Controls.Add(gb);
+                gb.Controls.Add(newLabel);
+                gb.Controls.Add(newTextbox);
+                newTextbox.BringToFront();
+                newLabel.BringToFront();
+                
+
             }
+
+            var newRichTextBox = new RichTextBox();
+            newRichTextBox.Height = Convert.ToInt32(newFlowPanel.Height * 0.95);
+            newRichTextBox.Width = Convert.ToInt32(newFlowPanel.Width);
+            newFlowPanel.Controls.Add(newRichTextBox);
+           
+            this._view2.Form2.Show();
+            _mainPresenter.ViewForm2 = this._view2;
+
         }
     }
 }

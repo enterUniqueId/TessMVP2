@@ -20,6 +20,8 @@ namespace TessMVP2.Presenter
         public object View2 { get { return _view2; } }
         public object Model { get { return _model; } }
 
+        public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
+
         public TessPresenter()
         {
             FormStart view = new FormStart();
@@ -67,11 +69,12 @@ namespace TessMVP2.Presenter
         {
             //FormFieldControl view = new FormFieldControl();
             //this._view2 = view;
-            var bffc = new BuildFormFieldControl(_model.StringResult);
+            var bffc = new BuildFormFieldControl(_model.StringResult,this);
             
             this._view1.Form1.Hide();
+            this._view2.Form2.PerformAutoScale();
 
-            this._view2.Form2.Show();
+            //this._view2.Form2.Show();
         }
     }
 }

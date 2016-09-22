@@ -32,8 +32,8 @@ namespace TessMVP2.Model
             GetField();
             foreach (KeyValuePair<string, List<string>> kvp in _resDict)
             {
-                foreach (string sr in kvp.Value)
-                    MessageBox.Show("key: " + kvp.Key + "value: " + sr);
+                //foreach (string sr in kvp.Value)
+                   // MessageBox.Show("key: " + kvp.Key + " value: " + sr);
             }
         }
 

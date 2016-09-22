@@ -37,7 +37,7 @@ namespace TessMVP2.Model
             try
             {
 
-                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "deu", EngineMode.Default))
+                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
                 {
 
                     using (Pix img = Pix.LoadFromFile( _mainModel.ImgPath ) )
