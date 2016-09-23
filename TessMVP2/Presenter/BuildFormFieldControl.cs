@@ -17,7 +17,8 @@ namespace TessMVP2.Presenter
         private IMyViewFormFieldControl _view2;
 
         public object View2 { get { return _view2; } }
-        
+        //public Button btnCommit { get; private set; }
+
         private Dictionary<string, List<string>> _resDict;
         private TessPresenter _mainPresenter;
         //public FormFieldControl View2 { get; private set; }
@@ -30,61 +31,18 @@ namespace TessMVP2.Presenter
             this._mainPresenter = mainPres;
             SetFormProps();
             AddControls();
-
         }
 
-        private void SetFormProps()
-        {
-            _view2.Form2.AutoSize = true;
-            _view2.Form2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            _view2.Form2.Text = "Zuordnungen";
-            
-        }
-
-        private void SetTextboxProps(TextBox tb)
-        {
-            tb.Width = 300;
-            //tb.Height = 70;
-            tb.Margin = new Padding(5);
-        }
-
-        private void SetLabelProps(Label lbl)
-        {
-            lbl.Width = 200;
-            //lbl.Height = 50;
-            lbl.Margin = new Padding(5);
-        }
-        private void SetDefaultPanelProps(FlowLayoutPanel pan)
-        {
-            pan.AutoSize = true;
-            pan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            pan.FlowDirection = FlowDirection.TopDown;
-            pan.Margin = new Padding(10);
-            pan.MaximumSize = new System.Drawing.Size(1920, 1080);
-        }
-
-        private void SetDefaultRTBoxProps(RichTextBox rtb)
-        {
-            
-        }
-
-        private void SetDefaultGBoxProps(GroupBox gb)
-        {
-            gb.AutoSize = true;
-            gb.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        }
         private void AddControls()
         {
             var newFlowPanel = new FlowLayoutPanel();
             SetDefaultPanelProps(newFlowPanel);
             _view2.Form2.Controls.Add(newFlowPanel);
 
-
-
-
             foreach (KeyValuePair<string, List<string>> kvp in this._resDict)
             {
                 var gb = new GroupBox();
+                gb.Name = "gb" + kvp.Key;
                 //SetDefaultGBoxProps(gb);
                 var newLabel = new Label();
                 SetLabelProps(newLabel);
@@ -99,21 +57,71 @@ namespace TessMVP2.Presenter
 
                 }
                 newFlowPanel.Controls.Add(gb);
-                gb.Controls.Add(newLabel);
                 gb.Controls.Add(newTextbox);
-                newTextbox.BringToFront();
-                newLabel.BringToFront();
+                gb.Controls.Add(newLabel);
                 
 
             }
-
             var newRichTextBox = new RichTextBox();
-            newRichTextBox.Height = Convert.ToInt32(newFlowPanel.Height * 0.95);
-            newRichTextBox.Width = Convert.ToInt32(newFlowPanel.Width);
+            SetDefaultRTBoxProps(newRichTextBox, newFlowPanel);
+            _view2.BtnCommit = new Button();
+            SetDefaultButtonProps(_view2.BtnCommit, newRichTextBox);
             newFlowPanel.Controls.Add(newRichTextBox);
-           
+            newFlowPanel.Controls.Add(_view2.BtnCommit);
             this._view2.Form2.Show();
             _mainPresenter.ViewForm2 = this._view2;
+        }
+
+        private void SetFormProps()
+        {
+            _view2.Form2.AutoSize = true;
+            _view2.Form2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            _view2.Form2.Text = "Zuordnungen";
+
+        }
+
+        private void SetTextboxProps(TextBox tb)
+        {
+            tb.Width = 300;
+            //tb.Height = 70;
+            tb.Margin = new Padding(5);
+            tb.Dock = DockStyle.Top;
+        }
+
+        private void SetLabelProps(Label lbl)
+        {
+            lbl.Width = 200;
+            //lbl.Height = 50;
+            lbl.Margin = new Padding(5);
+            lbl.Dock = DockStyle.Top;
+        }
+        private void SetDefaultPanelProps(FlowLayoutPanel pan)
+        {
+            pan.AutoSize = true;
+            pan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            pan.FlowDirection = FlowDirection.TopDown;
+            pan.Margin = new Padding(10);
+            pan.MaximumSize = new System.Drawing.Size(1333, 750);
+        }
+
+        private void SetDefaultRTBoxProps(RichTextBox rtb, FlowLayoutPanel parent)
+        {
+            rtb.Height = Convert.ToInt32(parent.Height * 0.5);
+            rtb.Width = Convert.ToInt32(parent.Width * 0.75);
+        }
+
+        private void SetDefaultGBoxProps(GroupBox gb)
+        {
+            gb.AutoSize = true;
+            gb.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        }
+
+        private void SetDefaultButtonProps(Button btn, RichTextBox rtb)
+        {
+            int padLeft = Convert.ToInt32(rtb.Width / 2 - btn.Width / 2);
+            btn.Margin = new Padding(padLeft, 20, padLeft, 0);
+            btn.Text = "Commit";
+            btn.Name = "F2btnCommit";
 
         }
     }

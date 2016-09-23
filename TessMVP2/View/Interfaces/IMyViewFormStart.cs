@@ -9,7 +9,6 @@ namespace TessMVP2.View.Interfaces
 {
     public interface IMyViewFormStart
     {
-        //inhalt aller Elemente mit text-property
         string TextBoxText { get; set; }
         string RichTextBoxText { get; set; }
         Button Form1Btn1 { get; }

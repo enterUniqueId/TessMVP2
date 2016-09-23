@@ -40,8 +40,6 @@ namespace TessMVP2.View
         public FormStart()
         {
             InitializeComponent();
-
-            //evtl Attach hierher?
             //button1.Click += (sender, e) => callback.OnButtonClick();
             textBox1.Text = "cd1.jpg";
         }

@@ -10,6 +10,7 @@ namespace TessMVP2.Model
     {
         public static readonly Dictionary<string, List<string>> SearchDict = new Dictionary<string, List<string>>()
         {
+                {"Name", new List<string> {"|dummy|" } },
                 {"Fax", new List<string> {"fax" } },
                 {"Telefon", new List<string> {"tel","fon","phone" } },
                 {"Mobil", new List<string> {"mobile","mobil" } },

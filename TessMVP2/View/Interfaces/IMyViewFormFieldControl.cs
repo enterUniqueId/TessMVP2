@@ -12,5 +12,6 @@ namespace TessMVP2.View.Interfaces
     interface IMyViewFormFieldControl
     {
         Form Form2 { get; }
+        Button BtnCommit { get; set; }
     }
 }

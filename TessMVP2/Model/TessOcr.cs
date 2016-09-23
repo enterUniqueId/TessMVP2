@@ -36,8 +36,8 @@ namespace TessMVP2.Model
 
             try
             {
-
-                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
+                //omelette du fromage
+                using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "fra", EngineMode.Default))
                 {
 
                     using (Pix img = Pix.LoadFromFile( _mainModel.ImgPath ) )

@@ -5,8 +5,8 @@ using TessMVP2.Presenter.Interfaces;
 using TessMVP2.View.Interfaces;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.View;
-
-
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TessMVP2.Presenter
 {
@@ -16,7 +16,7 @@ namespace TessMVP2.Presenter
         private IMyModel _model;
         private IMyViewFormFieldControl _view2;
 
-        public object View1 { get { return _view1;} }
+        public object View1 { get { return _view1; } }
         public object View2 { get { return _view2; } }
         public object Model { get { return _model; } }
 
@@ -28,17 +28,23 @@ namespace TessMVP2.Presenter
             this._view1 = view;
             view.Show();
             TessMainModel model = new TessMainModel(this);
-            
+
             this._model = model;
-            wireView1Events();
+            WireView1Events();
 
 
         }
 
-        private void wireView1Events()
+        private void WireView1Events()
         {
             this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
             this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
+        }
+
+        private void WireView2Events()
+        {
+            this._view2.Form2.FormClosed += (sender, e) => OnForm1Closed();
+            this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
         }
 
         public void OnButtonClick()
@@ -65,16 +71,19 @@ namespace TessMVP2.Presenter
             Environment.Exit(0);
         }
 
+        private void OnButtonCommitClick()
+        {
+            var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
+            processInput.bla();
+
+        }
+
         public void OnStringFinished()
         {
-            //FormFieldControl view = new FormFieldControl();
-            //this._view2 = view;
-            var bffc = new BuildFormFieldControl(_model.StringResult,this);
-            
-            this._view1.Form1.Hide();
-            this._view2.Form2.PerformAutoScale();
+            var bffc = new BuildFormFieldControl(_model.StringResult, this);
 
-            //this._view2.Form2.Show();
+            this._view1.Form1.Hide();
+            WireView2Events();
         }
     }
 }

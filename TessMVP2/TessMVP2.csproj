@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,7 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Dict.cs" />
+    <Compile Include="Model\ProcessUserResults.cs" />
     <Compile Include="Presenter\BuildFormFieldControl.cs" />
+    <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
     <Compile Include="View\FormFieldControl.cs">
