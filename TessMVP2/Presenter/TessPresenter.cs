@@ -74,7 +74,7 @@ namespace TessMVP2.Presenter
         private void OnButtonCommitClick()
         {
             var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
-            processInput.bla();
+            processInput.GetInputs();
 
         }
 
