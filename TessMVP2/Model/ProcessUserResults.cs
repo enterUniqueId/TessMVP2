@@ -11,12 +11,13 @@ namespace TessMVP2.Model
     public class ProcessUserResults
     {
         private Control _clist;
-        private Dictionary<string, List<string>> _resDict;
-        public Dictionary<string, List<string>> ResDict { get { return this._resDict; } private set { this._resDict = value; } }
+        private Dictionary<string, string> _resDict;
+        public Dictionary<string, string> ResDict { get { return this._resDict; } private set { this._resDict = value; } }
 
         public ProcessUserResults(Control contList)
         {
             this._clist = contList;
+            _resDict = new Dictionary<string, string>();
         }
 
         private List<Control> getControls(Control cont, List<Control> clist = null)
@@ -42,19 +43,48 @@ namespace TessMVP2.Model
                 mit extension*/
         }
 
-        public void bla()
+        public void GetInputs()
         {
-            string test = "";
             var clist = getControls(_clist);
             string k;
             foreach (Control c in clist)
             {
-                if(c.GetType()!=typeof(Control))
-                test += c.GetType().ToString();
-                //if (c.GetType() == typeof(TextBox))
-                  //  k=(c as TextBox).Text;
+                if (c.GetType() == typeof(TextBox))
+                {
+                    k = (c as TextBox).Text;
+                    if (k != "")
+                    {
+                        _resDict.Add(c.Name.Substring(4), k);
+                       
+                    }
+                }
+                else if (c.GetType() == typeof(RichTextBox))
+                {
+                    var rtbText = (c as RichTextBox).Text;
+                    if (rtbText != "")
+                    {
+                        var fields = new List<string>();
+                        fields = rtbText.Split('\n').ToList();
+
+                        foreach (string sr in fields)
+                        {
+                            string[] kvp = sr.Split(':');
+                            _resDict.Add(kvp[0], kvp[1]);
+                        }
+                    }    
+                }
             }
-            MessageBox.Show(test);
+            test();
+        }
+
+        private void test()
+        {
+            string outp = "";
+            foreach(var kvp in _resDict)
+            {
+                outp += kvp.Key + "=>" + kvp.Value + "\n";
+            }
+            MessageBox.Show(outp);
         }
 
     }
