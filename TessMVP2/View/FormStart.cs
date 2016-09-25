@@ -35,6 +35,8 @@ namespace TessMVP2.View
             get { return this.button1; }
         }
 
+        public Button Form1Btn2 { get { return this.button2; } }
+
         public Form Form1 { get { return this; } }
         
         public FormStart()

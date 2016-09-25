@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Model\Dict.cs" />
     <Compile Include="Model\ProcessUserResults.cs" />
+    <Compile Include="Model\Scanner.cs" />
     <Compile Include="Presenter\BuildFormFieldControl.cs" />
     <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
@@ -126,6 +127,17 @@
     <Content Include="x86\libtesseract304.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WIA">
+      <Guid>{94A0E92D-43C0-494E-AC29-FD45948A5221}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
