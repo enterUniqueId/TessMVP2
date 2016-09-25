@@ -226,9 +226,6 @@ namespace TessMVP2.Model
                             break;
                         }
                 }
-
-
-
             } //end switch
         }
 
@@ -243,6 +240,7 @@ namespace TessMVP2.Model
             _resDict["Ort"][0] = _resDict["Ort"][0].Trim();
             _resDict["Ort"][0] = _resDict["Ort"][0].Replace("0", "o");
         }
+
         private int CrossCompare(string dictField, List<string> stringsToCompare, string replacePattern)
         {
             bool replaced = false;

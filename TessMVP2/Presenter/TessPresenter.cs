@@ -39,6 +39,7 @@ namespace TessMVP2.Presenter
         {
             this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
             this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
+            this._view1.Form1Btn2.Click += (sender, e) => OnButton2Click();
         }
 
         private void WireView2Events()
@@ -51,6 +52,13 @@ namespace TessMVP2.Presenter
         {
             _model.ImgPath = _view1.TextBoxText;
             _model.Start(this);
+        }
+
+        public void OnButton2Click()
+        {
+            var scanner = new Scanner();
+            scanner.selectDevice();
+            scanner.Scan();
         }
 
         public void OnOcrResultChanged()
