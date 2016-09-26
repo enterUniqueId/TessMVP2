@@ -40,10 +40,11 @@ namespace TessMVP2.Model
             {
                 this.device = dialog.ShowSelectDevice(
                 WiaDeviceType.ScannerDeviceType, true, false);
+                Scan();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Konnte keine Verbindung zu Scanner herstellen. "+ ex.Message);
             }
 
         }

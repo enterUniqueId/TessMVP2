@@ -30,12 +30,10 @@ namespace TessMVP2.View
                 richTextBox1.AppendText(value);
             }
         }
-        public Button Form1Btn1
-        {
-            get { return this.button1; }
-        }
+        public Button Form1Btn1 { get { return this.button1; } }
 
         public Button Form1Btn2 { get { return this.button2; } }
+        public Button Form1Btn3 { get { return this.button3; } }
 
         public Form Form1 { get { return this; } }
         

@@ -13,6 +13,7 @@ namespace TessMVP2.View.Interfaces
         string RichTextBoxText { get; set; }
         Button Form1Btn1 { get; }
         Button Form1Btn2 { get; }
+        Button Form1Btn3 { get; }
         Form Form1 { get; }
         
     }

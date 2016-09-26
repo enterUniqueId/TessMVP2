@@ -20,6 +20,8 @@ namespace TessMVP2.Presenter
         public object View2 { get { return _view2; } }
         public object Model { get { return _model; } }
 
+        private Dictionary<string, string> _inputResults;
+        private OutlookWork outlook;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
 
         public TessPresenter()
@@ -40,6 +42,7 @@ namespace TessMVP2.Presenter
             this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
             this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
             this._view1.Form1Btn2.Click += (sender, e) => OnButton2Click();
+            this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
         }
 
         private void WireView2Events()
@@ -58,7 +61,14 @@ namespace TessMVP2.Presenter
         {
             var scanner = new Scanner();
             scanner.selectDevice();
-            scanner.Scan();
+            
+        }
+
+        public void OnButton3Click()
+        {
+
+            this.outlook = new OutlookWork(this._inputResults);
+            outlook.GetContacts();
         }
 
         public void OnOcrResultChanged()
@@ -83,7 +93,10 @@ namespace TessMVP2.Presenter
         {
             var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
             processInput.GetInputs();
-
+            this._inputResults = new Dictionary<string, string>();
+            this._inputResults = processInput.ResDict;
+            this.outlook = new OutlookWork(this._inputResults);
+            outlook.CreateContactExample();
         }
 
         public void OnStringFinished()

@@ -74,7 +74,7 @@ namespace TessMVP2.Model
                     }    
                 }
             }
-            test();
+            //test();
         }
 
         private void test()
