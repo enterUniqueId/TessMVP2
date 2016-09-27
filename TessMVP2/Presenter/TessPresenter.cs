@@ -1,28 +1,31 @@
 ﻿using System;
-using TessMVP2.Model;
-using System.Windows.Forms;
-using TessMVP2.Presenter.Interfaces;
-using TessMVP2.View.Interfaces;
-using TessMVP2.Model.Interfaces;
 using TessMVP2.View;
+using System.Windows.Forms;
+using TessMVP2.View.Interfaces;
+using TessMVP2.Presenter.Interfaces;
+using TessMVP2.Model.Interfaces;
+using TessMVP2.Model;
 using System.Linq;
 using System.Collections.Generic;
 
 namespace TessMVP2.Presenter
 {
-    class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks
+    class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
         private IMyViewFormFieldControl _view2;
+        private IMyViewFormCompareContacts _view3;
 
         public object View1 { get { return _view1; } }
         public object View2 { get { return _view2; } }
+        public object View3 { get { return _view3; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
-        private OutlookWork outlook;
+        private OutlookWork _outlook;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
+        public IMyViewFormCompareContacts ViewForm3 { get { return _view3; } set { _view3 = value; } }
 
         public TessPresenter()
         {
@@ -51,6 +54,12 @@ namespace TessMVP2.Presenter
             this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
         }
 
+        private void WireView3Events()
+        {
+            this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
+            //this._view3.BtnCommit.Click += (sender, e) => OnRedundandEntryFound();
+        }
+
         public void OnButtonClick()
         {
             _model.ImgPath = _view1.TextBoxText;
@@ -67,8 +76,8 @@ namespace TessMVP2.Presenter
         public void OnButton3Click()
         {
 
-            this.outlook = new OutlookWork(this._inputResults);
-            outlook.GetContacts();
+            this._outlook = new OutlookWork(this._inputResults);
+            _outlook.GetContacts();
         }
 
         public void OnOcrResultChanged()
@@ -95,8 +104,10 @@ namespace TessMVP2.Presenter
             processInput.GetInputs();
             this._inputResults = new Dictionary<string, string>();
             this._inputResults = processInput.ResDict;
-            this.outlook = new OutlookWork(this._inputResults);
-            outlook.CreateContactExample();
+            this._outlook = new OutlookWork(this._inputResults);
+            this._model.OlWork = this._outlook;
+            _outlook.GetContacts();
+            //outlook.CreateContactExample();
         }
 
         public void OnStringFinished()
@@ -105,6 +116,12 @@ namespace TessMVP2.Presenter
 
             this._view1.Form1.Hide();
             WireView2Events();
+        }
+
+        public void OnRedundandEntryFound()
+        {
+
+            var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict,this);
         }
     }
 }

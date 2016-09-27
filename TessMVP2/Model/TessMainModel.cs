@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Tesseract;
-using TessMVP2.Presenter.Interfaces;
 using TessMVP2.Model.Interfaces;
+using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {
@@ -18,22 +18,18 @@ namespace TessMVP2.Model
         public delegate void FinishedStringChangedHandler(object sender, EventArgs e);
         public event FinishedStringChangedHandler FinishedStringChanged;
 
+        public OutlookWork OlWork { get; set; }
         private string _imgPath;
         private TessOcr _ocr;
         private StringProcessor _stringProcessor;
         public string OcrResult { get; private set; }
         public Dictionary<string,List<string>> StringResult { get; private set; }
+        private List<string> _duplicateMatches;
         public string ImgPath
         {
             get { return _imgPath; }
             set { _imgPath = value; }
 
-        }
-
-
-        public TessMainModel(IMyPresenterModelCallbacks callback)
-        {
-            
         }
 
 
@@ -45,12 +41,13 @@ namespace TessMVP2.Model
 
         public void Attach(IMyPresenterModelCallbacks callback)
         {
-            //dummy, da nur ein interface, ich aber die registrierungen getrennt brauche
-            //interface IModel sparen?
+            //this.RedundandEntryFound += (sender, e) => callback.OnRedundandEntryFound();
         }
+
 
         public void Start(IMyPresenterModelCallbacks callback)
         {
+            Attach(callback);
             this._ocr = new TessOcr(this);
             this.OcrResultChanged+= (sender, e)=> callback.OnOcrResultChanged();
             this._ocr.Start();

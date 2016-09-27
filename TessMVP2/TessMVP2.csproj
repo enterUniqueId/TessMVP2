@@ -53,6 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Interfaces\IOutlookModel.cs" />
+    <Compile Include="Presenter\BuildFormCompareContacts.cs" />
     <Compile Include="Model\Dict.cs" />
     <Compile Include="Model\OutlookWork.cs" />
     <Compile Include="Model\ProcessUserResults.cs" />
@@ -60,6 +62,11 @@
     <Compile Include="Presenter\BuildFormFieldControl.cs" />
     <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
+    <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
+    <Compile Include="View\FormCompareContacts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Interfaces\IMyViewFormCompareContacts.cs" />
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
     <Compile Include="View\FormFieldControl.cs">
       <SubType>Form</SubType>

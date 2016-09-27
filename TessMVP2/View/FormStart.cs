@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TessMVP2.Presenter.Interfaces;
+using TessMVP2.View.Interfaces;
 using TessMVP2.View.Interfaces;
 
 namespace TessMVP2.View

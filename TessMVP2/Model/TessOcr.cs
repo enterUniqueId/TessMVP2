@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Tesseract;
 using System.Windows.Forms;
-using TessMVP2.Model;
-using TessMVP2.Model.Interfaces;
-using TessMVP2.Presenter.Interfaces;
+using TessMVP2.View;
+using TessMVP2.View.Interfaces;
+using TessMVP2.View.Interfaces;
 
 namespace TessMVP2.Model
 {

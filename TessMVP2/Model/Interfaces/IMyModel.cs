@@ -13,5 +13,6 @@ namespace TessMVP2.Model.Interfaces
         Dictionary<string, List<string>> StringResult { get; }
         string ImgPath { get; set; }
         void Start(IMyPresenterModelCallbacks callbacks);
+        OutlookWork OlWork { get; set; }
     }
 }

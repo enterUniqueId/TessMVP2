@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces
 {
-    public interface IMyPresenterModelCallbacks
+    interface IMyPresenterOutlookCallbacks
     {
-        void OnOcrResultChanged();
-        void OnStringFinished();
         void OnRedundandEntryFound();
     }
 }

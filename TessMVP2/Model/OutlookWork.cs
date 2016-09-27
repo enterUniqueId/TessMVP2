@@ -5,20 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Outlook;
 using System.Windows.Forms;
+using TessMVP2.Model.Interfaces;
+using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {
-    public class OutlookWork
+    public class OutlookWork:IOutlookModel
     {
+
         private Dictionary<string, string> _resultDict;
+        public Dictionary<string, string> ResultDict { get { return this._resultDict; } }
         private List<List<string>> _outlookContacts;
         public List<List<string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
+        public List<string> Hits { get; private set; }
+        public int CurrentContact { get; private set; }
+
+        public delegate void DuplicateHitHandler(object sender, EventArgs e);
+        public event DuplicateHitHandler DuplicateHit;
 
 
 
         public OutlookWork(Dictionary<string, string> inputResults)
         {
+            this._resultDict = new Dictionary<string, string>();
             this._resultDict = inputResults;
+            this.Hits = new List<string>();
         }
 
         public void GetContacts()
@@ -30,21 +41,26 @@ namespace TessMVP2.Model
 
             foreach (ContactItem contact in contacts.Items)
             {
+                string olID = contact.EntryID;
                 string name = contact.FullName;
                 string tel1 = contact.BusinessTelephoneNumber;
+                string tel2 = contact.Business2TelephoneNumber;
+                string mobilNummer = contact.MobileTelephoneNumber;
                 string fax = contact.BusinessFaxNumber;
                 string street = contact.BusinessAddressStreet;
                 string plz = contact.BusinessAddressPostalCode;
                 string ort = contact.BusinessAddressCity;
                 string postfach = contact.BusinessAddressPostOfficeBox;
-                string mobilNummer = contact.MobileTelephoneNumber;
                 string position = contact.JobTitle;
                 string inetAdd = contact.BusinessHomePage;
                 string firma = contact.CompanyName;
                 string email = contact.Email1Address;
-                OutlookContacts.Add(new List<string>() { name, tel1, fax, street, plz, ort, postfach, mobilNummer, position, inetAdd, firma, email });
+                string email2 = contact.Email2Address;
+                string email3 = contact.Email3Address;
+                OutlookContacts.Add(new List<string>() { olID, name, tel1, tel2, mobilNummer, fax, street, plz, ort, postfach, position, inetAdd, firma, email, email2, email3 });
             }
             //test();
+            CheckContact();
         }
 
         private void test()
@@ -121,7 +137,6 @@ namespace TessMVP2.Model
                     default:
                         hasCustomProps = true;
                         customFields.Add(kvp.Key, kvp.Value);
-                        //contact.UserProperties[kvp.Key].Value = kvp.Value;
                         break;
                 }//end switch
             }//end foreach
@@ -159,14 +174,52 @@ namespace TessMVP2.Model
 
         private void CheckContact()
         {
+            bool hit = false;
+            var hits = new List<string>();
             for (int i = 0; i < OutlookContacts.Count; i++)
             {
-                foreach(string oprop in OutlookContacts[i])
+                foreach (string oprop in OutlookContacts[i])
                 {
-                    foreach(string cprop in _resultDict)
+                    foreach (var kvp in _resultDict)
+                    {
+                        if (kvp.Value == oprop && (oprop != null && kvp.Value != null))
+                        {
+                            hits.Add(kvp.Value);
+                            hit = true;
+                        }
+                    }
                 }
-                
+                if (hit)
+                {
+                    Evalhits(hits, i, OutlookContacts[i]); // hier form bauen
+                }
+                hits.Clear();
+                hit = false;
             }
+        }
+
+        private void Evalhits(List<string> hitlist, int contactID, List<string> oldContact)
+        {
+            int percent = hitlist.Count*100/_resultDict.Count;
+            DialogResult result = MessageBox.Show("Der neue Kontakt stimmte zu " + percent.ToString() + "% mit Kontakt-Nr. " + contactID +
+                            " (OL-ID: " + oldContact[0] + "überein.\nDatensatz anzeigen?", "Übereinstimmung",
+                            MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
+
+            if (result == DialogResult.OK)
+            {
+                this.Hits = hitlist;
+                this.CurrentContact = contactID;
+            }
+        }
+
+        private void Start(IMyPresenterOutlookCallbacks callbacks)
+        {
+            DuplicateHit += (sender, e) => callbacks.OnRedundandEntryFound();
+        }
+
+        public void Attach(IMyPresenterOutlookCallbacks presenter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

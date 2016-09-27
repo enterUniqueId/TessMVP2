@@ -30,11 +30,6 @@ namespace TessMVP2.Model
             //GetEmail();
             SearchKeyWords();
             GetField();
-            foreach (KeyValuePair<string, List<string>> kvp in _resDict)
-            {
-                //foreach (string sr in kvp.Value)
-                   // MessageBox.Show("key: " + kvp.Key + " value: " + sr);
-            }
         }
 
         private void splitString()
