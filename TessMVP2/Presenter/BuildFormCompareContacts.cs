@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
 using TessMVP2.View.Interfaces;
+using TessMVP2.View;
 
 
 namespace TessMVP2.Presenter
@@ -14,43 +16,72 @@ namespace TessMVP2.Presenter
         private IMyViewFormCompareContacts _view3;
         public object View3 { get { return _view3; } }
         private TessPresenter _mainPresenter;
-        private Form _formObject;
-        private List<string> _oldContactVals;
+        private FormCompareContacts _formObject;
+        //private Dictionary<string, string> _oldContactVals;
         private Dictionary<string, string> _newContactVals;
-        public Form FormCompareContacts { get { return this._formObject; } private set { this._formObject = value; } }
-        //helperList
-        private List<string> _contactParameterNames = new List<string> {
-                                                                    "FullName","BusinessTelephoneNumber","Business2TelephoneNumber","MobileTelephoneNumber","BusinessFaxNumber",
-                                                                    "BusinessAddressStreet","BusinessAddressPostalCode","EntryID","BusinessAddressCity","BusinessAddressPostOfficeBox","JobTitle",
-                                                                    "BusinessHomePage","CompanyName","Email1Address","Email2Address","Email3Address" };
+        public FormCompareContacts FormCompareContacts { get { return this._formObject; } private set { this._formObject = value; } }
         private Dictionary<string, string> _oldContactDict;
 
 
-        public BuildFormCompareContacts(List<string> valsLeftSide, Dictionary<string, string> valsRightSide, TessPresenter presenter)
+        public BuildFormCompareContacts(Dictionary<string, string> valsLeftSide, Dictionary<string, string> valsRightSide, TessPresenter presenter)
         {
-            this._oldContactVals = valsLeftSide;
+            var view = new FormCompareContacts();
+            this._view3 = view;
+            this._mainPresenter = presenter;
+            _formObject = (FormCompareContacts)this._view3.Form3;
+            this._oldContactDict = valsLeftSide;
             this._newContactVals = valsRightSide;
-            this
             SetFormProps();
             AddControls();
+            _mainPresenter.ViewForm3 = this._view3;
         }
 
         private void AddControls()
         {
             var FlowPanelLeft = new FlowLayoutPanel();
             SetDefaultPanelProps(FlowPanelLeft);
+            var newLabelLeft = new Label();
+            newLabelLeft.Text = "Outlook Kontakt";
+            newLabelLeft.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
+            //newLabelLeft.Dock = DockStyle.Top;
+            _formObject.Controls.Add(newLabelLeft);
             var FlowPanelRight = new FlowLayoutPanel();
             SetDefaultPanelProps(FlowPanelRight);
+            var newLabelRight = new Label();
+            newLabelRight.Text = "Neuer Kontakt";
+            newLabelRight.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
+           // newLabelLeft.Dock = DockStyle.Top;
+            _formObject.Controls.Add(newLabelRight);
             this._formObject.Controls.Add(FlowPanelLeft);
             this._formObject.Controls.Add(FlowPanelRight);
-            AddControlsToPanel(FlowPanelRight, _newContactVals);
-            GenDict();
-            AddControlsToPanel(FlowPanelLeft, _oldContactDict);
-            _view3.BtnCommit = new Button();
-            FlowPanelRight.Controls.Add(_view3.BtnCommit);
-            _view3.Form3.Controls.Add(FlowPanelLeft);
-            _view3.Form3.Controls.Add(FlowPanelRight);
 
+            AddControlsToPanel(FlowPanelRight, _newContactVals);
+            AddControlsToPanel(FlowPanelLeft, _oldContactDict);
+            var gbbtn = new GroupBox();
+            FlowPanelRight.Controls.Add(gbbtn);
+            _view3.BtnUpdate = new Button();
+            _view3.BtnUpdate.AutoSize = true;
+            _view3.BtnUpdate.Text = "Update/übernehme alten Kontakt";
+            gbbtn.Controls.Add(_view3.BtnUpdate);
+            //CenterControl(_view3.BtnUpdate, gbbtn);
+            _view3.BtnUpdate.Dock = DockStyle.Top;
+
+            _view3.BtnCreateNew = new Button();
+            _view3.BtnCreateNew.AutoSize = true;
+            //_view3.BtnUpdate.Margin = new Padding(Convert.ToInt32(FlowPanelLeft.Width / 4 - _view3.BtnUpdate.Width / 2));
+            _view3.BtnCreateNew.Text = "Erstelle neuen Kontakt";
+            gbbtn.Controls.Add(_view3.BtnCreateNew);
+            //CenterControl(_view3.BtnCreateNew, gbbtn);
+            _view3.BtnCreateNew.Dock = DockStyle.Top;
+
+            FlowPanelRight.Location = new Point(FlowPanelLeft.Width, 0);
+            CenterControl(newLabelRight, FlowPanelRight);
+            CenterControl(newLabelLeft, FlowPanelLeft);
+            int x = (int)(FlowPanelLeft.Width / 2 - newLabelLeft.Width / 2);
+            FlowPanelLeft.Location = new Point(0,newLabelLeft.Height+10);
+            FlowPanelRight.Location = new Point(FlowPanelLeft.Width+10, newLabelRight.Height + 10);
+            newLabelLeft.Location = new Point(x, 0);
+            newLabelRight.Location = new Point(x+FlowPanelLeft.Width, 0);
         }
 
         private void AddControlsToPanel(FlowLayoutPanel parentPanel, Dictionary<string, string> aDict)
@@ -60,13 +91,16 @@ namespace TessMVP2.Presenter
                 if (kvp.Value != null)
                 {
                     var gb = new GroupBox();
-                    var labelRight = new Label();
-                    SetLabelProps(labelRight);
-                    labelRight.Text = kvp.Key;
-                    var tbRight = new TextBox();
-                    tbRight.Text = kvp.Value;
-                    gb.Controls.Add(labelRight);
-                    gb.Controls.Add(tbRight);
+                    var newLabel = new Label();
+                    newLabel.Text = "F3Lbl"+kvp.Key;
+                    SetLabelProps(newLabel);
+                    newLabel.Text = kvp.Key;
+                    var newTb = new TextBox();
+                    newTb.Name = "F3Tb" + kvp.Key;
+                    SetTextboxProps(newTb);
+                    newTb.Text = kvp.Value;
+                    gb.Controls.Add(newLabel);
+                    gb.Controls.Add(newTb);
                     parentPanel.Controls.Add(gb);
                 }
 
@@ -74,14 +108,14 @@ namespace TessMVP2.Presenter
 
         }
 
-        private void GenDict()
+       /* private void GenDict()
         {
             _oldContactDict = new Dictionary<string, string>();
             for (int i = 0; i < _contactParameterNames.Count; i++)
             {
                 this._oldContactDict.Add(_contactParameterNames[i], _oldContactVals[i]);
             }
-        }
+        }*/
 
 
         private void SetFormProps()
@@ -113,7 +147,13 @@ namespace TessMVP2.Presenter
             pan.FlowDirection = FlowDirection.TopDown;
             pan.Margin = new Padding(10);
             pan.MaximumSize = new System.Drawing.Size(1333, 750);
-            pan.Dock = DockStyle.Top;
+            
+        }
+
+        private void CenterControl(Control cToCenter, Control parentCtr)
+        {
+            int padLeft = Convert.ToInt32(parentCtr.Width / 2 - cToCenter.Width / 2);
+            cToCenter.Margin = new Padding(padLeft, 20, padLeft, 0);
         }
     }
 }

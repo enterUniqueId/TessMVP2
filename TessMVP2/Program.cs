@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using TessMVP2.View;
+using TessMVP2.Presenter;
 
 namespace TessMVP2
 {

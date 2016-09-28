@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TessMVP2.Presenter.Interfaces;
 
+
 namespace TessMVP2.Model.Interfaces
 {
-    interface IOutlookModel:IModel<IMyPresenterOutlookCallbacks>
+   interface IOutlookModel<Tcallback>
     {
-        void Start(IMyPresenterOutlookCallbacks callbacks);
+        void Attach(IMyPresenterOutlookCallbacks presenter);
+        List<string> Hits { get; }
     }
 }

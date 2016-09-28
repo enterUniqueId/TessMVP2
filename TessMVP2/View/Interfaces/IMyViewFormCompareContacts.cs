@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace TessMVP2.View.Interfaces
 {
     interface IMyViewFormCompareContacts
     {
         Form Form3 { get; }
-        Button BtnCommit { get; set; }
+        Button BtnUpdate { get; set; }
+        Button BtnCreateNew { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace TessMVP2.Presenter
             FormStart view = new FormStart();
             this._view1 = view;
             view.Show();
-            TessMainModel model = new TessMainModel(this);
+            TessMainModel model = new TessMainModel();
 
             this._model = model;
             WireView1Events();
@@ -57,7 +57,8 @@ namespace TessMVP2.Presenter
         private void WireView3Events()
         {
             this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
-            //this._view3.BtnCommit.Click += (sender, e) => OnRedundandEntryFound();
+            this._view3.BtnUpdate.Click += (sender, e) => OnButtonUpdateForm3Click();
+            this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewForm3Click();
         }
 
         public void OnButtonClick()
@@ -76,7 +77,7 @@ namespace TessMVP2.Presenter
         public void OnButton3Click()
         {
 
-            this._outlook = new OutlookWork(this._inputResults);
+            this._outlook = new OutlookWork(this._inputResults,this);
             _outlook.GetContacts();
         }
 
@@ -104,7 +105,7 @@ namespace TessMVP2.Presenter
             processInput.GetInputs();
             this._inputResults = new Dictionary<string, string>();
             this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults);
+            this._outlook = new OutlookWork(this._inputResults,this);
             this._model.OlWork = this._outlook;
             _outlook.GetContacts();
             //outlook.CreateContactExample();
@@ -118,10 +119,22 @@ namespace TessMVP2.Presenter
             WireView2Events();
         }
 
-        public void OnRedundandEntryFound()
+        void IMyPresenterOutlookCallbacks.OnRedundandEntryFound()
         {
 
             var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict,this);
+            bfcc.FormCompareContacts.Show();
+            WireView3Events();
+        }
+
+        private void OnButtonUpdateForm3Click()
+        {
+            MessageBox.Show("dsfsdf");
+        }
+
+        private void OnButtonCreateNewForm3Click()
+        {
+            MessageBox.Show("dsfsdf");
         }
     }
 }

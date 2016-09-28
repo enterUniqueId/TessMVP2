@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces
 {
-    interface IMyPresenterOutlookCallbacks
+    public interface IMyPresenterOutlookCallbacks
     {
         void OnRedundandEntryFound();
     }

@@ -10,14 +10,15 @@ using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {
-    public class OutlookWork:IOutlookModel
+    public class OutlookWork : TessMainModel
     {
 
         private Dictionary<string, string> _resultDict;
+        private List<string> _hits;
         public Dictionary<string, string> ResultDict { get { return this._resultDict; } }
-        private List<List<string>> _outlookContacts;
-        public List<List<string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
-        public List<string> Hits { get; private set; }
+        private List<Dictionary<string, string>> _outlookContacts;
+        public List<Dictionary<string, string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
+        public List<string> Hits { get { return this._hits; } private set { this._hits = value; } }
         public int CurrentContact { get; private set; }
 
         public delegate void DuplicateHitHandler(object sender, EventArgs e);
@@ -25,39 +26,45 @@ namespace TessMVP2.Model
 
 
 
-        public OutlookWork(Dictionary<string, string> inputResults)
+        public OutlookWork(Dictionary<string, string> inputResults, IMyPresenterOutlookCallbacks callback)
         {
             this._resultDict = new Dictionary<string, string>();
             this._resultDict = inputResults;
             this.Hits = new List<string>();
+            Attach(callback);
+
+
+
         }
 
         public void GetContacts()
         {
-            OutlookContacts = new List<List<string>>();
+            OutlookContacts = new List<Dictionary<string, string>>();
+            ContactItem contact = null;
+
+
             var outlookApplication = new ApplicationClass();  //outlook interop einbetten false; wie bei WIA
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-
-            foreach (ContactItem contact in contacts.Items)
+           // int i;
+            foreach (ContactItem cont in contacts.Items)
             {
-                string olID = contact.EntryID;
-                string name = contact.FullName;
-                string tel1 = contact.BusinessTelephoneNumber;
-                string tel2 = contact.Business2TelephoneNumber;
-                string mobilNummer = contact.MobileTelephoneNumber;
-                string fax = contact.BusinessFaxNumber;
-                string street = contact.BusinessAddressStreet;
-                string plz = contact.BusinessAddressPostalCode;
-                string ort = contact.BusinessAddressCity;
-                string postfach = contact.BusinessAddressPostOfficeBox;
-                string position = contact.JobTitle;
-                string inetAdd = contact.BusinessHomePage;
-                string firma = contact.CompanyName;
-                string email = contact.Email1Address;
-                string email2 = contact.Email2Address;
-                string email3 = contact.Email3Address;
-                OutlookContacts.Add(new List<string>() { olID, name, tel1, tel2, mobilNummer, fax, street, plz, ort, postfach, position, inetAdd, firma, email, email2, email3 });
+
+                OutlookContacts.Add(BuildOlDict());
+
+                var clist = genClistValues(cont);
+                //for(int k=OutlookContacts.Count-1;k>=0;k--)
+                foreach (var dict in OutlookContacts)
+                {
+                    int i = 0;
+                    foreach (var kvp in dict.ToArray())
+                    //for(int j=dict.Count-1;j>=0;j--)
+                    {
+                        //var item = dict.ElementAt(j);
+                        dict[kvp.Key] = clist[i];
+                        i++;
+                    }
+                }
             }
             //test();
             CheckContact();
@@ -66,18 +73,18 @@ namespace TessMVP2.Model
         private void test()
         {
             string contactData = "";
-            foreach (List<string> li in OutlookContacts)
+            foreach (Dictionary<string, string> di in OutlookContacts)
             {
-                foreach (string sr in li)
+                foreach (var kvp in di)
                 {
-                    contactData += sr + " | ";
+                    contactData += kvp.Value + " | ";
                 }
                 MessageBox.Show(contactData);
                 contactData = "";
             }
         }
 
-        public void CreateContactExample()
+        public void CreateContact()
         {
             bool hasCustomProps = false;
             var outlookApplication = new ApplicationClass();
@@ -178,11 +185,11 @@ namespace TessMVP2.Model
             var hits = new List<string>();
             for (int i = 0; i < OutlookContacts.Count; i++)
             {
-                foreach (string oprop in OutlookContacts[i])
+                foreach (var oprop in OutlookContacts[i])
                 {
                     foreach (var kvp in _resultDict)
                     {
-                        if (kvp.Value == oprop && (oprop != null && kvp.Value != null))
+                        if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
                         {
                             hits.Add(kvp.Value);
                             hit = true;
@@ -191,35 +198,61 @@ namespace TessMVP2.Model
                 }
                 if (hit)
                 {
-                    Evalhits(hits, i, OutlookContacts[i]); // hier form bauen
+                    Evalhits(hits, i, OutlookContacts[i]);
                 }
                 hits.Clear();
                 hit = false;
             }
         }
 
-        private void Evalhits(List<string> hitlist, int contactID, List<string> oldContact)
+        private void Evalhits(List<string> hitlist, int contactID, Dictionary<string, string> oldContact)
         {
-            int percent = hitlist.Count*100/_resultDict.Count;
+            int percent = hitlist.Count * 100 / _resultDict.Count;
             DialogResult result = MessageBox.Show("Der neue Kontakt stimmte zu " + percent.ToString() + "% mit Kontakt-Nr. " + contactID +
-                            " (OL-ID: " + oldContact[0] + "überein.\nDatensatz anzeigen?", "Übereinstimmung",
-                            MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
+                            " (OL-ID: " + oldContact["EntryID"] + "überein.\nDatensatz anzeigen?", "Übereinstimmung",
+                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
             if (result == DialogResult.OK)
             {
                 this.Hits = hitlist;
                 this.CurrentContact = contactID;
+                if (this.DuplicateHit != null)
+                    this.DuplicateHit(this, EventArgs.Empty);
             }
         }
 
-        private void Start(IMyPresenterOutlookCallbacks callbacks)
+
+        private void Attach(IMyPresenterOutlookCallbacks callback)
         {
-            DuplicateHit += (sender, e) => callbacks.OnRedundandEntryFound();
+            DuplicateHit += (sender, e) => callback.OnRedundandEntryFound();
         }
 
-        public void Attach(IMyPresenterOutlookCallbacks presenter)
+        private Dictionary<string, string> BuildOlDict()
         {
-            throw new NotImplementedException();
+            var dict = new Dictionary<string, string>(){
+                                                { "FullName", "" }, {"BusinessTelephoneNumber", "" }, {"Business2TelephoneNumber","" }, {"MobileTelephoneNumber","" }, {"BusinessFaxNumber","" },
+                                                { "BusinessAddressStreet", "" }, { "BusinessAddressPostalCode", "" },{ "BusinessAddressCity", "" }, { "BusinessAddressPostOfficeBox", "" },
+                                                { "JobTitle", "" },{ "BusinessHomePage", "" },{ "CompanyName", "" }, { "Email1Address", "" }, { "Email2Address", "" }, { "Email3Address", "" },
+                                                { "EntryID", "" }
+            };
+            return dict;
+        }
+
+        private List<string> genClistValues(ContactItem contact)
+        {
+            var clist = new List<string>() {contact.FullName, contact.BusinessTelephoneNumber, contact.Business2TelephoneNumber, contact.MobileTelephoneNumber, contact.BusinessFaxNumber,
+                                            contact.BusinessAddressStreet, contact.BusinessAddressPostalCode,contact.BusinessAddressCity, contact.BusinessAddressPostOfficeBox,
+                                            contact.JobTitle,contact.BusinessHomePage, contact.CompanyName, contact.Email1Address, contact.Email2Address, contact.Email3Address,
+                                            contact.EntryID};
+            var dict = new Dictionary<string, string>(){
+                                                { "FullName", contact.FullName }, {"BusinessTelephoneNumber", contact.BusinessTelephoneNumber }, {"Business2TelephoneNumber",contact.Business2TelephoneNumber },
+                                                { "MobileTelephoneNumber",contact.MobileTelephoneNumber }, {"BusinessFaxNumber",contact.BusinessFaxNumber},
+                                                { "BusinessAddressStreet", contact.BusinessAddressStreet }, { "BusinessAddressPostalCode", contact.BusinessAddressPostalCode},
+                                                { "BusinessAddressCity", contact.BusinessAddressCity}, { "BusinessAddressPostOfficeBox", "" },
+                                                { "JobTitle", "" },{ "BusinessHomePage", "" },{ "CompanyName", "" }, { "Email1Address", "" }, { "Email2Address", "" }, { "Email3Address", "" },
+                                                { "EntryID", "" }
+            };
+            return clist;
         }
     }
 }

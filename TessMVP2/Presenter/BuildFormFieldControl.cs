@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TessMVP2.View;
-using TessMVP2.View;
 using TessMVP2.View.Interfaces;
-using System.Windows;
 
 namespace TessMVP2.Presenter
 {

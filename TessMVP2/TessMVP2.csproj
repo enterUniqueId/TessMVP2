@@ -93,6 +93,9 @@
     <Compile Include="View\Interfaces\IMyViewFormFieldControl.cs" />
     <Compile Include="View\Interfaces\IMyViewFormStart.cs" />
     <Compile Include="View\Interfaces\IView.cs" />
+    <EmbeddedResource Include="View\FormCompareContacts.resx">
+      <DependentUpon>FormCompareContacts.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\FormFieldControl.resx">
       <DependentUpon>FormFieldControl.cs</DependentUpon>
     </EmbeddedResource>

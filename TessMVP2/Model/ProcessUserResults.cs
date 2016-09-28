@@ -20,7 +20,7 @@ namespace TessMVP2.Model
             _resDict = new Dictionary<string, string>();
         }
 
-        private List<Control> getControls(Control cont, List<Control> clist = null)
+        public List<Control> getControls(Control cont, List<Control> clist = null)
         {
             if (clist == null)
                 clist = new List<Control>();

@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using Tesseract;
 using System.Windows.Forms;
-using TessMVP2.View;
-using TessMVP2.View.Interfaces;
-using TessMVP2.View.Interfaces;
 
 namespace TessMVP2.Model
 {
@@ -36,7 +28,6 @@ namespace TessMVP2.Model
 
             try
             {
-                //omelette du fromage
                 using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "fra", EngineMode.Default))
                 {
 

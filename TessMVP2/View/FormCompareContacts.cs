@@ -11,13 +11,21 @@ namespace TessMVP2.View
 {
     class FormCompareContacts : Form, IMyViewFormCompareContacts
     {
-        private Button _btnCommit;
-        public Button BtnCommit { get { return this._btnCommit; } set { this._btnCommit = value; } }
+        private Button _update;
+        private Button _createNew;
+        public Button BtnUpdate { get { return this._createNew; } set { this._createNew = value; } }
+        public Button BtnCreateNew { get { return this._update; } set { this._update = value; } }
         public Form Form3 { get { return this; } }
 
 
         public FormCompareContacts()
         {
+
+        }
+
+        private void InitializeComponent()
+        {
+           
 
         }
     }
