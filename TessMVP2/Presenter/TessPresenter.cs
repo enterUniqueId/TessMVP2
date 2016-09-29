@@ -24,6 +24,7 @@ namespace TessMVP2.Presenter
 
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
+        private List<FormCompareContacts> _FormcompareContactsList;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
         public IMyViewFormCompareContacts ViewForm3 { get { return _view3; } set { _view3 = value; } }
 
@@ -51,6 +52,7 @@ namespace TessMVP2.Presenter
         private void WireView2Events()
         {
             this._view2.Form2.FormClosed += (sender, e) => OnForm1Closed();
+
             this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
         }
 
@@ -121,20 +123,29 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundandEntryFound()
         {
-
+            this._FormcompareContactsList = new List<FormCompareContacts>();
             var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict,this);
+            this._FormcompareContactsList.Add(bfcc.FormCompareContacts);
             bfcc.FormCompareContacts.Show();
             WireView3Events();
         }
 
         private void OnButtonUpdateForm3Click()
         {
-            MessageBox.Show("dsfsdf");
+            MessageBox.Show("sdfsd");
         }
 
         private void OnButtonCreateNewForm3Click()
         {
-            MessageBox.Show("dsfsdf");
+            var processInput = new ProcessUserResults(_view3.Form3.Controls[0]);
+            processInput.GetInputs();
+            this._inputResults = new Dictionary<string, string>();
+            this._inputResults = processInput.ResDict;
+            this._outlook = new OutlookWork(this._inputResults, this);
+            this._model.OlWork = this._outlook;
+            this._outlook.CreateContact();
+            _FormcompareContactsList[_FormcompareContactsList.Count - 1].Hide();
+            this._FormcompareContactsList.RemoveAt(_FormcompareContactsList.Count-1);
         }
     }
 }

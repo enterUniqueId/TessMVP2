@@ -40,31 +40,28 @@ namespace TessMVP2.Model
         public void GetContacts()
         {
             OutlookContacts = new List<Dictionary<string, string>>();
-            ContactItem contact = null;
-
-
             var outlookApplication = new ApplicationClass();  //outlook interop einbetten false; wie bei WIA
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-           // int i;
+            // int i;
             foreach (ContactItem cont in contacts.Items)
             {
 
-                OutlookContacts.Add(BuildOlDict());
+                OutlookContacts.Add(BuildOlDict(cont));
 
-                var clist = genClistValues(cont);
+                //var clist = genClistValues(cont);
                 //for(int k=OutlookContacts.Count-1;k>=0;k--)
-                foreach (var dict in OutlookContacts)
-                {
-                    int i = 0;
-                    foreach (var kvp in dict.ToArray())
-                    //for(int j=dict.Count-1;j>=0;j--)
-                    {
-                        //var item = dict.ElementAt(j);
-                        dict[kvp.Key] = clist[i];
-                        i++;
-                    }
-                }
+                /* foreach (var dict in OutlookContacts)
+                 {
+                     int i = 0;
+                     foreach (var kvp in dict.ToArray())
+                     //for(int j=dict.Count-1;j>=0;j--)
+                     {
+                         //var item = dict.ElementAt(j);
+                         dict[kvp.Key] = clist[i];
+                         i++;
+                     }
+                 }*/
             }
             //test();
             CheckContact();
@@ -89,6 +86,9 @@ namespace TessMVP2.Model
             bool hasCustomProps = false;
             var outlookApplication = new ApplicationClass();
             var customFields = new Dictionary<string, string>();
+            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            //MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+            MAPIFolder oContactsFolder = mapiNamespace.PickFolder();
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
 
             //zuordnung der ergebnisse zu den outlook contacts feldern
@@ -182,9 +182,11 @@ namespace TessMVP2.Model
         private void CheckContact()
         {
             bool hit = false;
+            bool hitonce = false;
             var hits = new List<string>();
             for (int i = 0; i < OutlookContacts.Count; i++)
             {
+                hit = false;
                 foreach (var oprop in OutlookContacts[i])
                 {
                     foreach (var kvp in _resultDict)
@@ -193,6 +195,7 @@ namespace TessMVP2.Model
                         {
                             hits.Add(kvp.Value);
                             hit = true;
+                            hitonce = true;
                         }
                     }
                 }
@@ -201,7 +204,10 @@ namespace TessMVP2.Model
                     Evalhits(hits, i, OutlookContacts[i]);
                 }
                 hits.Clear();
-                hit = false;
+            }
+            if (!hitonce)
+            {
+                CreateContact();
             }
         }
 
@@ -221,38 +227,23 @@ namespace TessMVP2.Model
             }
         }
 
-
         private void Attach(IMyPresenterOutlookCallbacks callback)
         {
             DuplicateHit += (sender, e) => callback.OnRedundandEntryFound();
         }
 
-        private Dictionary<string, string> BuildOlDict()
+        private Dictionary<string, string> BuildOlDict(ContactItem contact)
         {
-            var dict = new Dictionary<string, string>(){
-                                                { "FullName", "" }, {"BusinessTelephoneNumber", "" }, {"Business2TelephoneNumber","" }, {"MobileTelephoneNumber","" }, {"BusinessFaxNumber","" },
-                                                { "BusinessAddressStreet", "" }, { "BusinessAddressPostalCode", "" },{ "BusinessAddressCity", "" }, { "BusinessAddressPostOfficeBox", "" },
-                                                { "JobTitle", "" },{ "BusinessHomePage", "" },{ "CompanyName", "" }, { "Email1Address", "" }, { "Email2Address", "" }, { "Email3Address", "" },
-                                                { "EntryID", "" }
-            };
-            return dict;
-        }
-
-        private List<string> genClistValues(ContactItem contact)
-        {
-            var clist = new List<string>() {contact.FullName, contact.BusinessTelephoneNumber, contact.Business2TelephoneNumber, contact.MobileTelephoneNumber, contact.BusinessFaxNumber,
-                                            contact.BusinessAddressStreet, contact.BusinessAddressPostalCode,contact.BusinessAddressCity, contact.BusinessAddressPostOfficeBox,
-                                            contact.JobTitle,contact.BusinessHomePage, contact.CompanyName, contact.Email1Address, contact.Email2Address, contact.Email3Address,
-                                            contact.EntryID};
             var dict = new Dictionary<string, string>(){
                                                 { "FullName", contact.FullName }, {"BusinessTelephoneNumber", contact.BusinessTelephoneNumber }, {"Business2TelephoneNumber",contact.Business2TelephoneNumber },
                                                 { "MobileTelephoneNumber",contact.MobileTelephoneNumber }, {"BusinessFaxNumber",contact.BusinessFaxNumber},
                                                 { "BusinessAddressStreet", contact.BusinessAddressStreet }, { "BusinessAddressPostalCode", contact.BusinessAddressPostalCode},
-                                                { "BusinessAddressCity", contact.BusinessAddressCity}, { "BusinessAddressPostOfficeBox", "" },
-                                                { "JobTitle", "" },{ "BusinessHomePage", "" },{ "CompanyName", "" }, { "Email1Address", "" }, { "Email2Address", "" }, { "Email3Address", "" },
-                                                { "EntryID", "" }
+                                                { "BusinessAddressCity", contact.BusinessAddressCity}, { "BusinessAddressPostOfficeBox", contact.BusinessAddressPostOfficeBox },
+                                                { "JobTitle", contact.JobTitle },{ "BusinessHomePage", contact.BusinessHomePage },{ "CompanyName", contact.CompanyName},
+                                                { "Email1Address", contact.Email1Address }, { "Email2Address", contact.Email2Address }, { "Email3Address", contact.Email3Address },
+                                                { "EntryID", contact.EntryID }
             };
-            return clist;
+            return dict;
         }
     }
 }
