@@ -11,6 +11,7 @@ namespace TessMVP2.Model
     public class ProcessUserResults
     {
         private Control _clist;
+        public Control Clist { get { return this._clist; } set { this._clist = value; } }
         private Dictionary<string, string> _resDict;
         public Dictionary<string, string> ResDict { get { return this._resDict; } private set { this._resDict = value; } }
 
@@ -32,20 +33,22 @@ namespace TessMVP2.Model
                 clist.Add(c);
             }
             return clist;
+        }
 
-            /* foreach (var currControl in cont.Controls.All())
-            {                
-                test += currControl.GetType().ToString() + "  ";                
-                // Apply logic to the textbox here
+        public void testclist(List<Control> clist)
+        {
+            string testout = "";
+            foreach (Control c in clist)
+            {
+                testout += c.ToString() + "\n";
             }
-                MessageBox.Show(test);
-
-                mit extension*/
+            MessageBox.Show(testout);
         }
 
         public void GetInputs()
         {
             var clist = getControls(_clist);
+            //testclist(clist);
             string k;
             foreach (Control c in clist)
             {
@@ -55,7 +58,7 @@ namespace TessMVP2.Model
                     if (k != "")
                     {
                         _resDict.Add(c.Name.Substring(4), k);
-                       
+
                     }
                 }
                 else if (c.GetType() == typeof(RichTextBox))
@@ -71,7 +74,7 @@ namespace TessMVP2.Model
                             string[] kvp = sr.Split(':');
                             _resDict.Add(kvp[0], kvp[1]);
                         }
-                    }    
+                    }
                 }
             }
             //test();
@@ -80,7 +83,7 @@ namespace TessMVP2.Model
         private void test()
         {
             string outp = "";
-            foreach(var kvp in _resDict)
+            foreach (var kvp in _resDict)
             {
                 outp += kvp.Key + "=>" + kvp.Value + "\n";
             }

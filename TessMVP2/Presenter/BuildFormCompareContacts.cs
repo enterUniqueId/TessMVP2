@@ -26,7 +26,7 @@ namespace TessMVP2.Presenter
         public BuildFormCompareContacts(Dictionary<string, string> valsLeftSide, Dictionary<string, string> valsRightSide, TessPresenter presenter)
         {
             var view = new FormCompareContacts();
-            this._view3 = view;
+            _view3 = view;
             this._mainPresenter = presenter;
             _formObject = (FormCompareContacts)this._view3.Form3;
             this._oldContactDict = valsLeftSide;
@@ -44,35 +44,43 @@ namespace TessMVP2.Presenter
             newLabelLeft.Text = "Outlook Kontakt";
             newLabelLeft.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
             //newLabelLeft.Dock = DockStyle.Top;
-            _formObject.Controls.Add(newLabelLeft);
+            _formObject.Controls.Add(newLabelLeft);  //controls[0]
+
             var FlowPanelRight = new FlowLayoutPanel();
             SetDefaultPanelProps(FlowPanelRight);
+
             var newLabelRight = new Label();
             newLabelRight.Text = "Neuer Kontakt";
             newLabelRight.Font = new Font("Microsoft Sans Serif", 8, FontStyle.Bold);
            // newLabelLeft.Dock = DockStyle.Top;
-            _formObject.Controls.Add(newLabelRight);
-            this._formObject.Controls.Add(FlowPanelLeft);
-            this._formObject.Controls.Add(FlowPanelRight);
+            _formObject.Controls.Add(newLabelRight);  //controls[1]
+            this._formObject.Controls.Add(FlowPanelLeft); //controls[2]
+            this._formObject.Controls.Add(FlowPanelRight);  //controls[3]
 
             AddControlsToPanel(FlowPanelRight, _newContactVals);
             AddControlsToPanel(FlowPanelLeft, _oldContactDict);
             var gbbtn = new GroupBox();
             FlowPanelRight.Controls.Add(gbbtn);
+
             _view3.BtnUpdate = new Button();
             _view3.BtnUpdate.AutoSize = true;
             _view3.BtnUpdate.Text = "Update/übernehme alten Kontakt";
-            gbbtn.Controls.Add(_view3.BtnUpdate);
-            //CenterControl(_view3.BtnUpdate, gbbtn);
-            _view3.BtnUpdate.Dock = DockStyle.Top;
+
+            _view3.BtnCancel = new Button();
+            _view3.BtnCancel.AutoSize = true;
+            _view3.BtnCancel.Text = "Abbrechen";
 
             _view3.BtnCreateNew = new Button();
             _view3.BtnCreateNew.AutoSize = true;
-            //_view3.BtnUpdate.Margin = new Padding(Convert.ToInt32(FlowPanelLeft.Width / 4 - _view3.BtnUpdate.Width / 2));
             _view3.BtnCreateNew.Text = "Erstelle neuen Kontakt";
+
+            gbbtn.Controls.Add(_view3.BtnCancel);
             gbbtn.Controls.Add(_view3.BtnCreateNew);
-            //CenterControl(_view3.BtnCreateNew, gbbtn);
+            gbbtn.Controls.Add(_view3.BtnUpdate);
+            
+            _view3.BtnCancel.Dock = DockStyle.Top;
             _view3.BtnCreateNew.Dock = DockStyle.Top;
+            _view3.BtnUpdate.Dock = DockStyle.Top;
 
             FlowPanelRight.Location = new Point(FlowPanelLeft.Width, 0);
             CenterControl(newLabelRight, FlowPanelRight);

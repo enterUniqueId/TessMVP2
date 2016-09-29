@@ -16,17 +16,21 @@ namespace TessMVP2.Presenter
         private IMyModel _model;
         private IMyViewFormFieldControl _view2;
         private IMyViewFormCompareContacts _view3;
+        private IViewFormYesNoCancel _view4;
 
         public object View1 { get { return _view1; } }
         public object View2 { get { return _view2; } }
         public object View3 { get { return _view3; } }
+        public object View4 { get { return _view4; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
         private List<FormCompareContacts> _FormcompareContactsList;
+        private ProcessUserResults _processUserInput;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
         public IMyViewFormCompareContacts ViewForm3 { get { return _view3; } set { _view3 = value; } }
+        public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
 
         public TessPresenter()
         {
@@ -58,9 +62,19 @@ namespace TessMVP2.Presenter
 
         private void WireView3Events()
         {
-            this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
+            //this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
             this._view3.BtnUpdate.Click += (sender, e) => OnButtonUpdateForm3Click();
-            this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewForm3Click();
+            this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewContactClick();
+            this._view3.BtnCancel.Click += (sender, e) => OnButtonCancelCompareClick();
+        }
+
+        private void WireView4Events()
+        {
+            //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
+            this._view4.BtnYes.Click += (sender, e) => OnButtonYesClick();
+            this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
+            this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
+            this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
         }
 
         public void OnButtonClick()
@@ -73,13 +87,13 @@ namespace TessMVP2.Presenter
         {
             var scanner = new Scanner();
             scanner.selectDevice();
-            
+
         }
 
         public void OnButton3Click()
         {
 
-            this._outlook = new OutlookWork(this._inputResults,this);
+            this._outlook = new OutlookWork(this._inputResults, this);
             _outlook.GetContacts();
         }
 
@@ -104,13 +118,13 @@ namespace TessMVP2.Presenter
         private void OnButtonCommitClick()
         {
             var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
+            this._processUserInput = processInput;
             processInput.GetInputs();
             this._inputResults = new Dictionary<string, string>();
             this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults,this);
+            this._outlook = new OutlookWork(this._inputResults, this);
             this._model.OlWork = this._outlook;
             _outlook.GetContacts();
-            //outlook.CreateContactExample();
         }
 
         public void OnStringFinished()
@@ -121,31 +135,65 @@ namespace TessMVP2.Presenter
             WireView2Events();
         }
 
-        void IMyPresenterOutlookCallbacks.OnRedundandEntryFound()
+        void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            this._FormcompareContactsList = new List<FormCompareContacts>();
-            var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict,this);
-            this._FormcompareContactsList.Add(bfcc.FormCompareContacts);
-            bfcc.FormCompareContacts.Show();
-            WireView3Events();
+            if (this._FormcompareContactsList == null)
+                this._FormcompareContactsList = new List<FormCompareContacts>();
+            string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
+            var msgbox = new BuildFormYesNoCancel(this, sr);
+            this._view4.Form4.Show();
+            WireView4Events();
         }
 
         private void OnButtonUpdateForm3Click()
         {
-            MessageBox.Show("sdfsd");
+            _processUserInput.Clist = _view3.Form3.Controls[2];
+            _processUserInput.ResDict.Clear();
+            _processUserInput.GetInputs();
+            this._inputResults = _processUserInput.ResDict;
+            _outlook.UpdateExistingContact(_inputResults);
+            //todo
         }
 
-        private void OnButtonCreateNewForm3Click()
+        private void OnButtonCreateNewContactClick()
         {
-            var processInput = new ProcessUserResults(_view3.Form3.Controls[0]);
-            processInput.GetInputs();
-            this._inputResults = new Dictionary<string, string>();
-            this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults, this);
-            this._model.OlWork = this._outlook;
+            //var processInput = new ProcessUserResults(_view3.Form3.Controls[0]);
+            //processInput.GetInputs();
+            //this._inputResults = new Dictionary<string, string>();
+            //this._inputResults = processInput.ResDict;
+            //this._outlook = new OutlookWork(this._inputResults, this);   // leer?
+            //this._model.OlWork = this._outlook;
             this._outlook.CreateContact();
-            _FormcompareContactsList[_FormcompareContactsList.Count - 1].Hide();
-            this._FormcompareContactsList.RemoveAt(_FormcompareContactsList.Count-1);
+            _view3.Form3.Close();
+            //_FormcompareContactsList[_FormcompareContactsList.Count - 1].Hide();
+            //_FormcompareContactsList.RemoveAt(_FormcompareContactsList.Count-1);
         }
+
+        private void OnButtonYesClick()
+        {
+            var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict, this);
+            bfcc.FormCompareContacts.Show();
+            WireView3Events();
+            _view4.Form4.Close();
+        }
+
+        private void OnButtonNoClick()
+        {
+            this._outlook.CreateContact();
+            _view4.Form4.Close();
+        }
+
+        private void OnButtonCancelClick()
+        {
+
+            _view4.Form4.Close();
+        }
+
+        private void OnButtonCancelCompareClick()
+        {
+            _view3.Form3.Close();
+        }
+
+
     }
 }

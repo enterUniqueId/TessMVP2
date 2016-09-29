@@ -13,6 +13,7 @@ namespace TessMVP2.Presenter.Interfaces
         object View1 { get; }
         object View2 { get; }
         object View3 { get; }
+        object View4 { get; }
         object Model { get; }
     }
 }

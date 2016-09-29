@@ -24,7 +24,6 @@ namespace TessMVP2.Model
         private StringProcessor _stringProcessor;
         public string OcrResult { get; private set; }
         public Dictionary<string,List<string>> StringResult { get; private set; }
-        private List<string> _duplicateMatches;
         public string ImgPath
         {
             get { return _imgPath; }

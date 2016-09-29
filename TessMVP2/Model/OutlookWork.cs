@@ -7,6 +7,7 @@ using Microsoft.Office.Interop.Outlook;
 using System.Windows.Forms;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
+using System.Reflection;
 
 namespace TessMVP2.Model
 {
@@ -25,16 +26,12 @@ namespace TessMVP2.Model
         public event DuplicateHitHandler DuplicateHit;
 
 
-
         public OutlookWork(Dictionary<string, string> inputResults, IMyPresenterOutlookCallbacks callback)
         {
             this._resultDict = new Dictionary<string, string>();
             this._resultDict = inputResults;
             this.Hits = new List<string>();
             Attach(callback);
-
-
-
         }
 
         public void GetContacts()
@@ -48,22 +45,7 @@ namespace TessMVP2.Model
             {
 
                 OutlookContacts.Add(BuildOlDict(cont));
-
-                //var clist = genClistValues(cont);
-                //for(int k=OutlookContacts.Count-1;k>=0;k--)
-                /* foreach (var dict in OutlookContacts)
-                 {
-                     int i = 0;
-                     foreach (var kvp in dict.ToArray())
-                     //for(int j=dict.Count-1;j>=0;j--)
-                     {
-                         //var item = dict.ElementAt(j);
-                         dict[kvp.Key] = clist[i];
-                         i++;
-                     }
-                 }*/
             }
-            //test();
             CheckContact();
         }
 
@@ -86,9 +68,9 @@ namespace TessMVP2.Model
             bool hasCustomProps = false;
             var outlookApplication = new ApplicationClass();
             var customFields = new Dictionary<string, string>();
-            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            //NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             //MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            MAPIFolder oContactsFolder = mapiNamespace.PickFolder();
+            //MAPIFolder oContactsFolder = mapiNamespace.PickFolder();
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
 
             //zuordnung der ergebnisse zu den outlook contacts feldern
@@ -150,91 +132,124 @@ namespace TessMVP2.Model
             contact.Save();
             if (hasCustomProps)
                 CreateCustomFields(contact.EntryID, customFields);
-
-
         }
 
-        public void CreateCustomFields(string id, Dictionary<string, string> fields)
+        public void UpdateExistingContact(Dictionary<string, string> fields)
         {
             var outlookApplication = new ApplicationClass();
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder folder = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            var idList = new List<string>();  //weg?
-            int i = 0;
+            //string sfilter = "[EntryID]="+fields.ElementAt(fields.Count-1).Value;
+            //ContactItem contact =(ContactItem) folder.Items.Find(sfilter);
             foreach (ContactItem contact in folder.Items)
             {
-                if (contact.EntryID == id)
+                if (contact.EntryID == fields.ElementAt(fields.Count - 1).Value)
                 {
                     foreach (var kvp in fields)
                     {
-                        contact.UserProperties.Add(kvp.Key, OlUserPropertyType.olText);
-                        contact.UserProperties[kvp.Key].Value = kvp.Value;
-                    }
-                    contact.Save();
-                    break;
-                }
-                idList.Add(contact.EntryID);
-                i++;
-            }
-
-        }
-
-        private void CheckContact()
-        {
-            bool hit = false;
-            bool hitonce = false;
-            var hits = new List<string>();
-            for (int i = 0; i < OutlookContacts.Count; i++)
-            {
-                hit = false;
-                foreach (var oprop in OutlookContacts[i])
-                {
-                    foreach (var kvp in _resultDict)
-                    {
-                        if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
+                        foreach (ItemProperty prop in contact.ItemProperties)
                         {
-                            hits.Add(kvp.Value);
-                            hit = true;
-                            hitonce = true;
+                            if (prop.Name ==kvp.Key)
+
                         }
                     }
                 }
-                if (hit)
+
+                break;
+
+            }
+        }
+    }
+
+    public void CreateCustomFields(string id, Dictionary<string, string> fields)
+    {
+        var outlookApplication = new ApplicationClass();
+        NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+        MAPIFolder folder = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+        foreach (ContactItem contact in folder.Items)
+        {
+            if (contact.EntryID == id)
+            {
+                foreach (var kvp in fields)
                 {
-                    Evalhits(hits, i, OutlookContacts[i]);
+                    contact.UserProperties.Add(kvp.Key, OlUserPropertyType.olText);
+                    contact.UserProperties[kvp.Key].Value = kvp.Value;
                 }
-                hits.Clear();
+                contact.Save();
+                break;
             }
-            if (!hitonce)
+        }
+
+    }
+
+    private void CheckContact()
+    {
+        bool hit = false;
+        bool hitonce = false;
+        var hits = new List<string>();
+        for (int i = 0; i < OutlookContacts.Count; i++)
+        {
+            hit = false;
+            foreach (var oprop in OutlookContacts[i])
             {
-                CreateContact();
+                foreach (var kvp in _resultDict)
+                {
+                    if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
+                    {
+                        hits.Add(kvp.Value);
+                        hit = true;
+                        hitonce = true;
+                    }
+                }
             }
-        }
-
-        private void Evalhits(List<string> hitlist, int contactID, Dictionary<string, string> oldContact)
-        {
-            int percent = hitlist.Count * 100 / _resultDict.Count;
-            DialogResult result = MessageBox.Show("Der neue Kontakt stimmte zu " + percent.ToString() + "% mit Kontakt-Nr. " + contactID +
-                            " (OL-ID: " + oldContact["EntryID"] + "überein.\nDatensatz anzeigen?", "Übereinstimmung",
-                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-
-            if (result == DialogResult.OK)
+            if (hit)
             {
-                this.Hits = hitlist;
-                this.CurrentContact = contactID;
-                if (this.DuplicateHit != null)
-                    this.DuplicateHit(this, EventArgs.Empty);
+                Evalhits(hits, i, OutlookContacts[i]);
             }
+            hits.Clear();
         }
-
-        private void Attach(IMyPresenterOutlookCallbacks callback)
+        if (!hitonce)
         {
-            DuplicateHit += (sender, e) => callback.OnRedundandEntryFound();
+            CreateContact();
         }
+    }
 
-        private Dictionary<string, string> BuildOlDict(ContactItem contact)
+    private void Evalhits(List<string> hitlist, int contactID, Dictionary<string, string> oldContact)
+    {
+        int percent = hitlist.Count * 100 / _resultDict.Count;
+        string sr = "Der neue Kontakt stimmte zu " + percent.ToString() + "% mit Kontakt-Nr. " + contactID +
+                        " (OL-ID: " + oldContact["EntryID"] + "überein.\nDatensatz anzeigen?";
+
+        if (this.DuplicateHit != null)
+            this.DuplicateHit(this, EventArgs.Empty);
+        /*
+        if (result == DialogResult.Yes)
         {
-            var dict = new Dictionary<string, string>(){
+            this.Hits = hitlist;
+            this.CurrentContact = contactID;
+            if (this.DuplicateHit != null)
+                this.DuplicateHit(this, EventArgs.Empty);
+        }
+        else if(result == DialogResult.No)
+        {
+            if (this.QuestionAnsweredNo != null)
+                this.QuestionAnsweredNo(this, EventArgs.Empty);
+        }
+        else if (result == DialogResult.Cancel)
+        {
+            if (this.QuestionAnsweredCancel != null)
+                this.QuestionAnsweredCancel(this, EventArgs.Empty);
+        }*/
+    }
+
+    private void Attach(IMyPresenterOutlookCallbacks callback)
+    {
+        DuplicateHit += (sender, e) => callback.OnRedundantEntryFound();
+    }
+
+    private Dictionary<string, string> BuildOlDict(ContactItem contact)
+    {
+        var dict = new Dictionary<string, string>(){
                                                 { "FullName", contact.FullName }, {"BusinessTelephoneNumber", contact.BusinessTelephoneNumber }, {"Business2TelephoneNumber",contact.Business2TelephoneNumber },
                                                 { "MobileTelephoneNumber",contact.MobileTelephoneNumber }, {"BusinessFaxNumber",contact.BusinessFaxNumber},
                                                 { "BusinessAddressStreet", contact.BusinessAddressStreet }, { "BusinessAddressPostalCode", contact.BusinessAddressPostalCode},
@@ -243,7 +258,7 @@ namespace TessMVP2.Model
                                                 { "Email1Address", contact.Email1Address }, { "Email2Address", contact.Email2Address }, { "Email3Address", contact.Email3Address },
                                                 { "EntryID", contact.EntryID }
             };
-            return dict;
-        }
+        return dict;
     }
+}
 }
