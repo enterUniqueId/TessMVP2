@@ -9,5 +9,6 @@ namespace TessMVP2.Model.Interfaces
     interface IModel<TCallbacks>
     {
         void Attach(TCallbacks presenter);
+        void Detach(TCallbacks presenter);
     }
 }

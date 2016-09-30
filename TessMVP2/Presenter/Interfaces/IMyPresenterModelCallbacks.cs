@@ -10,6 +10,5 @@ namespace TessMVP2.Presenter.Interfaces
     {
         void OnOcrResultChanged();
         void OnStringFinished();
-        
     }
 }

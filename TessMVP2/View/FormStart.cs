@@ -34,6 +34,7 @@ namespace TessMVP2.View
             InitializeComponent();
             //button1.Click += (sender, e) => callback.OnButtonClick();
             textBox1.Text = "cd1.jpg";
+            this.Text = "V-scanner";
         }
 
         public void Attach()

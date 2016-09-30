@@ -8,12 +8,8 @@ namespace TessMVP2.Presenter
 {
     class BuildFormFieldControl
     {
-
         private IMyViewFormFieldControl _view2;
-
         public object View2 { get { return _view2; } }
-        //public Button btnCommit { get; private set; }
-
         private Dictionary<string, List<string>> _resDict;
         private TessPresenter _mainPresenter;
         //public FormFieldControl View2 { get; private set; }
@@ -63,7 +59,6 @@ namespace TessMVP2.Presenter
             SetDefaultButtonProps(_view2.BtnCommit, newRichTextBox);
             newFlowPanel.Controls.Add(newRichTextBox);
             newFlowPanel.Controls.Add(_view2.BtnCommit);
-            this._view2.Form2.Show();
             _mainPresenter.ViewForm2 = this._view2;
         }
 

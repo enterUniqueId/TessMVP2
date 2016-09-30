@@ -31,16 +31,16 @@ namespace TessMVP2.Model
 
         }
 
-
-        private void constructStringProcessor(IMyPresenterModelCallbacks callback)
-        {
-            this._stringProcessor = new StringProcessor(this);
-            this.FinishedStringChanged += (sender, e) => callback.OnStringFinished();
-        }
-
         public void Attach(IMyPresenterModelCallbacks callback)
         {
             //this.RedundandEntryFound += (sender, e) => callback.OnRedundandEntryFound();
+            this.FinishedStringChanged += (sender, e) => callback.OnStringFinished();
+
+        }
+
+        public void Detach(IMyPresenterModelCallbacks callback)
+        {
+            this.FinishedStringChanged -= (sender, e) => callback.OnStringFinished();
         }
 
 
@@ -55,11 +55,12 @@ namespace TessMVP2.Model
                 this.OcrResultChanged(this, EventArgs.Empty);
 
             this._stringProcessor = new StringProcessor(this);
-            this.FinishedStringChanged += (sender, e) => callback.OnStringFinished();
             this._stringProcessor.Start();
             this.StringResult = _stringProcessor.ResDict;
             if (this.FinishedStringChanged != null)
                 this.FinishedStringChanged(this, EventArgs.Empty);
+            //Detach(callback);
+            FinishedStringChanged = null;
 
             
         }   

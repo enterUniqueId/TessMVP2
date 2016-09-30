@@ -26,9 +26,9 @@ namespace TessMVP2.Presenter
         public BuildFormCompareContacts(Dictionary<string, string> valsLeftSide, Dictionary<string, string> valsRightSide, TessPresenter presenter)
         {
             var view = new FormCompareContacts();
-            _view3 = view;
+            this._view3 = view;
             this._mainPresenter = presenter;
-            _formObject = (FormCompareContacts)this._view3.Form3;
+            this._formObject = (FormCompareContacts)this._view3.Form3;
             this._oldContactDict = valsLeftSide;
             this._newContactVals = valsRightSide;
             SetFormProps();
@@ -96,8 +96,8 @@ namespace TessMVP2.Presenter
         {
             foreach (var kvp in aDict)
             {
-                if (kvp.Value != null)
-                {
+                //if (kvp.Value != null)
+                
                     var gb = new GroupBox();
                     var newLabel = new Label();
                     newLabel.Text = "F3Lbl"+kvp.Key;
@@ -110,27 +110,17 @@ namespace TessMVP2.Presenter
                     gb.Controls.Add(newLabel);
                     gb.Controls.Add(newTb);
                     parentPanel.Controls.Add(gb);
-                }
+                
 
             }
 
         }
 
-       /* private void GenDict()
-        {
-            _oldContactDict = new Dictionary<string, string>();
-            for (int i = 0; i < _contactParameterNames.Count; i++)
-            {
-                this._oldContactDict.Add(_contactParameterNames[i], _oldContactVals[i]);
-            }
-        }*/
-
-
         private void SetFormProps()
         {
             this._formObject.AutoSize = true;
             this._formObject.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            this._formObject.Text = "Zuordnungen";
+            this._formObject.Text = "Redundanter Eintrag";
         }
 
         private void SetTextboxProps(TextBox tb)

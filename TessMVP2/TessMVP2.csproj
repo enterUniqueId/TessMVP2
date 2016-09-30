@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Interfaces\IOutlookModel.cs" />
+    <Compile Include="Presenter\BuildFormCompare.cs" />
     <Compile Include="Presenter\BuildFormCompareContacts.cs" />
     <Compile Include="Model\Dict.cs" />
     <Compile Include="Model\OutlookWork.cs" />

@@ -6,6 +6,7 @@ namespace TessMVP2
 {
     static class Program
     {
+        
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -18,6 +19,7 @@ namespace TessMVP2
 
             //form.btnClick += new FormStart.btnClickHandler(cont.startProgramm);
             Application.Run();
+            
         }
     }
 }

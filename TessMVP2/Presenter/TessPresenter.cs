@@ -40,12 +40,12 @@ namespace TessMVP2.Presenter
             TessMainModel model = new TessMainModel();
 
             this._model = model;
-            WireView1Events();
+            AttachView1Events();
 
 
         }
 
-        private void WireView1Events()
+        private void AttachView1Events()
         {
             this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
             this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
@@ -53,14 +53,14 @@ namespace TessMVP2.Presenter
             this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
         }
 
-        private void WireView2Events()
-        {
-            this._view2.Form2.FormClosed += (sender, e) => OnForm1Closed();
 
+        private void AttachView2Events()
+        {
+            this._view2.Form2.FormClosing += (sender, e) => OnForm2Closed();
             this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
         }
 
-        private void WireView3Events()
+        private void AttachView3Events()
         {
             //this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
             this._view3.BtnUpdate.Click += (sender, e) => OnButtonUpdateForm3Click();
@@ -68,13 +68,13 @@ namespace TessMVP2.Presenter
             this._view3.BtnCancel.Click += (sender, e) => OnButtonCancelCompareClick();
         }
 
-        private void WireView4Events()
+        private void AttachView4Events()
         {
             //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
             this._view4.BtnYes.Click += (sender, e) => OnButtonYesClick();
             this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
             this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
-            this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
+            //this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
         }
 
         public void OnButtonClick()
@@ -115,6 +115,13 @@ namespace TessMVP2.Presenter
             Environment.Exit(0);
         }
 
+        private void OnForm2Closed()
+        {
+            _view1.Form1.Show();
+            _view2.Form2.Dispose();
+            _view2 = null;
+        }
+
         private void OnButtonCommitClick()
         {
             var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
@@ -129,10 +136,11 @@ namespace TessMVP2.Presenter
 
         public void OnStringFinished()
         {
-            var bffc = new BuildFormFieldControl(_model.StringResult, this);
+                var bffc = new BuildFormFieldControl(_model.StringResult, this);
 
-            this._view1.Form1.Hide();
-            WireView2Events();
+                this._view1.Form1.Hide();
+                this._view2.Form2.Show();
+                AttachView2Events();
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
@@ -141,8 +149,8 @@ namespace TessMVP2.Presenter
                 this._FormcompareContactsList = new List<FormCompareContacts>();
             string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
             var msgbox = new BuildFormYesNoCancel(this, sr);
-            this._view4.Form4.Show();
-            WireView4Events();
+            AttachView4Events();
+            this._view4.Form4.ShowDialog();
         }
 
         private void OnButtonUpdateForm3Click()
@@ -157,23 +165,16 @@ namespace TessMVP2.Presenter
 
         private void OnButtonCreateNewContactClick()
         {
-            //var processInput = new ProcessUserResults(_view3.Form3.Controls[0]);
-            //processInput.GetInputs();
-            //this._inputResults = new Dictionary<string, string>();
-            //this._inputResults = processInput.ResDict;
-            //this._outlook = new OutlookWork(this._inputResults, this);   // leer?
-            //this._model.OlWork = this._outlook;
             this._outlook.CreateContact();
             _view3.Form3.Close();
-            //_FormcompareContactsList[_FormcompareContactsList.Count - 1].Hide();
-            //_FormcompareContactsList.RemoveAt(_FormcompareContactsList.Count-1);
         }
 
         private void OnButtonYesClick()
         {
+            //man könnte auch NUR den oldcontact übergeben
             var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict, this);
-            bfcc.FormCompareContacts.Show();
-            WireView3Events();
+            _view3.Form3.ShowDialog();
+            AttachView3Events();
             _view4.Form4.Close();
         }
 
@@ -185,7 +186,6 @@ namespace TessMVP2.Presenter
 
         private void OnButtonCancelClick()
         {
-
             _view4.Form4.Close();
         }
 

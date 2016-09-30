@@ -39,6 +39,8 @@ namespace TessMVP2.Presenter
             _formObject.Width = 500;
             _formObject.Height = 200;
             _formObject.AutoSize = false;
+            _formObject.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _formObject.Text = "Was möchten Sie tun?";
         }
 
         private void AddControls()
@@ -48,11 +50,11 @@ namespace TessMVP2.Presenter
             var lblMsg = new Label();
             SetLblProps(lblMsg,_formObject);
             _view4.BtnYes = new Button();
-            SetBtnProps(_formObject.BtnYes,"Anzeigen",_formObject,1);
+            SetBtnProps(_formObject.BtnYes,"Anzeigen",_formObject);
             _view4.BtnNo = new Button();
-            SetBtnProps(_formObject.BtnNo, "Kontakt erstellen", _formObject, 2);
+            SetBtnProps(_formObject.BtnNo, "Kontakt erstellen", _formObject);
             _view4.BtnCancel = new Button();
-            SetBtnProps(_formObject.BtnCancel, "verwerfen", _formObject, 3);
+            SetBtnProps(_formObject.BtnCancel, "verwerfen", _formObject);
             _formObject.Controls.Add(lblMsg);
             fp.Controls.Add(_view4.BtnYes);
             fp.Controls.Add(_view4.BtnNo);
@@ -70,7 +72,7 @@ namespace TessMVP2.Presenter
 
         }
 
-        private void SetBtnProps(Button btn, string text, Form parent, int btncount)
+        private void SetBtnProps(Button btn, string text, Form parent)
         {
             btn.Text = text;
             btn.AutoSize = true;
