@@ -82,7 +82,7 @@ namespace TessMVP2.Model
                 //Treffer aus SearchKeyWords
                 switch (kvp.Key.ToLower())
                 {
-                    case "e-mail":
+                    case "email":
                         {
                             var mail = new Regex(@"([\w\.\-]+)@([\w\-]+)((\.(\w){2,4})+)");
                             //wenn mit dem wörterbuchvergleich schon etwas gefunden wurde
@@ -97,9 +97,9 @@ namespace TessMVP2.Model
                             }
                             break;
                         }
-                    case "telefon":
-                    case "fax":
-                    case "mobil":
+                    case "telefon-nummer":
+                    case "fax-nummer":
+                    case "mobil-nummer":
                         {
                             //mindestens 8 Stellen entspricht 3 Stellen nach Vorwahl
                             //wenn ergebnisse im array sind, bleiben sie dort, werden aber noch gereinigt
@@ -223,9 +223,8 @@ namespace TessMVP2.Model
         private void getName()
         {
             string pattern = @"\@.*";
-            string name = Regex.Replace(_resDict["E-Mail"][0], pattern, "");
+            string name = Regex.Replace(_resDict["Email"][0], pattern, "");
             name.Replace(".", " ");
-            MessageBox.Show(name);
             _resDict["Name"].Add(name);
         }
 
@@ -234,7 +233,7 @@ namespace TessMVP2.Model
             var street = new Regex(@"^([\w\-üäöÜÄÖß \.]+)([\d|\d\/\d]+)");
             CheckRegEx(street, "Strasse", _resDict["Ort"]);
             var plz = new Regex(@"(\d{5})");
-            CheckRegEx(plz, "Plz", _resDict["Ort"]);
+            CheckRegEx(plz, "Postleitzahl", _resDict["Ort"]);
             var ort = new Regex(@"([a-zA-ZäöüÖÄÜß])([ \w\-]+)$");
             CheckRegEx(ort, "Ort", _resDict["Ort"]);
             _resDict["Ort"][0] = _resDict["Ort"][0].Trim();

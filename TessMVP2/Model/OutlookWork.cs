@@ -13,7 +13,6 @@ namespace TessMVP2.Model
 {
     public class OutlookWork : TessMainModel
     {
-
         private Dictionary<string, string> _resultDict;
         private List<string> _hits;
         private List<Dictionary<string, string>> _outlookContacts;
@@ -33,6 +32,22 @@ namespace TessMVP2.Model
             this._resultDict = inputResults;
             this.Hits = new List<string>();
             Attach(callback);
+            NormalizeResultDict();
+        }
+
+        private void NormalizeResultDict()
+        {
+            var outlookApplication = new ApplicationClass();
+            //NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            //MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+            ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
+            var td = BuildOlDict(contact);
+            foreach(var kvp in _resultDict)
+            {
+                td[kvp.Key] = kvp.Value;
+            }
+            td["Homepage"] = _resultDict["Inet"];
+            _resultDict = td;
         }
 
         public void GetContacts()
@@ -81,25 +96,25 @@ namespace TessMVP2.Model
                     case "name":
                         contact.FullName = kvp.Value;
                         break;
-                    case "fax":
+                    case "fax-nummer":
                         contact.BusinessFaxNumber = kvp.Value;
                         break;
-                    case "telefon":
+                    case "telefon-nummer":
                         contact.BusinessTelephoneNumber = kvp.Value;
                         break;
-                    case "tel2":
+                    case "telefon-nummer2":
                         contact.Business2TelephoneNumber = kvp.Value;
                         break;
-                    case "mobil":
+                    case "mobil-nummer":
                         contact.MobileTelephoneNumber = kvp.Value;
                         break;
-                    case "e-mail":
+                    case "email":
                         contact.Email1Address = kvp.Value;
                         break;
-                    case "e-mail2":
+                    case "email2":
                         contact.Email2Address = kvp.Value;
                         break;
-                    case "e-mail3":
+                    case "email3":
                         contact.Email3Address = kvp.Value;
                         break;
                     case "strasse":
@@ -108,7 +123,7 @@ namespace TessMVP2.Model
                     case "ort":
                         contact.BusinessAddressCity = kvp.Value;
                         break;
-                    case "plz":
+                    case "postleitzahl":
                         contact.BusinessAddressPostalCode = kvp.Value;
                         break;
                     case "postfach":
@@ -120,7 +135,7 @@ namespace TessMVP2.Model
                     case "position":
                         contact.JobTitle = kvp.Value;
                         break;
-                    case "inet":
+                    case "homepage":
                         contact.BusinessHomePage = kvp.Value;
                         break;
                     default:
@@ -250,13 +265,14 @@ namespace TessMVP2.Model
 
         private Dictionary<string, string> BuildOlDict(ContactItem contact)
         {
+
             var dict = new Dictionary<string, string>(){
-                                                { "FullName", contact.FullName }, {"BusinessTelephoneNumber", contact.BusinessTelephoneNumber }, {"Business2TelephoneNumber",contact.Business2TelephoneNumber },
-                                                { "MobileTelephoneNumber",contact.MobileTelephoneNumber }, {"BusinessFaxNumber",contact.BusinessFaxNumber},
-                                                { "BusinessAddressStreet", contact.BusinessAddressStreet }, { "BusinessAddressPostalCode", contact.BusinessAddressPostalCode},
-                                                { "BusinessAddressCity", contact.BusinessAddressCity}, { "BusinessAddressPostOfficeBox", contact.BusinessAddressPostOfficeBox },
-                                                { "JobTitle", contact.JobTitle },{ "BusinessHomePage", contact.BusinessHomePage },{ "CompanyName", contact.CompanyName},
-                                                { "Email1Address", contact.Email1Address }, { "Email2Address", contact.Email2Address }, { "Email3Address", contact.Email3Address },
+                                                { "Name", contact.FullName }, {"Telefon-Nummer", contact.BusinessTelephoneNumber }, {"Telefon-Nummer2",contact.Business2TelephoneNumber },
+                                                { "Mobil-Nummer",contact.MobileTelephoneNumber }, {"Fax-Nummer",contact.BusinessFaxNumber},
+                                                { "Strasse", contact.BusinessAddressStreet }, { "Postleitzahl", contact.BusinessAddressPostalCode},
+                                                { "Ort", contact.BusinessAddressCity}, { "Postfach", contact.BusinessAddressPostOfficeBox },
+                                                { "Position", contact.JobTitle },{ "Homepage", contact.BusinessHomePage },{ "Firma", contact.CompanyName},
+                                                { "Email", contact.Email1Address }, { "Email2", contact.Email2Address }, { "Email3", contact.Email3Address },
                                                 { "EntryID", contact.EntryID }
             };
             return dict;

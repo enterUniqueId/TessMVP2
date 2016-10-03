@@ -41,8 +41,6 @@ namespace TessMVP2.Presenter
 
             this._model = model;
             AttachView1Events();
-
-
         }
 
         private void AttachView1Events()
@@ -67,7 +65,6 @@ namespace TessMVP2.Presenter
             this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewContactClick();
             this._view3.BtnCancel.Click += (sender, e) => OnButtonCancelCompareClick();
         }
-
         private void AttachView4Events()
         {
             //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
@@ -75,6 +72,35 @@ namespace TessMVP2.Presenter
             this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
             this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
             //this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
+        }
+
+        private void WireView3ContextMenus()
+        {
+            var clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
+            foreach (Control c in clist)
+            {
+                if (c.GetType() == typeof(Label))
+                {
+                    if (c.ContextMenu.MenuItems.Count < 16)
+                    {
+                        c.ContextMenu.MenuItems[0].Click += (sender, e) => OnCmTelClick();
+                        c.ContextMenu.MenuItems[1].Click += (sender, e) => OnCmTel2Click();
+                        c.ContextMenu.MenuItems[2].Click += (sender, e) => OnCmMobilClick();
+                        c.ContextMenu.MenuItems[3].Click += (sender, e) => OnCmFaxClick();
+                    }
+                    else
+                    {
+                        c.ContextMenu.MenuItems[0].Click += (sender, e) => OnCmNameClick();
+                        c.ContextMenu.MenuItems[1].Click += (sender, e) => OnCmTel2Click();
+                        c.ContextMenu.MenuItems[2].Click += (sender, e) => OnCmMobilClick();
+                        c.ContextMenu.MenuItems[3].Click += (sender, e) => OnCmFaxClick();
+                    }
+                    for(int i=0; i < c.ContextMenu.MenuItems.Count; i++)
+                    {
+                        c.ContextMenu.MenuItems[i].Click+=(sender, e)=>
+                    }
+                }
+            }
         }
 
         public void OnButtonClick()
@@ -92,9 +118,8 @@ namespace TessMVP2.Presenter
 
         public void OnButton3Click()
         {
+            //
 
-            this._outlook = new OutlookWork(this._inputResults, this);
-            _outlook.GetContacts();
         }
 
         public void OnOcrResultChanged()
@@ -136,21 +161,25 @@ namespace TessMVP2.Presenter
 
         public void OnStringFinished()
         {
-                var bffc = new BuildFormFieldControl(_model.StringResult, this);
+            var bffc = new BuildFormFieldControl(_model.StringResult, this);
 
-                this._view1.Form1.Hide();
-                this._view2.Form2.Show();
-                AttachView2Events();
+            this._view1.Form1.Hide();
+            this._view2.Form2.Show();
+            AttachView2Events();
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            if (this._FormcompareContactsList == null)
-                this._FormcompareContactsList = new List<FormCompareContacts>();
-            string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
-            var msgbox = new BuildFormYesNoCancel(this, sr);
-            AttachView4Events();
-            this._view4.Form4.ShowDialog();
+
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this);
+            WireView3ContextMenus();
+            _view3.Form3.ShowDialog();
+            /*  if (this._FormcompareContactsList == null)
+                  this._FormcompareContactsList = new List<FormCompareContacts>();
+              string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
+              var msgbox = new BuildFormYesNoCancel(this, sr);
+              AttachView4Events();
+              this._view4.Form4.ShowDialog();*/
         }
 
         private void OnButtonUpdateForm3Click()
@@ -172,10 +201,7 @@ namespace TessMVP2.Presenter
         private void OnButtonYesClick()
         {
             //man könnte auch NUR den oldcontact übergeben
-            var bfcc = new BuildFormCompareContacts(_outlook.OutlookContacts[_outlook.CurrentContact], _outlook.ResultDict, this);
-            _view3.Form3.ShowDialog();
-            AttachView3Events();
-            _view4.Form4.Close();
+
         }
 
         private void OnButtonNoClick()
