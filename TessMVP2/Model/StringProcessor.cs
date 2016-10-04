@@ -55,7 +55,7 @@ namespace TessMVP2.Model
         public void SearchKeyWords()
         {
             _resDict = new Dictionary<string, List<string>>();
-            foreach (KeyValuePair<string, List<string>> kvp in Dict.SearchDict)
+            foreach (var kvp in Dict.SearchDict)
             {
                 //geforderte Felder anlegen
                 _resDict.Add(kvp.Key, new List<string>());
@@ -111,11 +111,14 @@ namespace TessMVP2.Model
                                 {
                                     kvp.Value[i] = Regex.Replace(kvp.Value[i], replacePattern, "");
                                 }
-                                CheckRegEx(tel, kvp.Key, kvp.Value);
+                                if(!CheckRegEx(tel, kvp.Key, kvp.Value))
+                                {
+
+                                }
                             }
                             else
                             {
-                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4})\d{3}");
+                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4}|\+\d{2} ?\(0\) ?)\d{3}+");
                                 CheckRegEx(telsearch, kvp.Key, _specificStrings);
                             }
                             break;

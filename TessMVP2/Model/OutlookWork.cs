@@ -17,6 +17,8 @@ namespace TessMVP2.Model
         private List<string> _hits;
         private List<Dictionary<string, string>> _outlookContacts;
         private int _currentContact;
+        private string _entryID;
+        public string EntryID { get { return this._entryID; } set { this._entryID = value; } }
         public Dictionary<string, string> ResultDict { get { return this._resultDict; } }
         public List<Dictionary<string, string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
         public List<string> Hits { get { return this._hits; } private set { this._hits = value; } }
@@ -38,11 +40,11 @@ namespace TessMVP2.Model
         private void NormalizeResultDict()
         {
             var outlookApplication = new ApplicationClass();
-            //NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
-            //MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
             var td = BuildOlDict(contact);
-            foreach(var kvp in _resultDict)
+            foreach (var kvp in _resultDict)
             {
                 td[kvp.Key] = kvp.Value;
             }
@@ -59,7 +61,6 @@ namespace TessMVP2.Model
             // int i;
             foreach (ContactItem cont in contacts.Items)
             {
-
                 OutlookContacts.Add(BuildOlDict(cont));
             }
             CheckContact();
@@ -170,11 +171,14 @@ namespace TessMVP2.Model
 
         }
 
-        public void UpdateExistingContact(Dictionary<string, string> fields)
+        public void UpdateExistingContact(Dictionary<string, string> someFields)
         {
             var outlookApplication = new ApplicationClass();
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder folder = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+            ContactItem dummy = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
+            var fields = TranslateKeys(someFields);
+
             foreach (ContactItem contact in folder.Items)
             {
                 if (contact.EntryID == fields.ElementAt(fields.Count - 1).Value)
@@ -193,6 +197,21 @@ namespace TessMVP2.Model
                     break;
                 }
             }
+        }
+
+        private Dictionary<string, string> TranslateKeys(Dictionary<string, string> oldDict)
+        {
+            var newDict = new Dictionary<string, string>();
+            for (int i = 0; i < oldDict.Count; i++)
+                foreach (var kvp in Dict.TranslateDict)
+                {
+                    if (kvp.Value == oldDict.ElementAt(i).Key)
+                    {
+                        newDict.Add(kvp.Key, oldDict.ElementAt(i).Value);
+                        break;
+                    }
+                }
+            return newDict;
         }
 
         private void CheckContact()
@@ -218,6 +237,7 @@ namespace TessMVP2.Model
                 if (hit)
                 {
                     Evalhits(hits, i, OutlookContacts[i]);
+                    this._entryID = OutlookContacts[i]["EntryID"];
                     if (this.DuplicateHit != null)
                         this.DuplicateHit(this, EventArgs.Empty);
                 }

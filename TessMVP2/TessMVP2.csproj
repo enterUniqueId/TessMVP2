@@ -65,6 +65,7 @@
     <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
+    <Compile Include="Presenter\TessPresenter.FormCompareContacts.cs" />
     <Compile Include="View\FormCompareContacts.cs">
       <SubType>Form</SubType>
     </Compile>

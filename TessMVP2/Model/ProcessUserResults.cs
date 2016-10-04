@@ -10,14 +10,16 @@ namespace TessMVP2.Model
 {
     public class ProcessUserResults
     {
-        private Control _clist;
-        public Control Clist { get { return this._clist; } set { this._clist = value; } }
+        private Control _ownerCont;
+        private List<Control> _clist;
+        public List<Control> Clist { get { return this._clist; } set { this._clist = value; } }
+        public Control OwnerCont { get { return this._ownerCont; } set { this._ownerCont = value; } }
         private Dictionary<string, string> _resDict;
         public Dictionary<string, string> ResDict { get { return this._resDict; } private set { this._resDict = value; } }
 
         public ProcessUserResults(Control contList)
         {
-            this._clist = contList;
+            this._ownerCont = contList;
             _resDict = new Dictionary<string, string>();
         }
 
@@ -32,6 +34,7 @@ namespace TessMVP2.Model
                     getControls(c, clist);
                 clist.Add(c);
             }
+            this._clist = clist;
             return clist;
         }
 
@@ -45,39 +48,68 @@ namespace TessMVP2.Model
             MessageBox.Show(testout);
         }
 
-        public void GetInputs()
+        public void GetInputs(bool hasClist = false, bool isUpdate = false, int subStrIndex = 4)
         {
-            var clist = getControls(_clist);
+            var clist = new List<Control>();
+            if (!hasClist)
+            {
+                clist = getControls(_ownerCont);
+            }
+            else
+            {
+                clist = this._clist;
+            }
             //testclist(clist);
             string k;
-            foreach (Control c in clist)
+            if (!isUpdate)
             {
-                if (c.GetType() == typeof(TextBox))
+                foreach (Control c in clist)
                 {
-                    k = (c as TextBox).Text;
-                    if (k != "")
+                    if (c.GetType() == typeof(TextBox))
                     {
-                        _resDict.Add(c.Name.Substring(4), k);
-
-                    }
-                }
-                else if (c.GetType() == typeof(RichTextBox))
-                {
-                    var rtbText = (c as RichTextBox).Text;
-                    if (rtbText != "")
-                    {
-                        var fields = new List<string>();
-                        fields = rtbText.Split('\n').ToList();
-
-                        foreach (string sr in fields)
+                        k = (c as TextBox).Text;
+                        if (k != "")
                         {
-                            string[] kvp = sr.Split(':');
-                            _resDict.Add(kvp[0], kvp[1]);
+                            _resDict.Add(c.Name.Substring(subStrIndex), k);
+
+                        }
+                    }
+                    else if (c.GetType() == typeof(RichTextBox))
+                    {
+                        var rtbText = (c as RichTextBox).Text;
+                        if (rtbText != "")
+                        {
+                            var fields = new List<string>();
+                            fields = rtbText.Split('\n').ToList();
+
+                            foreach (string sr in fields)
+                            {
+                                string[] kvp = sr.Split(':');
+                                _resDict.Add(kvp[0], kvp[1]);
+                            }
                         }
                     }
                 }
             }
-            //test();
+            else
+            {
+                foreach (Control c in clist)
+                {
+                    if (c.GetType() == typeof(Label))
+                    {
+                        k = (c as Label).Text;
+                        if (k != "")
+                        {
+                            
+                            if (k.Contains(c.Name.Substring(subStrIndex)))
+                                k = k.Replace(c.Name.Substring(subStrIndex)+":", "");
+                            k.Trim();
+                            _resDict.Add(c.Name.Substring(subStrIndex), k);
+                        }
+                    }
+                }
+                //test();
+            }
         }
 
         private void test()

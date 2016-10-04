@@ -10,26 +10,24 @@ using System.Collections.Generic;
 
 namespace TessMVP2.Presenter
 {
-    class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks
+    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
         private IMyViewFormFieldControl _view2;
-        private IMyViewFormCompareContacts _view3;
         private IViewFormYesNoCancel _view4;
 
         public object View1 { get { return _view1; } }
         public object View2 { get { return _view2; } }
-        public object View3 { get { return _view3; } }
+        
         public object View4 { get { return _view4; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
-        private List<FormCompareContacts> _FormcompareContactsList;
+        private List<FormCompareContacts> _formCompareContactsList;
         private ProcessUserResults _processUserInput;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
-        public IMyViewFormCompareContacts ViewForm3 { get { return _view3; } set { _view3 = value; } }
         public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
 
         public TessPresenter()
@@ -51,20 +49,12 @@ namespace TessMVP2.Presenter
             this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
         }
 
-
         private void AttachView2Events()
         {
             this._view2.Form2.FormClosing += (sender, e) => OnForm2Closed();
             this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
         }
 
-        private void AttachView3Events()
-        {
-            //this._view3.Form3.FormClosed += (sender, e) => OnForm1Closed();
-            this._view3.BtnUpdate.Click += (sender, e) => OnButtonUpdateForm3Click();
-            this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewContactClick();
-            this._view3.BtnCancel.Click += (sender, e) => OnButtonCancelCompareClick();
-        }
         private void AttachView4Events()
         {
             //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
@@ -72,35 +62,6 @@ namespace TessMVP2.Presenter
             this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
             this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
             //this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
-        }
-
-        private void WireView3ContextMenus()
-        {
-            var clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
-            foreach (Control c in clist)
-            {
-                if (c.GetType() == typeof(Label))
-                {
-                    if (c.ContextMenu.MenuItems.Count < 16)
-                    {
-                        c.ContextMenu.MenuItems[0].Click += (sender, e) => OnCmTelClick();
-                        c.ContextMenu.MenuItems[1].Click += (sender, e) => OnCmTel2Click();
-                        c.ContextMenu.MenuItems[2].Click += (sender, e) => OnCmMobilClick();
-                        c.ContextMenu.MenuItems[3].Click += (sender, e) => OnCmFaxClick();
-                    }
-                    else
-                    {
-                        c.ContextMenu.MenuItems[0].Click += (sender, e) => OnCmNameClick();
-                        c.ContextMenu.MenuItems[1].Click += (sender, e) => OnCmTel2Click();
-                        c.ContextMenu.MenuItems[2].Click += (sender, e) => OnCmMobilClick();
-                        c.ContextMenu.MenuItems[3].Click += (sender, e) => OnCmFaxClick();
-                    }
-                    for(int i=0; i < c.ContextMenu.MenuItems.Count; i++)
-                    {
-                        c.ContextMenu.MenuItems[i].Click+=(sender, e)=>
-                    }
-                }
-            }
         }
 
         public void OnButtonClick()
@@ -170,32 +131,17 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-
             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this);
-            WireView3ContextMenus();
+            this._clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
+            AttachView3Events();
             _view3.Form3.ShowDialog();
+
             /*  if (this._FormcompareContactsList == null)
                   this._FormcompareContactsList = new List<FormCompareContacts>();
               string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
               var msgbox = new BuildFormYesNoCancel(this, sr);
               AttachView4Events();
               this._view4.Form4.ShowDialog();*/
-        }
-
-        private void OnButtonUpdateForm3Click()
-        {
-            _processUserInput.Clist = _view3.Form3.Controls[2];
-            _processUserInput.ResDict.Clear();
-            _processUserInput.GetInputs();
-            this._inputResults = _processUserInput.ResDict;
-            _outlook.UpdateExistingContact(_inputResults);
-            //todo
-        }
-
-        private void OnButtonCreateNewContactClick()
-        {
-            this._outlook.CreateContact();
-            _view3.Form3.Close();
         }
 
         private void OnButtonYesClick()
