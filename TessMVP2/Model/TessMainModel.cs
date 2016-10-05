@@ -10,7 +10,7 @@ using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {
-    public class TessMainModel:IMyModel
+    public class TessMainModel : IMyModel
     {
 
         public delegate void OcrChangedHandler(object sender, EventArgs e);
@@ -23,7 +23,7 @@ namespace TessMVP2.Model
         private TessOcr _ocr;
         private StringProcessor _stringProcessor;
         public string OcrResult { get; private set; }
-        public Dictionary<string,List<string>> StringResult { get; private set; }
+        public Dictionary<string, List<string>> StringResult { get; private set; }
         public string ImgPath
         {
             get { return _imgPath; }
@@ -48,9 +48,9 @@ namespace TessMVP2.Model
         {
             Attach(callback);
             this._ocr = new TessOcr(this);
-            this.OcrResultChanged+= (sender, e)=> callback.OnOcrResultChanged();
+            this.OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
             this._ocr.Start();
-            this. OcrResult = this._ocr.OcrResult;
+            this.OcrResult = this._ocr.OcrResult;
             if (this.OcrResultChanged != null)
                 this.OcrResultChanged(this, EventArgs.Empty);
 
@@ -62,8 +62,8 @@ namespace TessMVP2.Model
             //Detach(callback);
             FinishedStringChanged = null;
 
-            
-        }   
+
+        }
 
 
     }

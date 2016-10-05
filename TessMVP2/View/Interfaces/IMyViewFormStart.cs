@@ -14,7 +14,10 @@ namespace TessMVP2.View.Interfaces
         Button Form1Btn1 { get; }
         Button Form1Btn2 { get; }
         Button Form1Btn3 { get; }
+        ToolStripItem TsiFuji { get; }
+        ToolStripItem TsiWia { get; }
         Form Form1 { get; }
+        
         
     }
 }

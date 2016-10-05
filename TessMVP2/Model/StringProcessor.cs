@@ -105,7 +105,7 @@ namespace TessMVP2.Model
                             //wenn ergebnisse im array sind, bleiben sie dort, werden aber noch gereinigt
                             if (kvp.Value.Count > 0)
                             {
-                                var tel = new Regex(@"^(\+\d{2}|0\d{4})\d+");
+                                var tel = new Regex(@"^(\+\d{2}|0\d{4})(\d ?)+");
                                 string replacePattern = @"([^\d\+]+)";
                                 for (int i = kvp.Value.Count - 1; i >= 0; i--)
                                 {
@@ -118,8 +118,21 @@ namespace TessMVP2.Model
                             }
                             else
                             {
-                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4}|\+\d{2} ?\(0\) ?)\d{3}+");
+                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4}|\+\d{2} ?\(0\) ?)(\d{3} ?)+");
                                 CheckRegEx(telsearch, kvp.Key, _specificStrings);
+                                if (_resDict["Telefon-Nummer"].Count > 1)
+                                {
+                                    var mobil = new Regex(@"^(01[5-7])(\d ?\-?)+|^(\+\d{2} ?\(0\) ?)(1[5-7]\d)( ?\/?\-?\d)+");
+                                    if (CheckRegEx(mobil, "Mobil-Nummer", _resDict["Telefon-Nummer"])) {
+                                        _resDict["Telefon-Nummer"].Remove(_resDict["Mobil-Nummer"][0]);
+                                    }
+                                    else
+                                    {
+                                        _resDict["Telefon-Nummer2"].Add(_resDict["Telefon-Nummer"][0]);
+                                        _resDict["Telefon-Nummer"].RemoveAt(0);
+                                    }
+                                }
+
                             }
                             break;
                         }
@@ -219,16 +232,34 @@ namespace TessMVP2.Model
                         }
                 }
             } //end switch
-            getName();
+            GetName();
         }
 
         //muss extra wegen der frühen Stellung im Resdict
-        private void getName()
+        private void GetName()
         {
             string pattern = @"\@.*";
-            string name = Regex.Replace(_resDict["Email"][0], pattern, "");
-            name.Replace(".", " ");
-            _resDict["Name"].Add(name);
+            if (_resDict["Email"].Count > 1)
+            {
+                string name = Regex.Replace(_resDict["Email"][0], pattern, "");
+                string name2 = Regex.Replace(name, @".*\.", "");
+                name = name.Replace(".", " ");
+                foreach (var sr in _specificStrings)
+                {
+                    if (sr.ToLower().Contains(name) && !sr.Contains("@"))
+                    {
+                        name = sr;
+                        break;
+                    }
+                    else if (sr.ToLower().Contains(name2) && !sr.Contains("@"))
+                    {
+                        name = sr;
+                        break;
+
+                    }
+                }
+                _resDict["Name"].Add(name);
+            }
         }
 
         private void FillStreetCity()
@@ -274,10 +305,8 @@ namespace TessMVP2.Model
                 Match match = reg.Match(searchList[i]);
                 if (match.Success)
                 {
-                    //problem, wenn nach der prüfung noch 2 matches vorhanden sind!
-                    //_resDict.Remove(field);
-                    //_resDict.Add(field, new List<string>() { sr });
-                    _resDict[field].Clear();
+                    if(!didMatch)
+                        _resDict[field].Clear();
                     _resDict[field].Add(match.Value);
                     didMatch = true;
 

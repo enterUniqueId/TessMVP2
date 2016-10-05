@@ -7,10 +7,11 @@ using TessMVP2.Model.Interfaces;
 using TessMVP2.Model;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 namespace TessMVP2.Presenter
 {
-    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks
+    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
@@ -25,7 +26,6 @@ namespace TessMVP2.Presenter
 
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
-        private List<FormCompareContacts> _formCompareContactsList;
         private ProcessUserResults _processUserInput;
         public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
         public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
@@ -36,7 +36,6 @@ namespace TessMVP2.Presenter
             this._view1 = view;
             view.Show();
             TessMainModel model = new TessMainModel();
-
             this._model = model;
             AttachView1Events();
         }
@@ -47,6 +46,8 @@ namespace TessMVP2.Presenter
             this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
             this._view1.Form1Btn2.Click += (sender, e) => OnButton2Click();
             this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
+            this._view1.TsiFuji.Click += (sender, e) => OnFujitsuClick();
+            this._view1.TsiWia.Click += (sender, e) => OnWiaClick();
         }
 
         private void AttachView2Events()
@@ -66,8 +67,8 @@ namespace TessMVP2.Presenter
 
         public void OnButtonClick()
         {
-            _model.ImgPath = _view1.TextBoxText;
-            _model.Start(this);
+            //_model.ImgPath = _view1.TextBoxText;
+            //_model.Start(this);
         }
 
         public void OnButton2Click()
@@ -80,6 +81,21 @@ namespace TessMVP2.Presenter
         public void OnButton3Click()
         {
             //
+
+        }
+
+        private void OnFujitsuClick()
+        {
+            var parent = _view1.TsiFuji.OwnerItem as ToolStripMenuItem;
+            ((ToolStripDropDownMenu)parent.DropDown).ShowCheckMargin = true;
+            ((ToolStripDropDownMenu)parent.DropDown).ShowImageMargin = true;
+            FujiFolderObs fuji = new FujiFolderObs(this);
+            fuji.FSW.SynchronizingObject = _view1.Form1;
+
+        }
+
+        private void OnWiaClick()
+        {
 
         }
 
@@ -124,7 +140,7 @@ namespace TessMVP2.Presenter
         {
             var bffc = new BuildFormFieldControl(_model.StringResult, this);
 
-            this._view1.Form1.Hide();
+            //this._view1.Form1.Hide();
             this._view2.Form2.Show();
             AttachView2Events();
         }
@@ -166,6 +182,12 @@ namespace TessMVP2.Presenter
             _view3.Form3.Close();
         }
 
-
+        public void OnImgFileCreated(object sender, FileSystemEventArgs e)
+        {
+            _model.ImgPath = e.FullPath;
+            _model.Start(this);
+            EditImage.BildSW(e.FullPath);
+            //MessageBox.Show(e.Name+" "+e.FullPath);
+        }
     }
 }

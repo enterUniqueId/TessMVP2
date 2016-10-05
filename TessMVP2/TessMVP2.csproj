@@ -53,6 +53,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\EditImage.cs" />
+    <Compile Include="Model\FujiFolderObs.cs" />
+    <Compile Include="Model\Interfaces\IFujiModel.cs" />
     <Compile Include="Model\Interfaces\IOutlookModel.cs" />
     <Compile Include="Presenter\BuildFormCompare.cs" />
     <Compile Include="Presenter\BuildFormCompareContacts.cs" />
@@ -64,6 +67,7 @@
     <Compile Include="Presenter\BuildFormYesNoCancel.cs" />
     <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
+    <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.FormCompareContacts.cs" />
     <Compile Include="View\FormCompareContacts.cs">
