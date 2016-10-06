@@ -16,7 +16,7 @@ namespace TessMVP2.Model
                 {"Telefon-Nummer2", new List<string> {"|dummy|" } },
                 {"Mobil-Nummer", new List<string> {"mobile","mobil" } },
                 {"Fax-Nummer", new List<string> {"fax" } },
-                {"Strasse", new List<string> {"weg","straße","strasse","allee","chaussee","rue","street","platz","str." } },
+                {"Strasse", new List<string> {"weg","straße","strasse","allee","chaussee","rue","street","platz","str.","5tr." } },
                 {"Postleitzahl", new List<string> {"|dummy|" } },
                 {"Ort", new List<string> {"|dummy|" } },
                 {"Postfach", new List<string> {"postfach" } },

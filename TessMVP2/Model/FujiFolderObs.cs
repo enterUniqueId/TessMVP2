@@ -12,37 +12,37 @@ namespace TessMVP2.Model
 {
     class FujiFolderObs:IFujiModel
     {
-        private string _folder;
         private FileSystemWatcher _fsw;
+        private string _tempDir;
+        private string _format;
         public FileSystemWatcher FSW { get { return this._fsw; } }
-        public string Folder { get { return this._folder; } }
         
 
-        public FujiFolderObs(IMyPresenterFujiCallbacks callback)
+        public FujiFolderObs(IMyPresenterFujiCallbacks callback,string tempDir, string format)
         {
+            this._format = format;
+            this._tempDir = tempDir;
             Initialize(callback);
         }
 
         private void Initialize(IMyPresenterFujiCallbacks callback)
         {
            _fsw = new FileSystemWatcher();
-
+            Attach(callback);
             var curPath = Directory.GetCurrentDirectory();
-            var tempDir = @"\temp";
-            _fsw.Path = curPath+tempDir;
-            _fsw.Filter = "*.jpg";
-            _fsw.Created += new FileSystemEventHandler(callback.OnImgFileCreated);
+            _fsw.Path = curPath+_tempDir;
+            _fsw.Filter = _format;
             _fsw.EnableRaisingEvents = true;
         }
 
         public void Attach(IMyPresenterFujiCallbacks callback)
         {
-            
+            _fsw.Created += new FileSystemEventHandler(callback.OnImgFileCreated);
         }
 
-        public void Detach(IMyPresenterFujiCallbacks presenter)
+        public void Detach(IMyPresenterFujiCallbacks callback)
         {
-            
+            _fsw.Created -= new FileSystemEventHandler(callback.OnImgFileCreated);
         }
     }
 }

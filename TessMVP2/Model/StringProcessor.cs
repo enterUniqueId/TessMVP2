@@ -20,7 +20,7 @@ namespace TessMVP2.Model
             this._mainModel = parentModel;
             this._ocrResult = _mainModel.OcrResult;
         }
-        public Dictionary<string,List<string>> ResDict { get { return this._resDict; } }
+        public Dictionary<string, List<string>> ResDict { get { return this._resDict; } }
         public void Start()
         {
             splitString();
@@ -44,6 +44,9 @@ namespace TessMVP2.Model
 
             for (int i = 0; i < _specificStrings.Count; i++)
             {
+                _specificStrings[i] = _specificStrings[i].Replace("æ", "es");
+                _specificStrings[i] = _specificStrings[i].Replace(":", "");
+                _specificStrings[i] = _specificStrings[i].Replace(";", "");
                 foreach (KeyValuePair<string, string> kvp in emailReplaceList)
                 {
                     sr = _specificStrings[i].Replace(kvp.Key, kvp.Value);
@@ -57,16 +60,18 @@ namespace TessMVP2.Model
             _resDict = new Dictionary<string, List<string>>();
             foreach (var kvp in Dict.SearchDict)
             {
-                //geforderte Felder anlegen
+                //Felder anlegen
                 _resDict.Add(kvp.Key, new List<string>());
 
+                //erkannte strings nach Schlüsselworten durchsuchen
                 foreach (string searchValue in kvp.Value)
                 {
                     for (int j = 0; j < _specificStrings.Count; j++)
                     {
-                        //für manche, speziell kurze strings (AG) sind case insensitive conditions ungeeignet
                         if (_specificStrings[j].ToLower().Contains(searchValue))
                         {
+                            //bezeichnung aus ergebnisstrin entfernen
+                            _specificStrings[j] = _specificStrings[j].ToLower().Replace(searchValue, "");
                             _resDict[kvp.Key].Add(_specificStrings[j]);
                             // MessageBox.Show(sr + " <-kartenstring  " + kvp.Key);
                         }
@@ -75,6 +80,7 @@ namespace TessMVP2.Model
             }
         }
 
+        //Feldzuordnung
         public void GetField()
         {
             foreach (KeyValuePair<string, List<string>> kvp in _resDict)
@@ -98,12 +104,10 @@ namespace TessMVP2.Model
                             break;
                         }
                     case "telefon-nummer":
-                    case "fax-nummer":
-                    case "mobil-nummer":
                         {
                             //mindestens 8 Stellen entspricht 3 Stellen nach Vorwahl
                             //wenn ergebnisse im array sind, bleiben sie dort, werden aber noch gereinigt
-                            if (kvp.Value.Count > 0)
+                            if (kvp.Value.Count > 0)  //treffer aus dictvergleich
                             {
                                 var tel = new Regex(@"^(\+\d{2}|0\d{4})(\d ?)+");
                                 string replacePattern = @"([^\d\+]+)";
@@ -111,19 +115,22 @@ namespace TessMVP2.Model
                                 {
                                     kvp.Value[i] = Regex.Replace(kvp.Value[i], replacePattern, "");
                                 }
-                                if(!CheckRegEx(tel, kvp.Key, kvp.Value))
+                                if (!CheckRegEx(tel, kvp.Key, kvp.Value))
                                 {
 
                                 }
                             }
-                            else
+                            else //kein Treffer aus dictVergleich
                             {
-                                var telsearch = new Regex(@"^(\+\d{2}|0\d{4}|\+\d{2} ?\(0\) ?)(\d{3} ?)+");
-                                CheckRegEx(telsearch, kvp.Key, _specificStrings);
-                                if (_resDict["Telefon-Nummer"].Count > 1)
+
+                                var telsearch = new Regex(@"((^\+\d{2}).*|(^01[5-7]\d).*)");
+                                //var telsearch = new Regex(@"^(\+\d{2}|0\d{4}|\+\d{2} ?\(0\) ?)(\d{3} ?)+");
+                                if (CheckRegEx(telsearch, kvp.Key, _specificStrings) && _resDict["Telefon-Nummer"].Count > 1)
                                 {
+                                    //bei mehreren Treffern
                                     var mobil = new Regex(@"^(01[5-7])(\d ?\-?)+|^(\+\d{2} ?\(0\) ?)(1[5-7]\d)( ?\/?\-?\d)+");
-                                    if (CheckRegEx(mobil, "Mobil-Nummer", _resDict["Telefon-Nummer"])) {
+                                    if (CheckRegEx(mobil, "Mobil-Nummer", _resDict["Telefon-Nummer"]))
+                                    {
                                         _resDict["Telefon-Nummer"].Remove(_resDict["Mobil-Nummer"][0]);
                                     }
                                     else
@@ -131,6 +138,11 @@ namespace TessMVP2.Model
                                         _resDict["Telefon-Nummer2"].Add(_resDict["Telefon-Nummer"][0]);
                                         _resDict["Telefon-Nummer"].RemoveAt(0);
                                     }
+                                }
+                                //kein Treffer
+                                else if (_resDict["Telefon-Nummer"].Count < 1)
+                                {
+
                                 }
 
                             }
@@ -206,7 +218,7 @@ namespace TessMVP2.Model
                             {
                                 //oft kommen straße, plz und ort in einer zeile vor
                                 //evtl. mit ^(.*)(?<!\d{5}
-                                var city = new Regex(@"^([\w\-üäöÜÄÖß \.]+)([\d|\d\/\d]+)([ \-| \/| \,|\|]+)?(\d{5})([ \w\-\.]+)$");
+                                var city = new Regex(@"(\d{5})( ?[A-ZÄÖÜ][a-zäöü]+)([\-\/ ])?([A-ZÖÜÄ])?([a-zöüä]+)?");
                                 if (CheckRegEx(city, kvp.Key, _specificStrings))
                                 {
                                     FillStreetCity();
@@ -216,6 +228,7 @@ namespace TessMVP2.Model
                                 {
                                     //negative lookahead => sucht nach nach 5-stelliger Nummer+ws, welche nicht durch andere nummer gefolgt werden darf
                                     city = new Regex(@"(?<![\d|\-])(\d{5})(?![\d])");
+                                    //FillStreetCity = new Regex(@" ");
                                     foreach (string s in _specificStrings)
                                     {
                                         Match match = city.Match(s);
@@ -238,6 +251,7 @@ namespace TessMVP2.Model
         //muss extra wegen der frühen Stellung im Resdict
         private void GetName()
         {
+
             string pattern = @"\@.*";
             if (_resDict["Email"].Count > 1)
             {
@@ -260,16 +274,32 @@ namespace TessMVP2.Model
                 }
                 _resDict["Name"].Add(name);
             }
+
+            //position-1 über "Position"
+            if (_resDict["Position"].Count > 1)
+            {
+                int i;
+                for (i = 0; i < _specificStrings.Count; i++)
+                {
+                    if (_specificStrings[i].ToLower().Contains(_resDict["Position"][0].ToLower()))
+                        break;
+                }
+                if (_resDict["Name"].Count > 1 && _specificStrings[i - 1].ToLower().Contains(_resDict["Name"][0]))
+                {
+                    _resDict["Name"].Add(_specificStrings[i - 1]);
+                }
+            }
         }
 
         private void FillStreetCity()
         {
-            var street = new Regex(@"^([\w\-üäöÜÄÖß \.]+)([\d|\d\/\d]+)");
-            CheckRegEx(street, "Strasse", _resDict["Ort"]);
+            //patter wie Asdfs 45 (/3 oder -3)// max vierstellige hausnummer mit einstelligem \d Zusatz
+            var street = new Regex(@"([A-ZÖÄÜ][a-züäöß\- ]+\.? )(\d{1,4})([\/|\-]\d)?");
             var plz = new Regex(@"(\d{5})");
-            CheckRegEx(plz, "Postleitzahl", _resDict["Ort"]);
             var ort = new Regex(@"([a-zA-ZäöüÖÄÜß])([ \w\-]+)$");
+            CheckRegEx(plz, "Postleitzahl", _resDict["Ort"]);
             CheckRegEx(ort, "Ort", _resDict["Ort"]);
+            CheckRegEx(street, "Strasse", _resDict["Ort"]);
             _resDict["Ort"][0] = _resDict["Ort"][0].Trim();
             _resDict["Ort"][0] = _resDict["Ort"][0].Replace("0", "o");
         }
@@ -305,7 +335,8 @@ namespace TessMVP2.Model
                 Match match = reg.Match(searchList[i]);
                 if (match.Success)
                 {
-                    if(!didMatch)
+                    //bei vorherigen/mehreren Treffern
+                    if (!didMatch && !DoesExist(match.Value))
                         _resDict[field].Clear();
                     _resDict[field].Add(match.Value);
                     didMatch = true;
@@ -314,6 +345,20 @@ namespace TessMVP2.Model
                 }
             }
             return didMatch;
+        }
+
+        private bool DoesExist(string match)
+        {
+            bool exists = false;
+            foreach (var kvp in _resDict)
+            {
+                if (kvp.Value.Count > 0 && kvp.Value[0] == match)
+                {
+                    exists = true;
+                    break;
+                }
+            }
+            return exists;
         }
 
 

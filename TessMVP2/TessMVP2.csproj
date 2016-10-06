@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CleanUpTempfolder.cs" />
     <Compile Include="Model\EditImage.cs" />
     <Compile Include="Model\FujiFolderObs.cs" />
     <Compile Include="Model\Interfaces\IFujiModel.cs" />

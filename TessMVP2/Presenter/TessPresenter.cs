@@ -17,18 +17,22 @@ namespace TessMVP2.Presenter
         private IMyModel _model;
         private IMyViewFormFieldControl _view2;
         private IViewFormYesNoCancel _view4;
+        public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
+        public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
+
 
         public object View1 { get { return _view1; } }
         public object View2 { get { return _view2; } }
-        
         public object View4 { get { return _view4; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
         private ProcessUserResults _processUserInput;
-        public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
-        public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
+        private FujiFolderObs _fuji;
+        private string _fujiFolder;
+        private string _fujiFormat;
+        private EditImage _imgEdit;
 
         public TessPresenter()
         {
@@ -38,6 +42,9 @@ namespace TessMVP2.Presenter
             TessMainModel model = new TessMainModel();
             this._model = model;
             AttachView1Events();
+            // kann auch aus Eingabe kommen
+            this._fujiFolder = @"/temp";
+            this._fujiFormat = "*jpg";
         }
 
         private void AttachView1Events()
@@ -48,6 +55,7 @@ namespace TessMVP2.Presenter
             this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
             this._view1.TsiFuji.Click += (sender, e) => OnFujitsuClick();
             this._view1.TsiWia.Click += (sender, e) => OnWiaClick();
+            this._view1.Form1.FormClosing += (sender, e) => OnForm1Closing();
         }
 
         private void AttachView2Events()
@@ -80,7 +88,7 @@ namespace TessMVP2.Presenter
 
         public void OnButton3Click()
         {
-            //
+            
 
         }
 
@@ -89,8 +97,8 @@ namespace TessMVP2.Presenter
             var parent = _view1.TsiFuji.OwnerItem as ToolStripMenuItem;
             ((ToolStripDropDownMenu)parent.DropDown).ShowCheckMargin = true;
             ((ToolStripDropDownMenu)parent.DropDown).ShowImageMargin = true;
-            FujiFolderObs fuji = new FujiFolderObs(this);
-            fuji.FSW.SynchronizingObject = _view1.Form1;
+            this._fuji = new FujiFolderObs(this,_fujiFolder,_fujiFormat);
+            _fuji.FSW.SynchronizingObject = _view1.Form1;
 
         }
 
@@ -110,6 +118,11 @@ namespace TessMVP2.Presenter
             {
                 MessageBox.Show(ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void OnForm1Closing()
+        {
+            CleanUpTempfolder.Cleanup();
         }
         private void OnForm1Closed()
         {
@@ -184,10 +197,12 @@ namespace TessMVP2.Presenter
 
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)
         {
-            _model.ImgPath = e.FullPath;
+            _fuji.Detach(this);
+            this._imgEdit = new EditImage();
+            _imgEdit.BildSW(e.FullPath);
+            _model.ImgPath = _imgEdit.NewFilepath;
             _model.Start(this);
-            EditImage.BildSW(e.FullPath);
-            //MessageBox.Show(e.Name+" "+e.FullPath);
+            _fuji.Attach(this);
         }
     }
 }
