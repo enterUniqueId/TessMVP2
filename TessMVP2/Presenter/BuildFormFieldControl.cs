@@ -32,26 +32,29 @@ namespace TessMVP2.Presenter
 
             foreach (KeyValuePair<string, List<string>> kvp in this._resDict)
             {
-                var gb = new GroupBox();
-                gb.Name = "gb" + kvp.Key;
-                //SetDefaultGBoxProps(gb);
-                var newLabel = new Label();
-                SetLabelProps(newLabel);
-                newLabel.Name = "F2lbl" + kvp.Key;
-                newLabel.Text = kvp.Key;
-                var newTextbox = new TextBox();
-                SetTextboxProps(newTextbox);
-                newTextbox.Name = "F2tb" + kvp.Key;
-                if (kvp.Value.Count > 0)
+                if (kvp.Key != "EntryID")
                 {
-                    newTextbox.Text = kvp.Value[0];
+                    var gb = new GroupBox();
+                    gb.Name = "gb" + kvp.Key;
+                    //SetDefaultGBoxProps(gb);
+                    var newLabel = new Label();
+                    SetLabelProps(newLabel);
+                    newLabel.Name = "F2lbl" + kvp.Key;
+                    newLabel.Text = kvp.Key;
+                    var newTextbox = new TextBox();
+                    SetTextboxProps(newTextbox);
+                    newTextbox.Name = "F2tb" + kvp.Key;
+                    if (kvp.Value.Count > 0)
+                    {
+                        newTextbox.Text = kvp.Value[0];
+
+                    }
+                    newFlowPanel.Controls.Add(gb);
+                    gb.Controls.Add(newTextbox);
+                    gb.Controls.Add(newLabel);
+
 
                 }
-                newFlowPanel.Controls.Add(gb);
-                gb.Controls.Add(newTextbox);
-                gb.Controls.Add(newLabel);
-                
-
             }
             var newRichTextBox = new RichTextBox();
             SetDefaultRTBoxProps(newRichTextBox, newFlowPanel);

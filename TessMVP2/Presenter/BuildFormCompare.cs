@@ -17,12 +17,13 @@ namespace TessMVP2.Presenter
         private TessPresenter _mainPresenter;
         private FormCompareContacts _formObject;
         private Image _imgChecked;
+        private Dictionary<string, string> _conformities;
         private Dictionary<string, string> _newContactDict;
         public FormCompareContacts FormCompareContacts { get { return this._formObject; } private set { this._formObject = value; } }
         private Dictionary<string, string> _oldContactDict;
 
 
-        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, TessPresenter presenter)
+        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, TessPresenter presenter, Dictionary<string, string> conforms)
         {
             var view = new FormCompareContacts();
             this._view3 = view;
@@ -34,6 +35,7 @@ namespace TessMVP2.Presenter
             this._newContactDict.Remove("EntryID");
             string imgFile = Environment.CurrentDirectory + "\\img\\chk2.png";
             this._imgChecked = Image.FromFile(imgFile);
+            this._conformities= conforms;
             
             AddControls();
             _mainPresenter.ViewForm3 = this._view3;
@@ -43,7 +45,7 @@ namespace TessMVP2.Presenter
         {
             this._formObject.AutoSize = true;
             this._formObject.AutoSizeMode = AutoSizeMode.GrowOnly;
-            this._formObject.Text = "Redundanter Eintrag";  //besseren Text finden
+            this._formObject.Text = "Übereinstimmung gefunden";
             //this._formObject.Width = fp.Width;
             //this._formObject.Height = fp.Height;
         }
@@ -51,7 +53,7 @@ namespace TessMVP2.Presenter
         private void AddControls()
         {
             var fp = new FlowLayoutPanel();
-           
+
             _formObject.Controls.Add(fp);
             AddControlsToPanel(fp);
             SetFpanProps(fp);
@@ -60,7 +62,7 @@ namespace TessMVP2.Presenter
 
         private void visibility(FlowLayoutPanel fp)
         {
-            foreach(Control pan in fp.Controls)
+            foreach (Control pan in fp.Controls)
             {
                 pan.BringToFront();
                 foreach (Control c in pan.Controls)
@@ -70,7 +72,7 @@ namespace TessMVP2.Presenter
 
         private void AddControlsToPanel(FlowLayoutPanel fpan)
         {
-            
+
             var lblList = new List<Label>();
             var tbList = new List<TextBox>();
             foreach (var kvp in _oldContactDict)
@@ -88,7 +90,7 @@ namespace TessMVP2.Presenter
                 var tb = new TextBox();
                 string sr = kvp.Value;
                 if (kvp.Value == null)
-                    sr= "";
+                    sr = "";
                 SetTbProps(tb, kvp.Key, sr);
                 tbList.Add(tb);
             }
@@ -96,15 +98,20 @@ namespace TessMVP2.Presenter
             for (int i = 0; i < lblList.Count; i++)     //#############eigentliches adden
             {
                 var pan = new Panel();
+                SetPanProps(pan);
                 pan.Controls.Add(lblList[i]);
                 
                 var pbox = new PictureBox();
                 SetPboxProps(pbox, lblList[i]);
                 pan.Controls.Add(pbox);
+                lblList[i].MaximumSize = pan.Size - pbox.Size;
                 if (i < tbList.Count)
+                {
+                    tbList[i].MaximumSize = new Size(pan.Width - 15, pan.Height);
                     pan.Controls.Add(tbList[i]);
+                    PaintPanel(tbList[i]);
+                }
                 
-                SetPanProps(pan);
                 fpan.Controls.Add(pan);
             }
 
@@ -113,10 +120,10 @@ namespace TessMVP2.Presenter
             SetPanProps(btnPan);
             //btnPan.Margin = new Padding(0, 0, 0, 30);
             _view3.BtnUpdate = new Button();
-            
+
             //fpan.Controls.Add(_view3.BtnUpdate);
             _view3.BtnCreateNew = new Button();
-            
+
             //fpan.Controls.Add(_view3.BtnCreateNew);
             _view3.BtnCancel = new Button();
 
@@ -130,6 +137,16 @@ namespace TessMVP2.Presenter
             SetButtonProps(_view3.BtnCancel, "Cancel", btnPan);
 
             fpan.Controls.Add(btnPan);
+        }
+
+        private void PaintPanel(TextBox tb)
+        {
+            Panel pan = tb.Parent as Panel;
+            foreach(var kvp in _conformities)
+            {
+                if (kvp.Value == tb.Text)
+                    pan.BackColor = Color.AliceBlue;
+            }
         }
 
         private void SetTbProps(TextBox aTb, string aTbName, string aTbText)
@@ -154,7 +171,7 @@ namespace TessMVP2.Presenter
             aLabel.Name = "lbl" + lblName;
             aLabel.Text = lblName + ": " + dictVal;
             aLabel.AutoSize = true;
-            aLabel.MinimumSize = new Size(120,20);
+            aLabel.MinimumSize = new Size(120, 20);
             aLabel.Margin = new Padding(10);
             aLabel.Dock = DockStyle.None;
             aLabel.Location = new Point(9, 35);
@@ -166,9 +183,9 @@ namespace TessMVP2.Presenter
             btn.AutoSize = true;
             btn.Dock = DockStyle.None;
             int xloc = (int)(parent.Width / 2 - btn.Width / 2);
-            int yloc = (int)(parent.Height / 3 - btn.Height/ parent.Controls.Count) * parent.Controls.Count;
+            int yloc = (int)(parent.Height / 3 - btn.Height / parent.Controls.Count) * parent.Controls.Count;
             //btn.Margin = new Padding(padlr, 15, padlr, 0);
-            btn.Location = new Point(xloc,yloc);
+            btn.Location = new Point(xloc, yloc);
         }
 
         private void SetContextmenuItems(ContextMenu cm, string currentItem)
@@ -191,7 +208,7 @@ namespace TessMVP2.Presenter
                 }
             }
             string sr = currentItem.Replace("-", "");
-            cm.Name = "F3Cm"+sr;
+            cm.Name = "F3Cm" + sr;
         }
 
         private void SetPboxProps(PictureBox pb, Label lbl)
@@ -200,13 +217,15 @@ namespace TessMVP2.Presenter
             pb.SizeMode = PictureBoxSizeMode.AutoSize;
             pb.Location = new Point(lbl.Location.X + lbl.Width, lbl.Location.Y - (pb.Height - lbl.Height));
             pb.Margin = new Padding(30, 0, 0, 0);
+            pb.Name = lbl.Name.Substring(3);
             pb.Dock = DockStyle.None;
+            pb.Hide();
         }
 
         private void SetPanProps(Panel pan)
         {
             pan.MinimumSize = new Size(280, 120);
-            pan.AutoSize = true;
+            //pan.AutoSize = true;
             pan.Visible = true;
             pan.BorderStyle = BorderStyle.Fixed3D;
         }
@@ -215,7 +234,7 @@ namespace TessMVP2.Presenter
         {
             fpan.FlowDirection = FlowDirection.TopDown;
             fpan.Margin = new Padding(10);
-            fpan.MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width-100, Screen.PrimaryScreen.Bounds.Height-200);
+            fpan.MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width - 100, Screen.PrimaryScreen.Bounds.Height - 200);
             fpan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             fpan.AutoSize = true;
             fpan.Dock = DockStyle.Fill;

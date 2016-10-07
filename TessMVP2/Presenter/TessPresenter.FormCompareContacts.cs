@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using TessMVP2.Presenter.Interfaces;
 using TessMVP2.View.Interfaces;
 using System.Windows.Forms;
@@ -25,41 +26,47 @@ namespace TessMVP2.Presenter
             this._view3.BtnCreateNew.Click += (sender, e) => OnButtonCreateNewContactClick();
             this._view3.BtnCancel.Click += (sender, e) => OnButtonCancelCompareClick();
             WireView3ContextMenus();
+
         }
 
         private void WireView3ContextMenus()
         {
-            
+
             foreach (Control c in _clist)
             {
                 if (c.GetType() == typeof(Label))
                 {
-                    if (c.ContextMenu.MenuItems.Count < 11)
+                    for (int i = 0; i < c.ContextMenu.MenuItems.Count; i++)
                     {
-                        c.ContextMenu.MenuItems[0].Click += new EventHandler (OnCmTelClick);
-                        c.ContextMenu.MenuItems[1].Click += new EventHandler(OnCmTel2Click);
-                        c.ContextMenu.MenuItems[2].Click += new EventHandler(OnCmMobilClick);
-                        c.ContextMenu.MenuItems[3].Click += new EventHandler(OnCmFaxClick);
+                        c.ContextMenu.MenuItems[i].Click += new EventHandler(OnCmClick);
                     }
-                    else
-                    {
-                        c.ContextMenu.MenuItems[0].Click += new EventHandler(OnCmNameClick);
-                        c.ContextMenu.MenuItems[1].Click += new EventHandler(OnCmStrasseClick);
-                        c.ContextMenu.MenuItems[2].Click += new EventHandler(OnCmPlzClick);
-                        c.ContextMenu.MenuItems[3].Click += new EventHandler(OnCmOrtClick);
-                        c.ContextMenu.MenuItems[4].Click += new EventHandler(OnCmPostfachClick);
-                        c.ContextMenu.MenuItems[5].Click += new EventHandler(OnCmPosClick);
-                        c.ContextMenu.MenuItems[6].Click += new EventHandler(OnCmInetClick);
-                        c.ContextMenu.MenuItems[7].Click += new EventHandler(OnCmFirmaClick);
-                        c.ContextMenu.MenuItems[8].Click += new EventHandler(OnCmEmailClick);
-                        c.ContextMenu.MenuItems[9].Click += new EventHandler(OnCmEmail2Click);
-                        c.ContextMenu.MenuItems[10].Click += new EventHandler(OnCmEmail3Click);
-                    }
+                }
+                if (c.GetType() == typeof(TextBox))
+                {
+                    c.TextChanged += new EventHandler(OnTbTextChanged);
                 }
             }
         }
 
-        private void SetupContextEvent(object sender,string tbName)
+        private void OnTbTextChanged(object sender, EventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            tb.Size = TbAutosize(tb);
+        }
+
+        private Size TbAutosize(TextBox tb)
+        {
+            Size size = TextRenderer.MeasureText(tb.Text, tb.Font);
+            return size;
+        }
+
+        private void OnCmClick(object sender, EventArgs e)
+        {
+            //contextmenu
+            SetupContextEvent(sender);
+        }
+
+        private void SetupContextEvent(object sender)
         {
             var lbl = new Label();
             MenuItem item = sender as MenuItem;
@@ -69,109 +76,46 @@ namespace TessMVP2.Presenter
                 if (owner != null)
                 {
                     lbl = owner.SourceControl as Label;
-
                 }
             }
-            foreach (Control c in _clist)
+
+            Panel pan = lbl.Parent as Panel;
+            pan.BackColor = SystemColors.Control;
+            PictureBox pb = new PictureBox();
+            foreach (Control c in pan.Controls)
             {
-                if (c.Name == tbName && c is TextBox)
+                if (c.GetType() == typeof(TextBox))
                 {
-                    lbl.Text = c.Text;
-                    break;
+                    string sr = lbl.Text.Substring(0, lbl.Text.IndexOf(":") + 1);
+                    lbl.Text = sr + c.Text;
+                }
+
+                if (c.GetType() == typeof(PictureBox))
+                {
+                    pb = c as PictureBox;
+                    c.Show();
                 }
             }
-        }
-
-        private void OnCmTelClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbTelefon-Nummer");
-        }
-
-        private void OnCmTel2Click(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbTelefon-Nummer2");
-        }
-
-        private void OnCmMobilClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbMobil-Nummer");
-        }
-
-        private void OnCmFaxClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbFax-Nummer");
-        }
-
-        private void OnCmNameClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbName");
-        }
-
-        private void OnCmStrasseClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbStrasse");
-        }
-
-        private void OnCmOrtClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbOrt");
-        }
-
-        private void OnCmPlzClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbPostleitzahl");
-        }
-
-        private void OnCmPostfachClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbPostfach");
-        }
-
-        private void OnCmPosClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbPosition");
-        }
-
-        private void OnCmInetClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbInet");
-        }
-
-        private void OnCmFirmaClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbFirma");
-        }
-
-        private void OnCmEmailClick(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbEmail");
-        }
-
-        private void OnCmEmail2Click(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbEmail2");
-        }
-
-        private void OnCmEmail3Click(object sender, EventArgs e)
-        {
-            SetupContextEvent(sender, "TbEmail3");
+            pb.Location = new Point(lbl.Width + 25, lbl.Location.Y - (pb.Height - lbl.Height));
         }
 
         private void OnButtonUpdateForm3Click()
         {
             _processUserInput.Clist = this._clist;
             _processUserInput.ResDict.Clear();
-            _processUserInput.GetInputs(true,true,3);
+            _processUserInput.GetInputs(true, true, 3);
             this._inputResults = _processUserInput.ResDict;
             this._inputResults.Add("EntryID", _outlook.EntryID);
             _outlook.UpdateExistingContact(_inputResults);
             _view3.Form3.Close();
+            _view2.Form2.Close();
         }
 
         private void OnButtonCreateNewContactClick()
         {
             this._outlook.CreateContact();
             _view3.Form3.Close();
+            _view2.Form2.Close();
         }
     }
 }

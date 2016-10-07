@@ -21,7 +21,7 @@ namespace TessMVP2.Model
                 {"Ort", new List<string> {"|dummy|" } },
                 {"Postfach", new List<string> {"postfach" } },
                 {"Position", new List<string> {"einkauf","marketing","business","personal","abteilung","leiter","department","management","consultant","logistik","developer" } },
-                {"Inet", new List<string> {"www.", "http://","https://" } },
+                {"Inet", new List<string> {"www.", "http://","https://","Internet" } },
                 {"Firma", new List<string> {"GmBH","AG","Co. KG","oHG","ltd","corp" } },
                 {"Email", new List<string> {"e-mail","mail" } },
                 {"Email2", new List<string> {"|dummy|"} },

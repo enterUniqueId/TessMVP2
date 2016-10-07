@@ -112,7 +112,6 @@ namespace TessMVP2.Presenter
             try
             {
                 _view1.RichTextBoxText = _model.OcrResult;
-
             }
             catch (Exception ex)
             {
@@ -127,7 +126,7 @@ namespace TessMVP2.Presenter
         private void OnForm1Closed()
         {
             Application.Exit();
-            Environment.Exit(0);
+            //Environment.Exit(0);
         }
 
         private void OnForm2Closed()
@@ -160,7 +159,7 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this);
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this, _outlook.Hits);
             this._clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
             AttachView3Events();
             _view3.Form3.ShowDialog();
@@ -199,7 +198,7 @@ namespace TessMVP2.Presenter
         {
             _fuji.Detach(this);
             this._imgEdit = new EditImage();
-            _imgEdit.BildSW(e.FullPath);
+            _imgEdit.ImgBW(e.FullPath);
             _model.ImgPath = _imgEdit.NewFilepath;
             _model.Start(this);
             _fuji.Attach(this);

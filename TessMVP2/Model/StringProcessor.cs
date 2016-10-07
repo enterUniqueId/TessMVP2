@@ -44,13 +44,14 @@ namespace TessMVP2.Model
 
             for (int i = 0; i < _specificStrings.Count; i++)
             {
+                //strings korrigieren und reinigen
+                //œ
                 _specificStrings[i] = _specificStrings[i].Replace("æ", "es");
                 _specificStrings[i] = _specificStrings[i].Replace(":", "");
                 _specificStrings[i] = _specificStrings[i].Replace(";", "");
                 foreach (KeyValuePair<string, string> kvp in emailReplaceList)
                 {
-                    sr = _specificStrings[i].Replace(kvp.Key, kvp.Value);
-                    _specificStrings[i] = sr;
+                    _specificStrings[i] = _specificStrings[i].Replace(kvp.Key, kvp.Value);
                 }
             }
         }
@@ -70,8 +71,9 @@ namespace TessMVP2.Model
                     {
                         if (_specificStrings[j].ToLower().Contains(searchValue))
                         {
-                            //bezeichnung aus ergebnisstrin entfernen
-                            _specificStrings[j] = _specificStrings[j].ToLower().Replace(searchValue, "");
+                            if (kvp.Key != "Inet" && kvp.Key != "Position")
+                                //bezeichnung aus ergebnisstrin entfernen
+                                _specificStrings[j] = _specificStrings[j].ToLower().Replace(searchValue, "");
                             _resDict[kvp.Key].Add(_specificStrings[j]);
                             // MessageBox.Show(sr + " <-kartenstring  " + kvp.Key);
                         }
@@ -144,12 +146,18 @@ namespace TessMVP2.Model
                                 {
 
                                 }
-
                             }
                             break;
                         }
                     case "inet":  //
                         {
+                            //foreach (var vals in kvp.Value)
+                            for (int i = kvp.Value.Count - 1; i >= 0; i--)
+                                if (kvp.Value[i].Contains("internet"))
+                                {
+                                    kvp.Value[i]=kvp.Value[i].Replace("internet", "");
+                                    kvp.Value[i]=kvp.Value[i].Replace(": ", "");
+                                }
                             var inet = new Regex(@"^(w{3}\.|https?:\/{2}).*(\.[a-z]{2,4})$");
                             if (kvp.Value.Count > 0)
                             {
@@ -165,10 +173,11 @@ namespace TessMVP2.Model
                         {
                             if (kvp.Value.Count > 0)
                             {   //versuche firma aus inet addresse ziehen       
-                                string inetReplacePattern = @"^(.*w{3}\.|https?:\/{2})";
+                                string inetReplacePattern = @"^(.*w{3}\.|.*https?:\/{2})";
                                 if (_resDict["Inet"].Count >= 0 && (CrossCompare("Inet", kvp.Value, inetReplacePattern) >= 0))
                                 {
-                                    inetReplacePattern = @"(\.[a-z]+)$";
+                                    //failed bei subdomains
+                                    inetReplacePattern = @"(\.[a-z]+)";
                                     int res = CrossCompare("Inet", kvp.Value, inetReplacePattern);
                                     if (res >= 0)
                                     {
@@ -181,10 +190,10 @@ namespace TessMVP2.Model
                                 {
                                     //versuche firma aus email-domain zu ziehen
                                     string emailReplacePattern = @"^(.*\@)";
-                                    if (_resDict["E-Mail"].Count >= 0 && CrossCompare("E-Mail", kvp.Value, emailReplacePattern) >= 0)
+                                    if (_resDict["Email"].Count >= 0 && CrossCompare("Email", kvp.Value, emailReplacePattern) >= 0)
                                     {
                                         emailReplacePattern = @"(\.[a-z]+)$";
-                                        int res = CrossCompare("E-Mail", kvp.Value, emailReplacePattern);
+                                        int res = CrossCompare("Email", kvp.Value, emailReplacePattern);
                                         if (res >= 0)
                                         {
                                             string resString = _resDict["Firma"][res];
@@ -216,12 +225,12 @@ namespace TessMVP2.Model
                             //wenn nicht komplett mit dem spezifischen RegEx suchen
                             else
                             {
-                                //oft kommen straße, plz und ort in einer zeile vor
-                                //evtl. mit ^(.*)(?<!\d{5}
+                                //orientierung an plz; dann plz+rest
                                 var city = new Regex(@"(\d{5})( ?[A-ZÄÖÜ][a-zäöü]+)([\-\/ ])?([A-ZÖÜÄ])?([a-zöüä]+)?");
                                 if (CheckRegEx(city, kvp.Key, _specificStrings))
                                 {
-                                    FillStreetCity();
+                                    var plz = new Regex(@"(\d{5})");
+                                    CheckRegEx(plz,"Postleitzahl", kvp.Value);
 
                                 }
                                 else
@@ -253,40 +262,46 @@ namespace TessMVP2.Model
         {
 
             string pattern = @"\@.*";
-            if (_resDict["Email"].Count > 1)
+            if (_resDict["Email"].Count >= 1)
             {
+                //hinteren Teil der email Adresse entfernen
                 string name = Regex.Replace(_resDict["Email"][0], pattern, "");
+                //alles bis zum Punkt entfernen(meistens vorname oder abk. vorname);
                 string name2 = Regex.Replace(name, @".*\.", "");
                 name = name.Replace(".", " ");
                 foreach (var sr in _specificStrings)
                 {
-                    if (sr.ToLower().Contains(name) && !sr.Contains("@"))
+                    if (sr.ToLower().Contains(name.ToLower()) && !sr.Contains("@"))
                     {
                         name = sr;
                         break;
                     }
-                    else if (sr.ToLower().Contains(name2) && !sr.Contains("@"))
+                    else if (sr.ToLower().Contains(name2.ToLower()) && !sr.Contains("@"))
                     {
                         name = sr;
                         break;
-
                     }
                 }
+                //mindestens der Treffer aus der email wird übernommen
                 _resDict["Name"].Add(name);
             }
-
-            //position-1 über "Position"
-            if (_resDict["Position"].Count > 1)
+            // wenn keine email vorhanden ist/gefunden wurde, versuchen über die Position auf der Visitenkarte den Namen zu finden
+            //oft steht der Name über der "Position" in der Firma
+            else
             {
-                int i;
-                for (i = 0; i < _specificStrings.Count; i++)
+                //position-1 über "Position"
+                if (_resDict["Position"].Count >= 1)
                 {
-                    if (_specificStrings[i].ToLower().Contains(_resDict["Position"][0].ToLower()))
-                        break;
-                }
-                if (_resDict["Name"].Count > 1 && _specificStrings[i - 1].ToLower().Contains(_resDict["Name"][0]))
-                {
-                    _resDict["Name"].Add(_specificStrings[i - 1]);
+                    int i;
+                    for (i = 0; i < _specificStrings.Count; i++)
+                    {
+                        if (_specificStrings[i].ToLower().Contains(_resDict["Position"][0].ToLower()))
+                            break;
+                    }
+                    if (_resDict["Name"].Count > 1 && _specificStrings[i - 1].ToLower().Contains(_resDict["Name"][0]))
+                    {
+                        _resDict["Name"].Add(_specificStrings[i - 1]);
+                    }
                 }
             }
         }
@@ -312,9 +327,10 @@ namespace TessMVP2.Model
             {
                 foreach (string sr in _resDict[dictField])
                 {
+                    stringsToCompare[i] = Regex.Replace(stringsToCompare[i], replacePattern, "");
                     if (sr.Contains(stringsToCompare[i]))
                     {
-                        stringsToCompare[i] = Regex.Replace(stringsToCompare[i], replacePattern, "");
+                        
                         replaced = true;
                         break;
                     }

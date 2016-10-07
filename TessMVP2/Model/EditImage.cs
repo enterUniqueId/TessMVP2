@@ -17,11 +17,11 @@ namespace TessMVP2.Model
     class EditImage
     {
         private string _newFilepath;
-        public string NewFilepath { get{ return this._newFilepath; }set { this._newFilepath = value; } }
+        public string NewFilepath { get { return this._newFilepath; } set { this._newFilepath = value; } }
         private FujiFolderObs _fuji;
 
 
-        //https://dotnet-snippets.de/snippet/bitmap-in-graustufen-wandeln/70*/
+        //https://dotnet-snippets.de/snippet/bitmap-in-graustufen-wandeln/70
 
         public void BildSW(string file)
         {
@@ -38,9 +38,10 @@ namespace TessMVP2.Model
 
             for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                tmpSW = (int)(rgbValues[counter]*0.3);
-                tmpSW += (int)(rgbValues[counter + 1]*0.59);
-                tmpSW += (int)(rgbValues[counter + 2]*0.11);
+                //farbwerte angepasst
+                tmpSW = (int)(rgbValues[counter] * 0.3);
+                tmpSW += (int)(rgbValues[counter + 1] * 0.59);
+                tmpSW += (int)(rgbValues[counter + 2] * 0.11);
 
                 //tmpSW /= 3;
 
@@ -49,7 +50,10 @@ namespace TessMVP2.Model
 
             Marshal.Copy(rgbValues, 0, ptr, numBytes);
             bmp.UnlockBits(bmpData);
+        }
 
+        private void EncodeAndSave(string file, Bitmap bmp)
+        {
             var anEncoder = System.Drawing.Imaging.Encoder.Quality;
             //Zielformat
             ImageCodecInfo aImageCodecInfo = GetEncoderInfo("image/jpeg");
@@ -80,6 +84,41 @@ namespace TessMVP2.Model
                     return encoders[j];
             }
             return null;
+        }
+
+        //http://stackoverflow.com/questions/2746103/what-would-be-a-good-true-black-and-white-colormatrix
+        public void ImgBW(string file)
+        {
+            try
+            {
+                Image img = Image.FromFile(file);
+                Bitmap sourceImage = new Bitmap(img);
+
+                using (Graphics gr = Graphics.FromImage(sourceImage)) // SourceImage is a Bitmap object
+                {
+                    //graustufen
+                    var gray_matrix = new float[][] {
+                new float[] { 0.299f, 0.299f, 0.299f, 0, 0 },
+                new float[] { 0.587f, 0.587f, 0.587f, 0, 0 },
+                new float[] { 0.114f, 0.114f, 0.114f, 0, 0 },
+                new float[] { 0,      0,      0,      1, 0 },
+                new float[] { 0,      0,      0,      0, 1 }
+            };
+
+                    var ia = new ImageAttributes();
+                    ia.SetColorMatrix(new ColorMatrix(gray_matrix));
+                    float d = (float)0.85;
+                    //durch Schwellenwert S/W
+                    ia.SetThreshold(d);
+                    var rc = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
+                    gr.DrawImage(sourceImage, rc, 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel, ia);
+                    EncodeAndSave(file, sourceImage);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Ein Fehler im Bildformat ist aufgetreten. Scannen Sie das Bild bitte erneut ein.");
+            }
         }
     }
 }

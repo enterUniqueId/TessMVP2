@@ -38,16 +38,6 @@ namespace TessMVP2.Model
             return clist;
         }
 
-        public void testclist(List<Control> clist)
-        {
-            string testout = "";
-            foreach (Control c in clist)
-            {
-                testout += c.ToString() + "\n";
-            }
-            MessageBox.Show(testout);
-        }
-
         public void GetInputs(bool hasClist = false, bool isUpdate = false, int subStrIndex = 4)
         {
             var clist = new List<Control>();
@@ -71,7 +61,6 @@ namespace TessMVP2.Model
                         if (k != "")
                         {
                             _resDict.Add(c.Name.Substring(subStrIndex), k);
-
                         }
                     }
                     else if (c.GetType() == typeof(RichTextBox))
@@ -91,6 +80,7 @@ namespace TessMVP2.Model
                     }
                 }
             }
+            //Update
             else
             {
                 foreach (Control c in clist)
@@ -108,18 +98,7 @@ namespace TessMVP2.Model
                         }
                     }
                 }
-                //test();
             }
-        }
-
-        private void test()
-        {
-            string outp = "";
-            foreach (var kvp in _resDict)
-            {
-                outp += kvp.Key + "=>" + kvp.Value + "\n";
-            }
-            MessageBox.Show(outp);
         }
 
     }

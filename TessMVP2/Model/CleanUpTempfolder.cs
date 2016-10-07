@@ -25,7 +25,6 @@ namespace TessMVP2.Model
                 File.Delete(filename.ToString());
                 i++;
             }
-            MessageBox.Show(sr);
         }
     }
 }

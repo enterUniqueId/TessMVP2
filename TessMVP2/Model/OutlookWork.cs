@@ -14,14 +14,14 @@ namespace TessMVP2.Model
     public class OutlookWork : TessMainModel
     {
         private Dictionary<string, string> _resultDict;
-        private List<string> _hits;
+        private Dictionary<string, string> _hits;
         private List<Dictionary<string, string>> _outlookContacts;
         private int _currentContact;
         private string _entryID;
         public string EntryID { get { return this._entryID; } set { this._entryID = value; } }
         public Dictionary<string, string> ResultDict { get { return this._resultDict; } }
         public List<Dictionary<string, string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
-        public List<string> Hits { get { return this._hits; } private set { this._hits = value; } }
+        public Dictionary<string,string> Hits { get { return this._hits; } private set { this._hits = value; } }
         public int CurrentContact { get { return this._currentContact; } }
 
         public delegate void DuplicateHitHandler(object sender, EventArgs e);
@@ -32,7 +32,7 @@ namespace TessMVP2.Model
         {
             this._resultDict = new Dictionary<string, string>();
             this._resultDict = inputResults;
-            this.Hits = new List<string>();
+            this.Hits = new Dictionary<string, string>();
             Attach(callback);
             NormalizeResultDict();
         }
@@ -58,26 +58,11 @@ namespace TessMVP2.Model
             var outlookApplication = new ApplicationClass();  //outlook interop einbetten false; wie bei WIA
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            // int i;
             foreach (ContactItem cont in contacts.Items)
             {
                 OutlookContacts.Add(BuildOlDict(cont));
             }
             CheckContact();
-        }
-
-        private void test()
-        {
-            string contactData = "";
-            foreach (Dictionary<string, string> di in OutlookContacts)
-            {
-                foreach (var kvp in di)
-                {
-                    contactData += kvp.Value + " | ";
-                }
-                MessageBox.Show(contactData);
-                contactData = "";
-            }
         }
 
         public void CreateContact()
@@ -218,7 +203,6 @@ namespace TessMVP2.Model
         {
             bool hit = false;
             bool hitonce = false;
-            var hits = new List<string>();
             for (int i = 0; i < OutlookContacts.Count; i++)
             {
                 hit = false;
@@ -228,20 +212,26 @@ namespace TessMVP2.Model
                     {
                         if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
                         {
-                            hits.Add(kvp.Value);
-                            hit = true;
-                            hitonce = true;
+                            //nicht eindeutige Merkmale werden nicht herangezogen
+                            if (kvp.Key != "Homepage" || kvp.Key != "Firma" || kvp.Key != "Position" || kvp.Key != "Postleitzahl" || 
+                                kvp.Key != "Fax" || kvp.Key != "Ort" || kvp.Key != "Strasse")
+                            {
+                                _hits.Add(kvp.Key, kvp.Value);
+                                hit = true;
+                                hitonce = true;
+                            }
                         }
                     }
                 }
                 if (hit)
                 {
-                    Evalhits(hits, i, OutlookContacts[i]);
+                    //Evalhits(hits, i, OutlookContacts[i]);
                     this._entryID = OutlookContacts[i]["EntryID"];
+                    _currentContact = i;
                     if (this.DuplicateHit != null)
                         this.DuplicateHit(this, EventArgs.Empty);
                 }
-                hits.Clear();
+                _hits.Clear();
             }
             DuplicateHit = null;
             if (!hitonce)
@@ -257,7 +247,7 @@ namespace TessMVP2.Model
                             " (OL-ID: " + oldContact["EntryID"] + "überein.\nDatensatz anzeigen?";
 
             //alter doppelter kontakt muss noch übergeben werden
-            _currentContact = contactID;
+           
             /*
             if (result == DialogResult.Yes)
             {

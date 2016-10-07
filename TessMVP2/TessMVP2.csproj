@@ -66,7 +66,6 @@
     <Compile Include="Model\Scanner.cs" />
     <Compile Include="Presenter\BuildFormFieldControl.cs" />
     <Compile Include="Presenter\BuildFormYesNoCancel.cs" />
-    <Compile Include="Presenter\ControlExtension.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
