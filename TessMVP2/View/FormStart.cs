@@ -2,12 +2,14 @@
 using System.Windows.Forms;
 using TessMVP2.View.Interfaces;
 using System.IO;
+using TessMVP2.Presenter.Interfaces.View;
 
 namespace TessMVP2.View
 {
     public partial class FormStart : Form, IMyViewFormStart
     {
-
+        private string _formStartText;
+        public string FormStartText { get { return this._formStartText; } set { this._formStartText = value; } }
         public Form Form1 { get { return this; } }
 
         public string TextBoxText
@@ -42,44 +44,43 @@ namespace TessMVP2.View
             get
             {
                 var submenu = (ToolStripMenuItem)menuStrip1.Items[0];
-                
+
                 return submenu.DropDown.Items[1];
             }
         }
 
-        public FormStart()
+        public FormStart(IMyPresenterFormStartCallbacks callback)
         {
             InitializeComponent();
-            //button1.Click += (sender, e) => callback.OnButtonClick();
+            Attach(callback);
             textBox1.Text = "cd3.jpg";
             this.Text = "V-scanner";
 
         }
 
-        public void Attach()
+        public void Attach(IMyPresenterFormStartCallbacks callback)
         {
-            //_textBox1.TextChanged += (sender, e) => callback.OnTextChange();
-            //_button1Clicked += (sender, e) => callback.OnButtonClick();
-        }
+            this.button1.Click += (sender, e) => callback.OnButtonClick();
+            this.FormClosed += (sender, e) => callback.OnForm1Closed();
+            this.button2.Click += (sender, e) => callback.OnButton2Click();
+            this.button3.Click += (sender, e) => callback.OnButton3Click();
+            this.TsiFuji.Click += (sender, e) => callback.OnFujitsuClick();
+            this.TsiWia.Click += (sender, e) => callback.OnWiaClick();
+            this.FormClosing += (sender, e) => callback.OnForm1Closing();
+            this.Shown += (sender, e) => callback.OnForm1Shown();
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FormStart_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
 
         }
 
-        private void fujitsuScanSnapSseriesToolStripMenuItem_Click(object sender, EventArgs e)
+        public void Detach(IMyPresenterFormStartCallbacks callback)
         {
-
+            this.button1.Click -= (sender, e) => callback.OnButtonClick();
+            this.FormClosed -= (sender, e) => callback.OnForm1Closed();
+            this.button2.Click -= (sender, e) => callback.OnButton2Click();
+            this.button3.Click -= (sender, e) => callback.OnButton3Click();
+            this.TsiFuji.Click -= (sender, e) => callback.OnFujitsuClick();
+            this.TsiWia.Click -= (sender, e) => callback.OnWiaClick();
+            this.FormClosing -= (sender, e) => callback.OnForm1Closing();
         }
     }
 }

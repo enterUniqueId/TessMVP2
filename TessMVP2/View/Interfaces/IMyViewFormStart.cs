@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TessMVP2.View.Interfaces;
 using System.Windows.Forms;
+using TessMVP2.Presenter.Interfaces.View;
+
 namespace TessMVP2.View.Interfaces
 {
-    public interface IMyViewFormStart
+    public interface IMyViewFormStart:IView<IMyPresenterFormStartCallbacks>
     {
         string TextBoxText { get; set; }
         string RichTextBoxText { get; set; }
@@ -17,6 +19,7 @@ namespace TessMVP2.View.Interfaces
         ToolStripItem TsiFuji { get; }
         ToolStripItem TsiWia { get; }
         Form Form1 { get; }
+        string FormStartText { get; set; }
         
         
     }

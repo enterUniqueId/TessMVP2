@@ -69,6 +69,7 @@
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
+    <Compile Include="Presenter\Interfaces\View\IMyPresenterFormStartCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.FormCompareContacts.cs" />
     <Compile Include="View\FormCompareContacts.cs">
       <SubType>Form</SubType>
@@ -99,7 +100,6 @@
     <Compile Include="Model\TessMainModel.cs" />
     <Compile Include="Model\TessOcr.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterModelCallbacks.cs" />
-    <Compile Include="Presenter\Interfaces\IMyPresenterViewCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -128,6 +128,7 @@
     <EmbeddedResource Include="View\FormYesNoCancel.resx">
       <DependentUpon>FormYesNoCancel.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -193,6 +194,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Presenter\Interfaces\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

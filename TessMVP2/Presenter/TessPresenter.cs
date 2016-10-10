@@ -47,6 +47,11 @@ namespace TessMVP2.Presenter
             this._fujiFormat = "*jpg";
         }
 
+        OnForm1Shown()
+        {
+
+        }
+        [Obsolete]
         private void AttachView1Events()
         {
             this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
