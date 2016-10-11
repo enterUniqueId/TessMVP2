@@ -65,20 +65,18 @@
     <Compile Include="Model\ProcessUserResults.cs" />
     <Compile Include="Model\Scanner.cs" />
     <Compile Include="Presenter\BuildFormFieldControl.cs" />
-    <Compile Include="Presenter\BuildFormYesNoCancel.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
+    <Compile Include="Presenter\Interfaces\View\IPresenterFormFieldControlCallbacks.cs" />
+    <Compile Include="Presenter\TessPresenterFormFieldControl.cs" />
+    <Compile Include="View\BuildFormFieldControl_kopie.cs" />
+    <Compile Include="Presenter\DynamicControlViewModel.cs" />
+    <Compile Include="View\Interfaces\IViewModelFormFieldControl.cs" />
     <Compile Include="Presenter\Interfaces\View\IMyPresenterFormStartCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.FormCompareContacts.cs" />
     <Compile Include="View\FormCompareContacts.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\FormYesNoCancel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\FormYesNoCancel.Designer.cs">
-      <DependentUpon>FormYesNoCancel.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Interfaces\IMyViewFormCompareContacts.cs" />
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
@@ -103,10 +101,8 @@
     <Compile Include="Presenter\TessPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\Interfaces\IMyViewFormFieldControl.cs" />
     <Compile Include="View\Interfaces\IMyViewFormStart.cs" />
     <Compile Include="View\Interfaces\IView.cs" />
-    <Compile Include="View\Interfaces\IViewFormYesNoCancel.cs" />
     <EmbeddedResource Include="View\FormCompareContacts.resx">
       <DependentUpon>FormCompareContacts.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,9 +121,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="View\FormYesNoCancel.resx">
-      <DependentUpon>FormYesNoCancel.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

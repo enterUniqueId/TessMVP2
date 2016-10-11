@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces.View
 {
-    public interface IMyPresenterFormStartCallbacks
+    public interface IMyPresenterFormStartCallbacks:IPresenter
     {
         void OnButtonClick();
         void OnForm1Closed();

@@ -53,7 +53,6 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
@@ -150,7 +149,6 @@
             this.fujitsuScanSnapSseriesToolStripMenuItem.Name = "fujitsuScanSnapSseriesToolStripMenuItem";
             this.fujitsuScanSnapSseriesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.fujitsuScanSnapSseriesToolStripMenuItem.Text = "Fujitsu Scan Snap S-series";
-            this.fujitsuScanSnapSseriesToolStripMenuItem.Click += new System.EventHandler(this.fujitsuScanSnapSseriesToolStripMenuItem_Click);
             // 
             // wIAScannerToolStripMenuItem
             // 
@@ -172,7 +170,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "FormStart";
             this.Text = "Form1";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormStart_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

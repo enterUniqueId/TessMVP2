@@ -8,22 +8,19 @@ using TessMVP2.Model;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using TessMVP2.Presenter.Interfaces.View;
 
 namespace TessMVP2.Presenter
 {
-    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks
+    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks, IMyPresenterFormStartCallbacks
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
-        private IMyViewFormFieldControl _view2;
-        private IViewFormYesNoCancel _view4;
-        public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
-        public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
+        // private IMyViewFormFieldControl _view2;
 
 
         public object View1 { get { return _view1; } }
-        public object View2 { get { return _view2; } }
-        public object View4 { get { return _view4; } }
+        // public object View2 { get { return _view2; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
@@ -34,23 +31,18 @@ namespace TessMVP2.Presenter
         private string _fujiFormat;
         private EditImage _imgEdit;
 
+
         public TessPresenter()
         {
-            FormStart view = new FormStart();
+            FormStart view = new FormStart(this);
             this._view1 = view;
             view.Show();
             TessMainModel model = new TessMainModel();
             this._model = model;
-            AttachView1Events();
-            // kann auch aus Eingabe kommen
             this._fujiFolder = @"/temp";
             this._fujiFormat = "*jpg";
         }
 
-        OnForm1Shown()
-        {
-
-        }
         [Obsolete]
         private void AttachView1Events()
         {
@@ -63,20 +55,6 @@ namespace TessMVP2.Presenter
             this._view1.Form1.FormClosing += (sender, e) => OnForm1Closing();
         }
 
-        private void AttachView2Events()
-        {
-            this._view2.Form2.FormClosing += (sender, e) => OnForm2Closed();
-            this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
-        }
-
-        private void AttachView4Events()
-        {
-            //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
-            this._view4.BtnYes.Click += (sender, e) => OnButtonYesClick();
-            this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
-            this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
-            //this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
-        }
 
         public void OnButtonClick()
         {
@@ -93,23 +71,39 @@ namespace TessMVP2.Presenter
 
         public void OnButton3Click()
         {
-            
+
 
         }
 
-        private void OnFujitsuClick()
+        public void OnFujitsuClick()
         {
             var parent = _view1.TsiFuji.OwnerItem as ToolStripMenuItem;
             ((ToolStripDropDownMenu)parent.DropDown).ShowCheckMargin = true;
             ((ToolStripDropDownMenu)parent.DropDown).ShowImageMargin = true;
-            this._fuji = new FujiFolderObs(this,_fujiFolder,_fujiFormat);
+            this._fuji = new FujiFolderObs(this, _fujiFolder, _fujiFormat);
             _fuji.FSW.SynchronizingObject = _view1.Form1;
 
         }
 
-        private void OnWiaClick()
+        public void OnWiaClick()
         {
 
+        }
+
+        public void OnForm1Closing()
+        {
+            CleanUpTempfolder.Cleanup();
+        }
+
+        public void OnForm1Shown()
+        {
+
+        }
+
+        public void OnForm1Closed()
+        {
+            Application.Exit();
+            //Environment.Exit(0);
         }
 
         public void OnOcrResultChanged()
@@ -124,44 +118,15 @@ namespace TessMVP2.Presenter
             }
         }
 
-        private void OnForm1Closing()
-        {
-            CleanUpTempfolder.Cleanup();
-        }
-        private void OnForm1Closed()
-        {
-            Application.Exit();
-            //Environment.Exit(0);
-        }
-
-        private void OnForm2Closed()
-        {
-            _view1.Form1.Show();
-            _view2.Form2.Dispose();
-            _view2 = null;
-        }
-
-        private void OnButtonCommitClick()
-        {
-            var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
-            this._processUserInput = processInput;
-            processInput.GetInputs();
-            this._inputResults = new Dictionary<string, string>();
-            this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults, this);
-            this._model.OlWork = this._outlook;
-            _outlook.GetContacts();
-        }
-
         public void OnStringFinished()
         {
-            var bffc = new BuildFormFieldControl(_model.StringResult, this);
-
-            //this._view1.Form1.Hide();
-            this._view2.Form2.Show();
-            AttachView2Events();
+            var bffc = new BuildFormFieldControl(_model.StringResult);
+            var form2 = new FormFieldControl(bffc.ControlList, this);
+            _view2 = form2;
+            _view2.DynamicControls = bffc.ControlList;
+            this._view1.Form1.Hide();
+            this._view2.FormShow();
         }
-
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this, _outlook.Hits);
@@ -177,22 +142,6 @@ namespace TessMVP2.Presenter
               this._view4.Form4.ShowDialog();*/
         }
 
-        private void OnButtonYesClick()
-        {
-            //man könnte auch NUR den oldcontact übergeben
-
-        }
-
-        private void OnButtonNoClick()
-        {
-            this._outlook.CreateContact();
-            _view4.Form4.Close();
-        }
-
-        private void OnButtonCancelClick()
-        {
-            _view4.Form4.Close();
-        }
 
         private void OnButtonCancelCompareClick()
         {

@@ -20,7 +20,5 @@ namespace TessMVP2.View.Interfaces
         ToolStripItem TsiWia { get; }
         Form Form1 { get; }
         string FormStartText { get; set; }
-        
-        
     }
 }

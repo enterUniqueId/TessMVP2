@@ -108,14 +108,14 @@ namespace TessMVP2.Presenter
             this._inputResults.Add("EntryID", _outlook.EntryID);
             _outlook.UpdateExistingContact(_inputResults);
             _view3.Form3.Close();
-            _view2.Form2.Close();
+            _view2.FormClose();
         }
 
         private void OnButtonCreateNewContactClick()
         {
             this._outlook.CreateContact();
             _view3.Form3.Close();
-            _view2.Form2.Close();
+            _view2.FormClose();
         }
     }
 }

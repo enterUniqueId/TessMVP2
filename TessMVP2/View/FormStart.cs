@@ -28,7 +28,6 @@ namespace TessMVP2.View
             }
         }
         public Button Form1Btn1 { get { return this.button1; } }
-
         public Button Form1Btn2 { get { return this.button2; } }
         public Button Form1Btn3 { get { return this.button3; } }
         public ToolStripItem TsiFuji
@@ -82,5 +81,7 @@ namespace TessMVP2.View
             this.TsiWia.Click -= (sender, e) => callback.OnWiaClick();
             this.FormClosing -= (sender, e) => callback.OnForm1Closing();
         }
+
+
     }
 }
