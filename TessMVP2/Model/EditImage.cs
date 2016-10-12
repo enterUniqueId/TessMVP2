@@ -18,7 +18,6 @@ namespace TessMVP2.Model
     {
         private string _newFilepath;
         public string NewFilepath { get { return this._newFilepath; } set { this._newFilepath = value; } }
-        private FujiFolderObs _fuji;
 
 
         //https://dotnet-snippets.de/snippet/bitmap-in-graustufen-wandeln/70
@@ -115,7 +114,7 @@ namespace TessMVP2.Model
                     EncodeAndSave(file, sourceImage);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Ein Fehler im Bildformat ist aufgetreten. Scannen Sie das Bild bitte erneut ein.");
             }

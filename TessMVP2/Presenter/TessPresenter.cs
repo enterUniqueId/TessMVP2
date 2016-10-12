@@ -43,18 +43,6 @@ namespace TessMVP2.Presenter
             this._fujiFormat = "*jpg";
         }
 
-        [Obsolete]
-        private void AttachView1Events()
-        {
-            this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
-            this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
-            this._view1.Form1Btn2.Click += (sender, e) => OnButton2Click();
-            this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
-            this._view1.TsiFuji.Click += (sender, e) => OnFujitsuClick();
-            this._view1.TsiWia.Click += (sender, e) => OnWiaClick();
-            this._view1.Form1.FormClosing += (sender, e) => OnForm1Closing();
-        }
-
 
         public void OnButtonClick()
         {
@@ -121,31 +109,24 @@ namespace TessMVP2.Presenter
         public void OnStringFinished()
         {
             var bffc = new BuildFormFieldControl(_model.StringResult);
-            var form2 = new FormFieldControl(bffc.ControlList, this);
-            _view2 = form2;
+            _view2 = new FormFieldControl(bffc.ControlList, this);
             _view2.DynamicControls = bffc.ControlList;
             this._view1.Form1.Hide();
             this._view2.FormShow();
         }
+
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this, _outlook.Hits);
-            this._clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
-            AttachView3Events();
-            _view3.Form3.ShowDialog();
-
-            /*  if (this._FormcompareContactsList == null)
-                  this._FormcompareContactsList = new List<FormCompareContacts>();
-              string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
-              var msgbox = new BuildFormYesNoCancel(this, sr);
-              AttachView4Events();
-              this._view4.Form4.ShowDialog();*/
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], _outlook.Hits);
+            _view3 = new FormCompareContacts(bfc.ControlList);
+            this._clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+            _view3.FormShowDialog(_clist,this);
         }
 
 
         private void OnButtonCancelCompareClick()
         {
-            _view3.Form3.Close();
+            _view3.FormClose();
         }
 
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)

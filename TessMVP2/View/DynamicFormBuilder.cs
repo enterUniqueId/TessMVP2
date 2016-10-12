@@ -28,6 +28,7 @@ namespace TessMVP2.View
                 var btn = new Button();
                 var fp = new FlowLayoutPanel();
                 var pbox = new PictureBox();
+                var cmenu = new ContextMenu();
                 foreach (DynamicControlViewModel model in value)
                 {
                     // build up user controls here....
@@ -39,6 +40,8 @@ namespace TessMVP2.View
                             tb.Name = model.TextBoxName;
                             tb.Text = model.TextBoxText;
                             SetTextboxProps(tb);
+                            pan.Controls.Add(tb);
+                            pan.Controls.Add(lbl);
 
                             break;
                         case DynamicControlViewModel.ControlTypes.Button:
@@ -65,7 +68,7 @@ namespace TessMVP2.View
                             break;
                         case DynamicControlViewModel.ControlTypes.FlowLayoutPanel:
                             fp = new FlowLayoutPanel();
-                            SetDefaultPanelProps(fp);
+                            SetFpanProps(fp);
                             break;
                         case DynamicControlViewModel.ControlTypes.RichtextBox:
                             rtb = new RichTextBox();
@@ -74,15 +77,21 @@ namespace TessMVP2.View
                             break;
                         case DynamicControlViewModel.ControlTypes.Panel:
                             pan = new Panel();
-                            SetPanProps(pan);
-                            pan.Controls.Add(tb);
-                            pan.Controls.Add(lbl);
+                            SetPanProps(pan,model.Col);
                             fp.Controls.Add(pan);
                             break;
                         case DynamicControlViewModel.ControlTypes.Pbox:
                             pbox = new PictureBox();
                             SetPboxProps(pbox, lbl);
                             pan.Controls.Add(pbox);
+                            break;
+                        case DynamicControlViewModel.ControlTypes.Cmenu:
+                            cmenu = new ContextMenu();
+                            cmenu.Name = model.CmenuName;
+                            lbl.ContextMenu = cmenu;
+                            break;
+                        case DynamicControlViewModel.ControlTypes.CmenuItem:
+                            cmenu.MenuItems.Add(model.CmenuItemName);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -98,6 +107,7 @@ namespace TessMVP2.View
             this._form = form;
             string imgFile = Environment.CurrentDirectory + "\\img\\chk2.png";
             this._pboxImageChecked = Image.FromFile(imgFile);
+            DynamicControls = list;
 
         }
 
@@ -125,13 +135,14 @@ namespace TessMVP2.View
             lbl.Location = new Point(9, 35);
         }
 
-        private void SetDefaultPanelProps(FlowLayoutPanel pan)
+        private void SetFpanProps(FlowLayoutPanel fpan)
         {
-            pan.AutoSize = true;
-            pan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            pan.FlowDirection = FlowDirection.TopDown;
-            pan.Margin = new Padding(10);
-            pan.MaximumSize = new System.Drawing.Size(1333, 750);
+            fpan.FlowDirection = FlowDirection.TopDown;
+            fpan.Margin = new Padding(10);
+            fpan.MaximumSize = new Size(Screen.PrimaryScreen.Bounds.Width - 100, Screen.PrimaryScreen.Bounds.Height - 200);
+            fpan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            fpan.AutoSize = true;
+            fpan.Dock = DockStyle.Fill;
         }
 
         private void SetDefaultRTBoxProps(RichTextBox rtb, Panel parent)
@@ -152,12 +163,30 @@ namespace TessMVP2.View
             btn.Margin = new Padding(padLeft, 20, padLeft, 0);
         }
 
-        private void SetPanProps(Panel pan)
+        private void SetPanProps(Panel pan, DynamicControlViewModel.Colors cols)
         {
             pan.MinimumSize = new Size(280, 120);
             //pan.AutoSize = true;
             pan.Visible = true;
             pan.BorderStyle = BorderStyle.Fixed3D;
+
+            switch (cols)
+            {
+                case DynamicControlViewModel.Colors.window:
+                    pan.BackColor = SystemColors.Window;
+                    break;
+                case DynamicControlViewModel.Colors.AliceBlue:
+                    pan.BackColor = Color.AliceBlue;
+                    break;
+                case DynamicControlViewModel.Colors.orange:
+                    pan.BackColor = Color.Orange;
+                    break;
+                case DynamicControlViewModel.Colors.blue:
+                    pan.BackColor = Color.Blue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void SetPboxProps(PictureBox pb, Label lbl)

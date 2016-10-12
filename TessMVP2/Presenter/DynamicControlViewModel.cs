@@ -18,8 +18,18 @@ namespace TessMVP2.View
             RichtextBox,
             Panel,
             Pbox,
-            Cmenu
+            Cmenu,
+            CmenuItem
 
+        }
+
+        public enum Colors
+        {
+            control,
+            window,
+            AliceBlue,
+            blue,
+            orange
         }
 
         public string LabelText { get; set; }
@@ -35,6 +45,8 @@ namespace TessMVP2.View
         public string PanelName { get; set; }
         public string PboxName { get; set; }
         public string CmenuName { get; set; }
+        public string CmenuItemName { get; set; }
         public ControlTypes ControlType { get; set; }
+        public Colors Col { get; set; }
     }
 }
