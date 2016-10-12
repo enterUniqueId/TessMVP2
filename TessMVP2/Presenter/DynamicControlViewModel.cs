@@ -15,7 +15,10 @@ namespace TessMVP2.View
             Button,
             Label,
             FlowLayoutPanel,
-            RichtextBox
+            RichtextBox,
+            Panel,
+            Pbox,
+            Cmenu
 
         }
 
@@ -29,6 +32,9 @@ namespace TessMVP2.View
         public string RtbText { get; set; }
         public string ButtonName { get; set; }
         public string ButtonText { get; set; }
+        public string PanelName { get; set; }
+        public string PboxName { get; set; }
+        public string CmenuName { get; set; }
         public ControlTypes ControlType { get; set; }
     }
 }

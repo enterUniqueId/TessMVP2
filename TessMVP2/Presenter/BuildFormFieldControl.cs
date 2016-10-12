@@ -9,7 +9,6 @@ namespace TessMVP2.Presenter
     {
         private Dictionary<string, List<string>> _resDict;
         private List<DynamicControlViewModel> _controlList;
-        //public FormFieldControl View2 { get; private set; }
         public List<DynamicControlViewModel> ControlList { get { return this._controlList; } }
 
         public BuildFormFieldControl(Dictionary<string, List<string>> fieldDict)
@@ -30,10 +29,6 @@ namespace TessMVP2.Presenter
                 if (kvp.Key != "EntryID")
                 {
                     dynControl = new DynamicControlViewModel();
-                    dynControl.ControlType = DynamicControlViewModel.ControlTypes.GroupBox;
-                    dynControl.GroupboxName = "gb" + kvp.Key;
-                    _controlList.Add(dynControl);
-                    dynControl = new DynamicControlViewModel();
                     dynControl.ControlType = DynamicControlViewModel.ControlTypes.Label;
                     dynControl.LabelName = "F2lbl" + kvp.Key;
                     dynControl.LabelText = kvp.Key;
@@ -46,6 +41,10 @@ namespace TessMVP2.Presenter
                         dynControl.TextBoxText = kvp.Value[0];
 
                     }
+                    _controlList.Add(dynControl);
+                    dynControl = new DynamicControlViewModel();
+                    dynControl.ControlType = DynamicControlViewModel.ControlTypes.Panel;
+                    dynControl.GroupboxName = "pan" + kvp.Key;
                     _controlList.Add(dynControl);
                 }
             }

@@ -10,48 +10,75 @@ using System.Windows.Forms;
 
 namespace TessMVP2.Presenter
 {
-    class BuildFormCompare
+    class BuildFormCompareKopie
     {
+       /* private IMyViewFormCompareContacts _view3;
+        public object View3 { get { return _view3; } }
+        private TessPresenter _mainPresenter;
+        private FormCompareContacts _formObject;
+        private Image _imgChecked;
         private Dictionary<string, string> _conformities;
         private Dictionary<string, string> _newContactDict;
+        public FormCompareContacts FormCompareContacts { get { return this._formObject; } private set { this._formObject = value; } }
         private Dictionary<string, string> _oldContactDict;
-        private List<DynamicControlViewModel> _controlList;
-        public List<DynamicControlViewModel> ControlList { get { return this._controlList; } }
 
 
-        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms)
+        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, TessPresenter presenter, Dictionary<string, string> conforms)
         {
+            var view = new FormCompareContacts();
+            this._view3 = view;
+            this._mainPresenter = presenter;
+            this._formObject = (FormCompareContacts)this._view3.Form3;
             this._oldContactDict = oldContactVals;
             this._oldContactDict.Remove("EntryID");
             this._newContactDict = newContactvals;
             this._newContactDict.Remove("EntryID");
-            this._conformities = conforms;
-            BuildList();
+            string imgFile = Environment.CurrentDirectory + "\\img\\chk2.png";
+            this._imgChecked = Image.FromFile(imgFile);
+            this._conformities= conforms;
+            
+            AddControls();
+            _mainPresenter.ViewForm3 = this._view3;
         }
 
-        private void BuildList()
+        private void SetFormProps(FlowLayoutPanel fp)
         {
-            _controlList = new List<DynamicControlViewModel>();
-            var dynControl = new DynamicControlViewModel();
-            dynControl.ControlType = DynamicControlViewModel.ControlTypes.FlowLayoutPanel;
-            _controlList.Add(dynControl);
+            this._formObject.AutoSize = true;
+            this._formObject.AutoSizeMode = AutoSizeMode.GrowOnly;
+            this._formObject.Text = "Übereinstimmung gefunden";
+            //this._formObject.Width = fp.Width;
+            //this._formObject.Height = fp.Height;
+        }
 
-            var lblList = new List<DynamicControlViewModel>();
-            var tbList = new List<DynamicControlViewModel>();
+        private void AddControls()
+        {
+            var fp = new FlowLayoutPanel();
+
+            _formObject.Controls.Add(fp);
+            AddControlsToPanel(fp);
+            SetFpanProps(fp);
+            SetFormProps(fp);
+        }
+
+        private void visibility(FlowLayoutPanel fp)
+        {
+            foreach (Control pan in fp.Controls)
+            {
+                pan.BringToFront();
+                foreach (Control c in pan.Controls)
+                    c.BringToFront();
+            }
+        }
+
+        private void AddControlsToPanel(FlowLayoutPanel fpan)
+        {
+
+            var lblList = new List<Label>();
+            var tbList = new List<TextBox>();
             foreach (var kvp in _oldContactDict)
             {
                 var lbl = new Label();
-                dynControl = new DynamicControlViewModel();
-                dynControl.ControlType = DynamicControlViewModel.ControlTypes.Label;
-                dynControl.LabelName = kvp.Key;
-                dynControl.LabelText = kvp.Value;
-
                 var cm = new ContextMenu();
-                dynControl = new DynamicControlViewModel();
-                dynControl.ControlType = DynamicControlViewModel.ControlTypes.Cmenu;
-                dynControl.LabelName = kvp.Key;
-                dynControl.LabelText = kvp.Value;
-
                 SetLabelProps(lbl, kvp.Key, kvp.Value);
                 SetContextmenuItems(cm, kvp.Key);
                 lbl.ContextMenu = cm;
@@ -73,7 +100,7 @@ namespace TessMVP2.Presenter
                 var pan = new Panel();
                 SetPanProps(pan);
                 pan.Controls.Add(lblList[i]);
-
+                
                 var pbox = new PictureBox();
                 SetPboxProps(pbox, lblList[i]);
                 pan.Controls.Add(pbox);
@@ -84,7 +111,7 @@ namespace TessMVP2.Presenter
                     pan.Controls.Add(tbList[i]);
                     PaintPanel(tbList[i]);
                 }
-
+                
                 fpan.Controls.Add(pan);
             }
 
@@ -115,7 +142,7 @@ namespace TessMVP2.Presenter
         private void PaintPanel(TextBox tb)
         {
             Panel pan = tb.Parent as Panel;
-            foreach (var kvp in _conformities)
+            foreach(var kvp in _conformities)
             {
                 if (kvp.Value == tb.Text)
                     pan.BackColor = Color.AliceBlue;
@@ -213,6 +240,6 @@ namespace TessMVP2.Presenter
             fpan.Dock = DockStyle.Fill;
             //fpan.AutoSize = true;
             //fpan.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        }
+        }*/
     }
 }
