@@ -9,16 +9,15 @@ using TessMVP2.Presenter.Interfaces.View;
 
 namespace TessMVP2.View.Interfaces
 {
-    public interface IMyViewFormStart:IView<IMyPresenterFormStartCallbacks>
+    public interface IMyViewFormStart : IView<IMyPresenterFormStartCallbacks>
     {
-        string TextBoxText { get; set; }
         string RichTextBoxText { get; set; }
-        Button Form1Btn1 { get; }
-        Button Form1Btn2 { get; }
-        Button Form1Btn3 { get; }
         ToolStripItem TsiFuji { get; }
         ToolStripItem TsiWia { get; }
-        Form Form1 { get; }
         string FormStartText { get; set; }
+        bool BtnStatus { get; set; }
+        void FormClose();
+        void FormHide();
+        void FormShow();
     }
 }

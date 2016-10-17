@@ -172,6 +172,9 @@ namespace TessMVP2.View
 
             switch (cols)
             {
+                case DynamicControlViewModel.Colors.control:
+                    pan.BackColor = SystemColors.Control;
+                    break;
                 case DynamicControlViewModel.Colors.window:
                     pan.BackColor = SystemColors.Window;
                     break;

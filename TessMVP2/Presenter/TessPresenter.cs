@@ -9,6 +9,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using TessMVP2.Presenter.Interfaces.View;
+using WIA;
 
 namespace TessMVP2.Presenter
 {
@@ -16,11 +17,11 @@ namespace TessMVP2.Presenter
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
-        // private IMyViewFormFieldControl _view2;
+        private Scanner _scanner;
+        private Device _device;
 
 
         public object View1 { get { return _view1; } }
-        // public object View2 { get { return _view2; } }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
@@ -46,41 +47,39 @@ namespace TessMVP2.Presenter
 
         public void OnButtonClick()
         {
-            //_model.ImgPath = _view1.TextBoxText;
-            //_model.Start(this);
+            if (_device != null)
+            {
+                OnFujitsuClick();
+                _view1.BtnStatus = true;
+                _scanner.Scan();
+            }
+            else
+            {
+                OnWiaClick();
+            }
         }
 
-        public void OnButton2Click()
-        {
-            var scanner = new Scanner();
-            scanner.selectDevice();
-
-        }
-
-        public void OnButton3Click()
-        {
-
-
-        }
 
         public void OnFujitsuClick()
         {
-            var parent = _view1.TsiFuji.OwnerItem as ToolStripMenuItem;
-            ((ToolStripDropDownMenu)parent.DropDown).ShowCheckMargin = true;
-            ((ToolStripDropDownMenu)parent.DropDown).ShowImageMargin = true;
+            _view1.BtnStatus = false;
             this._fuji = new FujiFolderObs(this, _fujiFolder, _fujiFormat);
-            _fuji.FSW.SynchronizingObject = _view1.Form1;
+            _fuji.FSW.SynchronizingObject = _view1 as Form;
 
         }
 
         public void OnWiaClick()
         {
-
+            _view1.BtnStatus = true;
+            _scanner = new Scanner();
+            _scanner.selectDevice();
+            this._device = _scanner.Device;
         }
 
         public void OnForm1Closing()
         {
             CleanUpTempfolder.Cleanup();
+            Application.Exit();
         }
 
         public void OnForm1Shown()
@@ -88,11 +87,6 @@ namespace TessMVP2.Presenter
 
         }
 
-        public void OnForm1Closed()
-        {
-            Application.Exit();
-            //Environment.Exit(0);
-        }
 
         public void OnOcrResultChanged()
         {
@@ -111,7 +105,7 @@ namespace TessMVP2.Presenter
             var bffc = new BuildFormFieldControl(_model.StringResult);
             _view2 = new FormFieldControl(bffc.ControlList, this);
             _view2.DynamicControls = bffc.ControlList;
-            this._view1.Form1.Hide();
+            this._view1.FormHide();
             this._view2.FormShow();
         }
 

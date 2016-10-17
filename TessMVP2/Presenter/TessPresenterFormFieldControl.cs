@@ -25,7 +25,7 @@ namespace TessMVP2.Presenter
 
         public void OnForm2Closed()
         {
-            _view1.Form1.Show();
+            _view1.FormShow();
             _view2.FormDispose();
             _view2 = null;
         }
