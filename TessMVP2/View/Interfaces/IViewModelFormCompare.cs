@@ -15,11 +15,5 @@ namespace TessMVP2.View.Interfaces
         Control.ControlCollection FormCompareClist { get; }
         void FormClose();
         void FormShowDialog(List<Control> clist, IPresenterFormCompareCallbacks callback);
-
-        Button BtnUpdate { get; set; }
-        Button BtnCreateNew { get; set; }
-        Button BtnCancel { get; set; }
-
-
     }
 }

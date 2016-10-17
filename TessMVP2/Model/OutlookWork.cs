@@ -7,7 +7,6 @@ using Microsoft.Office.Interop.Outlook;
 using System.Windows.Forms;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
-using System.Reflection;
 
 namespace TessMVP2.Model
 {
@@ -36,7 +35,6 @@ namespace TessMVP2.Model
             Attach(callback);
             NormalizeResultDict();
         }
-
         private void NormalizeResultDict()
         {
             var outlookApplication = new ApplicationClass();
@@ -240,33 +238,6 @@ namespace TessMVP2.Model
             }
         }
 
-        private void Evalhits(List<string> hitlist, int contactID, Dictionary<string, string> oldContact)
-        {
-            int percent = hitlist.Count * 100 / _resultDict.Count;
-            string sr = "Der neue Kontakt stimmte zu " + percent.ToString() + "% mit Kontakt-Nr. " + contactID +
-                            " (OL-ID: " + oldContact["EntryID"] + "überein.\nDatensatz anzeigen?";
-
-            //alter doppelter kontakt muss noch übergeben werden
-           
-            /*
-            if (result == DialogResult.Yes)
-            {
-                this.Hits = hitlist;
-                this.CurrentContact = contactID;
-                if (this.DuplicateHit != null)
-                    this.DuplicateHit(this, EventArgs.Empty);
-            }
-            else if(result == DialogResult.No)
-            {
-                if (this.QuestionAnsweredNo != null)
-                    this.QuestionAnsweredNo(this, EventArgs.Empty);
-            }
-            else if (result == DialogResult.Cancel)
-            {
-                if (this.QuestionAnsweredCancel != null)
-                    this.QuestionAnsweredCancel(this, EventArgs.Empty);
-            }*/
-        }
 
         private void Attach(IMyPresenterOutlookCallbacks callback)
         {

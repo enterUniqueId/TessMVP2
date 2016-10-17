@@ -70,8 +70,6 @@
     <Compile Include="Presenter\Interfaces\View\IPresenterFormCompareCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\View\IPresenterFormFieldControlCallbacks.cs" />
     <Compile Include="Presenter\TessPresenterFormFieldControl.cs" />
-    <Compile Include="View\BuildFormCompareKopie.cs" />
-    <Compile Include="View\BuildFormFieldControl_kopie.cs" />
     <Compile Include="Presenter\DynamicControlViewModel.cs" />
     <Compile Include="View\DynamicFormBuilder.cs" />
     <Compile Include="View\Interfaces\IViewModelFormCompare.cs" />
