@@ -49,7 +49,7 @@ namespace TessMVP2.Presenter
 
                 dynControl = new DynamicControlViewModel();
                 dynControl.ControlType = DynamicControlViewModel.ControlTypes.Label;
-                dynControl.LabelName = kvp.Key;
+                dynControl.LabelName = "F3lbl"+kvp.Key;
                 dynControl.LabelText = kvp.Key + ":" + kvp.Value;
                 _controlList.Add(dynControl);
 

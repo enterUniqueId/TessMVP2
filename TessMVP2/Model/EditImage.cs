@@ -106,7 +106,7 @@ namespace TessMVP2.Model
 
                     var ia = new ImageAttributes();
                     ia.SetColorMatrix(new ColorMatrix(gray_matrix));
-                    float d = (float)0.85;
+                    float d = (float)0.8;
                     //durch Schwellenwert S/W
                     ia.SetThreshold(d);
                     var rc = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);

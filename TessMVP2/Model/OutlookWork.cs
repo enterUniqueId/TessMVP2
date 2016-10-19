@@ -44,9 +44,10 @@ namespace TessMVP2.Model
             var td = BuildOlDict(contact);
             foreach (var kvp in _resultDict)
             {
+                if(kvp.Key=="Inet")
+                    td["Homepage"] = _resultDict["Inet"];
                 td[kvp.Key] = kvp.Value;
-            }
-            td["Homepage"] = _resultDict["Inet"];
+            }    
             _resultDict = td;
         }
 
@@ -159,7 +160,7 @@ namespace TessMVP2.Model
             var outlookApplication = new ApplicationClass();
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder folder = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            ContactItem dummy = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
+            //ContactItem dummy = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
             var fields = TranslateKeys(someFields);
 
             foreach (ContactItem contact in folder.Items)
@@ -211,8 +212,8 @@ namespace TessMVP2.Model
                         if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
                         {
                             //nicht eindeutige Merkmale werden nicht herangezogen
-                            if (kvp.Key != "Homepage" || kvp.Key != "Firma" || kvp.Key != "Position" || kvp.Key != "Postleitzahl" || 
-                                kvp.Key != "Fax" || kvp.Key != "Ort" || kvp.Key != "Strasse")
+                            if (kvp.Key != "Homepage" && kvp.Key != "Firma" && kvp.Key != "Position" && kvp.Key != "Postleitzahl" &&
+                                kvp.Key != "Fax" && kvp.Key != "Ort" && kvp.Key != "Strasse")
                             {
                                 _hits.Add(kvp.Key, kvp.Value);
                                 hit = true;
