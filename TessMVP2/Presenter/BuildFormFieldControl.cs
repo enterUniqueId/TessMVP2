@@ -29,6 +29,10 @@ namespace TessMVP2.Presenter
                 if (kvp.Key != "EntryID")
                 {
                     dynControl = new DynamicControlViewModel();
+                    dynControl.ControlType = DynamicControlViewModel.ControlTypes.Panel;
+                    dynControl.GroupboxName = "pan" + kvp.Key;
+                    _controlList.Add(dynControl);
+                    dynControl = new DynamicControlViewModel();
                     dynControl.ControlType = DynamicControlViewModel.ControlTypes.Label;
                     dynControl.LabelName = "F2lbl" + kvp.Key;
                     dynControl.LabelText = kvp.Key;
@@ -41,10 +45,6 @@ namespace TessMVP2.Presenter
                         dynControl.TextBoxText = kvp.Value[0];
 
                     }
-                    _controlList.Add(dynControl);
-                    dynControl = new DynamicControlViewModel();
-                    dynControl.ControlType = DynamicControlViewModel.ControlTypes.Panel;
-                    dynControl.GroupboxName = "pan" + kvp.Key;
                     _controlList.Add(dynControl);
                 }
             }

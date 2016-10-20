@@ -12,17 +12,16 @@ namespace TessMVP2.Model
 {
     public class OutlookWork : TessMainModel
     {
+        private Dictionary<string, string> _outlookCurrentContact;
         private Dictionary<string, string> _resultDict;
         private Dictionary<string, string> _hits;
         private List<Dictionary<string, string>> _outlookContacts;
-        private int _currentContact;
         private string _entryID;
         public string EntryID { get { return this._entryID; } set { this._entryID = value; } }
         public Dictionary<string, string> ResultDict { get { return this._resultDict; } }
         public List<Dictionary<string, string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
-        public Dictionary<string,string> Hits { get { return this._hits; } private set { this._hits = value; } }
-        public int CurrentContact { get { return this._currentContact; } }
-
+        public Dictionary<string, string> Hits { get { return this._hits; } private set { this._hits = value; } }
+        public Dictionary<string,string> OutlookCurrentContact{ get { return _outlookCurrentContact; }}
         public delegate void DuplicateHitHandler(object sender, EventArgs e);
         public event DuplicateHitHandler DuplicateHit;
 
@@ -44,24 +43,27 @@ namespace TessMVP2.Model
             var td = BuildOlDict(contact);
             foreach (var kvp in _resultDict)
             {
-                if(kvp.Key=="Inet")
+                if (kvp.Key == "Inet")
                     td["Homepage"] = _resultDict["Inet"];
                 td[kvp.Key] = kvp.Value;
-            }    
+            }
             _resultDict = td;
         }
 
         public void GetContacts()
         {
-            OutlookContacts = new List<Dictionary<string, string>>();
+            bool hit = false;
+            // OutlookContacts = new List<Dictionary<string, string>>();
             var outlookApplication = new ApplicationClass();  //outlook interop einbetten false; wie bei WIA
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
             foreach (ContactItem cont in contacts.Items)
             {
-                OutlookContacts.Add(BuildOlDict(cont));
+               if(CheckContact(BuildOlDict(cont)));
+                hit = true;
             }
-            CheckContact();
+            if (!hit)
+                CreateContact();
         }
 
         public void CreateContact()
@@ -71,6 +73,7 @@ namespace TessMVP2.Model
             var customFields = new Dictionary<string, string>();
             //################ evtl. noch implementieren
             //MAPIFolder oContactsFolder = mapiNamespace.PickFolder();###############
+            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
 
             //zuordnung der ergebnisse zu den outlook contacts feldern
@@ -120,8 +123,11 @@ namespace TessMVP2.Model
                     case "position":
                         contact.JobTitle = kvp.Value;
                         break;
-                    case "homepage":
+                    case "inet":
                         contact.BusinessHomePage = kvp.Value;
+                        break;
+                    case "entryid":
+                        //
                         break;
                     default:
                         hasCustomProps = true;
@@ -131,28 +137,17 @@ namespace TessMVP2.Model
             }//end foreach
             contact.Save();
             if (hasCustomProps)
-                CreateCustomFields(contact.EntryID, customFields);
+                CreateCustomFields(contact, customFields);
         }
 
-        public void CreateCustomFields(string id, Dictionary<string, string> fields)
+        public void CreateCustomFields(ContactItem contact, Dictionary<string, string> fields)
         {
-            var outlookApplication = new ApplicationClass();
-            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
-            MAPIFolder folder = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            foreach (ContactItem contact in folder.Items)
+            foreach (var kvp in fields)
             {
-                if (contact.EntryID == id)
-                {
-                    foreach (var kvp in fields)
-                    {
-                        contact.UserProperties.Add(kvp.Key, OlUserPropertyType.olText);
-                        contact.UserProperties[kvp.Key].Value = kvp.Value;
-                    }
-                    contact.Save();
-                    break;
-                }
+                contact.UserProperties.Add(kvp.Key, OlUserPropertyType.olText);
+                contact.UserProperties[kvp.Key].Value = kvp.Value;
             }
-
+            contact.Save();
         }
 
         public void UpdateExistingContact(Dictionary<string, string> someFields)
@@ -198,45 +193,31 @@ namespace TessMVP2.Model
             return newDict;
         }
 
-        private void CheckContact()
+        private bool CheckContact(Dictionary<string, string> outlookContact)
         {
             bool hit = false;
-            bool hitonce = false;
-            for (int i = 0; i < OutlookContacts.Count; i++)
+            for (int i = 0; i < outlookContact.Count; i++)
             {
-                hit = false;
-                foreach (var oprop in OutlookContacts[i])
+                var kvp = outlookContact.ElementAt(i);
+                if (kvp.Key != "Homepage" && kvp.Key != "Firma" && kvp.Key != "Position" && kvp.Key != "Postleitzahl" &&
+                   kvp.Key != "Fax" && kvp.Key != "Ort" && kvp.Key != "Strasse" && kvp.Key != "Inet")
                 {
-                    foreach (var kvp in _resultDict)
+                    if (kvp.Value == _resultDict.ElementAt(i).Value && _resultDict.ElementAt(i).Value != null && kvp.Value != null)
                     {
-                        if (kvp.Value == oprop.Value && (oprop.Value != null && kvp.Value != null))
-                        {
-                            //nicht eindeutige Merkmale werden nicht herangezogen
-                            if (kvp.Key != "Homepage" && kvp.Key != "Firma" && kvp.Key != "Position" && kvp.Key != "Postleitzahl" &&
-                                kvp.Key != "Fax" && kvp.Key != "Ort" && kvp.Key != "Strasse")
-                            {
-                                _hits.Add(kvp.Key, kvp.Value);
-                                hit = true;
-                                hitonce = true;
-                            }
-                        }
+                        _hits.Add(kvp.Key, kvp.Value);
+                        hit = true;
                     }
                 }
-                if (hit)
-                {
-                    //Evalhits(hits, i, OutlookContacts[i]);
-                    this._entryID = OutlookContacts[i]["EntryID"];
-                    _currentContact = i;
-                    if (this.DuplicateHit != null)
-                        this.DuplicateHit(this, EventArgs.Empty);
-                }
+            }
+            if (hit)
+            {
+                this._entryID = outlookContact["EntryID"];
+                _outlookCurrentContact = outlookContact;
+                if (this.DuplicateHit != null)
+                    this.DuplicateHit(this, EventArgs.Empty);
                 _hits.Clear();
             }
-            DuplicateHit = null;
-            if (!hitonce)
-            {
-                CreateContact();
-            }
+            return hit;
         }
 
 

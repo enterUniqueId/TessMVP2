@@ -33,7 +33,7 @@ namespace TessMVP2.Model
          {
              {"FullName","Name" },
              {"BusinessTelephoneNumber","Telefon-Nummer" },
-             {"Business2TelephoneNumber","Telefon-Nummer" },
+             {"Business2TelephoneNumber","Telefon-Nummer2" },
              {"MobileTelephoneNumber", "Mobil-Nummer" },
              { "BusinessFaxNumber","Fax-Nummer"},
              { "BusinessAddressStreet", "Strasse" },

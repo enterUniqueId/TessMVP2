@@ -111,7 +111,7 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], _outlook.Hits);
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits);
             _view3 = new FormCompareContacts(bfc.ControlList);
             this._clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
             _view3.FormShowDialog(_clist,this);

@@ -11,7 +11,8 @@ using TessMVP2.Presenter.Interfaces.View;
 
 namespace TessMVP2.View
 {
-    public partial class FormCompareContacts : Form,IViewModelFormCompare
+
+    public partial class FormCompareContacts : Form, IViewModelFormCompare
     {
         private IEnumerable<DynamicControlViewModel> _dynamicControls;
         private Control.ControlCollection _formCompareClist;
@@ -36,7 +37,6 @@ namespace TessMVP2.View
         public Button BtnUpdate { get { return this._createNew; } set { this._createNew = value; } }
         public Button BtnCreateNew { get { return this._update; } set { this._update = value; } }
         public Button BtnCancel { get { return this._cancel; } set { this._cancel = value; } }
-
 
 
         public FormCompareContacts(IEnumerable<DynamicControlViewModel> list)
@@ -98,6 +98,7 @@ namespace TessMVP2.View
                 {
                     for (int i = 0; i < c.ContextMenu.MenuItems.Count; i++)
                     {
+                        
                         c.ContextMenu.MenuItems[i].Click += new EventHandler(callback.OnCmClick);
                     }
                 }
