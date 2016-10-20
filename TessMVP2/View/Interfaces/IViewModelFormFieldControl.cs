@@ -16,5 +16,6 @@ namespace TessMVP2.View.Interfaces
         void FormDispose();
         void FormShow();
         void FormClose();
+        void FormHide();
     }
 }

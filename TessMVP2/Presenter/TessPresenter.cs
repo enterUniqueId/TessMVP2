@@ -84,7 +84,8 @@ namespace TessMVP2.Presenter
 
         public void OnForm1Shown()
         {
-
+            _view1.FormStartText = "Tess.Net-VScanner";
+            _view1.F1Btn1Text = "Scan";
         }
 
 
@@ -102,9 +103,18 @@ namespace TessMVP2.Presenter
 
         public void OnStringFinished()
         {
-            var bffc = new BuildFormFieldControl(_model.StringResult);
-            _view2 = new FormFieldControl(bffc.ControlList, this);
-            _view2.DynamicControls = bffc.ControlList;
+            //var bffc = new BuildFormFieldControl(_model.StringResult);
+            //_view2 = new FormFieldControl(bffc.ControlList, this);
+            //_view2.DynamicControls = bffc.ControlList;
+
+            var processInput = new ProcessUserResults(_view2.FormFieldClist[0]);
+            this._processUserInput = processInput;
+            processInput.GetInputs();
+            this._inputResults = new Dictionary<string, string>();
+            this._inputResults = processInput.ResDict;
+            this._outlook = new OutlookWork(this._inputResults, this);
+            this._model.OlWork = this._outlook;
+
             this._view1.FormHide();
             this._view2.FormShow();
         }

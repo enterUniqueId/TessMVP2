@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TessMVP2.Model.CleanUpTempfolder" Collapsed="true">
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Model\CleanUpTempfolder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.Dict" Collapsed="true">
+    <Position X="16" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Dict.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.EditImage" Collapsed="true">
+    <Position X="12.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAgAAAAABAAEAQAACAAA=</HashCode>
+      <FileName>Model\EditImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.FujiFolderObs" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQIACAAAAAAAAIAAAAAAEAAAAAAAAkA=</HashCode>
+      <FileName>Model\FujiFolderObs.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TessMVP2.Model.OutlookWork" Collapsed="true">
+    <Position X="8.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAhAAAFAAAEAAIIACAABAAAAIAQACABAAAAUQBQCAA=</HashCode>
+      <FileName>Model\OutlookWork.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.ProcessUserResults" Collapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EQAAAAAAAAQCAAAAAAAAAAAACAAIAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Model\ProcessUserResults.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.Scanner" Collapsed="true">
+    <Position X="17.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAABACAQgAQoBgAAEAAEAAgAAQAAAAAACgAAAAACE=</HashCode>
+      <FileName>Model\Scanner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.StringProcessor" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgCAIQAEAAAAAAAQACAAAAAAAABAAAAQAhCQ=</HashCode>
+      <FileName>Model\StringProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Model.TessMainModel" Collapsed="true">
+    <Position X="8.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAACBQAAIAEBEAAAIAAIAAAAAAACAAAAAAAAQ=</HashCode>
+      <FileName>Model\TessMainModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TessMVP2.Model.TessOcr" Collapsed="true">
+    <Position X="14.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAAAEAAAEAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Model\TessOcr.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Presenter.BuildFormCompare" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgAAAAAAAABAAAAIIAYAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Presenter\BuildFormCompare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Presenter.BuildFormFieldControl" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAIAAIAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter\BuildFormFieldControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Presenter.TessPresenter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GARCAEAAAMAgAxAMAgQgAAQIEAAAsAcMAKkBBIUCAAA=</HashCode>
+      <FileName>Presenter\TessPresenter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TessMVP2.View.DynamicControlViewModel" Collapsed="true">
+    <Position X="17.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBAIAAAARAQAAAAAgAAAABAAAEkAEAAAAIAAIIAAIAA=</HashCode>
+      <FileName>Presenter\DynamicControlViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.View.DynamicFormBuilder" Collapsed="true">
+    <Position X="10.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAEAgQAAAIAAIAAAAAkABAAAGAAAAAAAAABAE=</HashCode>
+      <FileName>View\DynamicFormBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.View.FormCompareContacts" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAACAECAAAAMkBAAAAABAAIiIAAAQAAAAAAAAASQ=</HashCode>
+      <FileName>View\FormCompareContacts.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TessMVP2.View.FormFieldControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAMCAAAAIAAACAAAACAIAIIAgAQAAAAAAACCA=</HashCode>
+      <FileName>View\FormFieldControl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TessMVP2.View.FormStart" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gQQAAAAAACAAIQIQQACAAAAOgIAIIAAAAAAUAAIgAQE=</HashCode>
+      <FileName>View\FormStart.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TessMVP2.Program" Collapsed="true">
+    <Position X="14.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Properties.Resources" Collapsed="true">
+    <Position X="16" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TessMVP2.Properties.Settings" Collapsed="true">
+    <Position X="10.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="TessMVP2.Model.Interfaces.IFujiModel" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Interfaces\IFujiModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Model.Interfaces.IModel&lt;TCallbacks&gt;" Collapsed="true">
+    <Position X="2.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Interfaces\IModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Model.Interfaces.IMyModel" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACBAAAAAABEAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Interfaces\IMyModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Model.Interfaces.IOutlookModel" Collapsed="true">
+    <Position X="5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model\Interfaces\IOutlookModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.IMyPresenter" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\IMyPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.IMyPresenterFujiCallbacks" Collapsed="true">
+    <Position X="10.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\IMyPresenterFujiCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.IMyPresenterModelCallbacks" Collapsed="true">
+    <Position X="12.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAABAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\IMyPresenterModelCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.IMyPresenterOutlookCallbacks" Collapsed="true">
+    <Position X="14.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.IPresenter" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAIAAAAAAAAAgAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\IPresenter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.View.IMyPresenterFormStartCallbacks" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAMAIIAAAAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\View\IMyPresenterFormStartCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.View.IPresenterFormCompareCallbacks" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAIAAQAAAAIAAAAAAAAAAABAAACAAA=</HashCode>
+      <FileName>Presenter\Interfaces\View\IPresenterFormCompareCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.Presenter.Interfaces.View.IPresenterFormFieldControlCallbacks" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Presenter\Interfaces\View\IPresenterFormFieldControlCallbacks.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.View.Interfaces.IMyViewFormStart" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAACAAAAAAAAAAAAAIgAAAIAAAAAAEAAIgAQA=</HashCode>
+      <FileName>View\Interfaces\IMyViewFormStart.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.View.Interfaces.IView&lt;TCallbacks&gt;" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\Interfaces\IView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.View.Interfaces.IViewModelFormCompare" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAECAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\Interfaces\IViewModelFormCompare.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="TessMVP2.View.Interfaces.IViewModelFormFieldControl" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAMCAAAAAAAAAAAAAAAAAAIAAAAAAAAAAACAA=</HashCode>
+      <FileName>View\Interfaces\IViewModelFormFieldControl.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

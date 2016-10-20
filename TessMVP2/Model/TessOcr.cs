@@ -45,7 +45,7 @@ namespace TessMVP2.Model
             {
                 MessageBox.Show(ex.Message);
                 Application.Exit();
-                Environment.Exit(0);
+                //Environment.Exit(0);
             }
         }
     }

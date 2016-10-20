@@ -68,6 +68,11 @@ namespace TessMVP2.View
             this.Show();
         }
 
+        public void FormHide()
+        {
+            this.Hide();
+        }
+
         public void FormClose()
         {
             this.Close();

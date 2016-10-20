@@ -43,7 +43,6 @@ namespace TessMVP2.Presenter
                     if (kvp.Value.Count > 0)
                     {
                         dynControl.TextBoxText = kvp.Value[0];
-
                     }
                     _controlList.Add(dynControl);
                 }

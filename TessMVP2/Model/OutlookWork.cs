@@ -59,7 +59,7 @@ namespace TessMVP2.Model
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
             foreach (ContactItem cont in contacts.Items)
             {
-               if(CheckContact(BuildOlDict(cont)));
+               if(CheckContact(BuildOlDict(cont)))
                 hit = true;
             }
             if (!hit)

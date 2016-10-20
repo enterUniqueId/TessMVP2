@@ -15,6 +15,7 @@ namespace TessMVP2.View.Interfaces
         ToolStripItem TsiFuji { get; }
         ToolStripItem TsiWia { get; }
         string FormStartText { get; set; }
+        string F1Btn1Text { get; set; }
         bool BtnStatus { get; set; }
         void FormClose();
         void FormHide();

@@ -37,6 +37,8 @@ namespace TessMVP2.View
             }
         }
 
+        public string F1Btn1Text { get { return this.button1.Text; }set { this.button1.Text = value; } }
+
         public FormStart(IMyPresenterFormStartCallbacks callback)
         {
             InitializeComponent();

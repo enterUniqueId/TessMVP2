@@ -40,6 +40,10 @@ namespace TessMVP2.Presenter
             this._outlook = new OutlookWork(this._inputResults, this);
             this._model.OlWork = this._outlook;
             _outlook.GetContacts();
+            _view2.FormClose();
+            
         }
+
+
     }
 }
