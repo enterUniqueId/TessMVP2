@@ -8,17 +8,10 @@ namespace TessMVP2.View
 {
     public partial class FormStart : Form, IMyViewFormStart
     {
-        public string FormStartText { get { return this.Text; } set { this.Text = value; } }
-        public string RichTextBoxText
-        {
-            get { return richTextBox1.Text; }
-            set
-            {
-                richTextBox1.Clear();
-                richTextBox1.AppendText(value);
-            }
-        }
+        public string FormStartText {set { this.Text = value; } }
+        public string F1lbl1Text { set { this.F1lbl1.Text = value; } }
         public bool BtnStatus { get { return this.button1.Enabled; } set { this.button1.Enabled = value; } }
+        public string F1Btn1Text { set { this.button1.Text = value; } }
         public ToolStripItem TsiFuji
         {
             get
@@ -36,8 +29,6 @@ namespace TessMVP2.View
                 return submenu.DropDown.Items[1];
             }
         }
-
-        public string F1Btn1Text { get { return this.button1.Text; }set { this.button1.Text = value; } }
 
         public FormStart(IMyPresenterFormStartCallbacks callback)
         {
@@ -81,6 +72,11 @@ namespace TessMVP2.View
         public void FormShow()
         {
             this.Show();
+        }
+
+        private void test()
+        {
+            
         }
 
 

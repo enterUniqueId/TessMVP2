@@ -9,12 +9,12 @@ namespace TessMVP2.Model
 {
     class StringProcessor
     {
-
+        private Dictionary<string, string> _resFields;
         private List<string> _specificStrings;
         private TessMainModel _mainModel;
         private string _ocrResult;
         private Dictionary<string, List<string>> _resDict;
-
+        public Dictionary<string, string> ResFields { get { return _resFields; } private set { _resFields = value; } }
         public StringProcessor(TessMainModel parentModel)
         {
             this._mainModel = parentModel;
@@ -27,6 +27,21 @@ namespace TessMVP2.Model
             //GetEmail();
             SearchKeyWords();
             GetField();
+        }
+
+        public Dictionary<string,string> TransformResDict(Dictionary<string,List<string>> dictIn) {
+            var dictOut = new Dictionary<string, string>();
+            foreach(var kvp in dictIn)
+            {
+                for(int i = 0; i < kvp.Value.Count;i++)
+                {
+                    if (i < 1)
+                        dictOut.Add(kvp.Key, kvp.Value[i]);
+                    else
+                        dictOut.Add(kvp.Key + "i", kvp.Value[i]);
+                }
+            }
+            return dictOut;
         }
 
         private void splitString()
@@ -307,7 +322,7 @@ namespace TessMVP2.Model
 
         private void FillStreetCity()
         {
-            //patter wie Asdfs 45 (/3 oder -3)// max vierstellige hausnummer mit einstelligem \d Zusatz
+            //pattern wie Asdfs 45 (/3 oder -3)// max vierstellige hausnummer mit einstelligem \d Zusatz
             var street = new Regex(@"([A-ZÖÄÜ][a-züäöß\- ]+\.? )(\d{1,4})([\/|\-]\d)?");
             var plz = new Regex(@"(\d{5})");
             var ort = new Regex(@"([a-zA-ZäöüÖÄÜß])([ \w\-]+)$");

@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Drawing;
-using System.Threading.Tasks;
-using TessMVP2.View.Interfaces;
 using TessMVP2.View;
-using System.Windows.Forms;
 
 namespace TessMVP2.Presenter
 {
     class BuildFormCompare
     {
+        private List<object> _allContacts;
         private Dictionary<string, string> _conformities;
         private Dictionary<string, string> _newContactDict;
         private Dictionary<string, string> _oldContactDict;
         private List<DynamicControlViewModel> _controlList;
         public List<DynamicControlViewModel> ControlList { get { return this._controlList; } }
+        
 
 
-        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms)
+        public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
+                                   List<object> allContacts)
         {
             this._oldContactDict = oldContactVals;
             this._oldContactDict.Remove("EntryID");
             this._newContactDict = newContactvals;
             this._newContactDict.Remove("EntryID");
             this._conformities = conforms;
+            this._allContacts = allContacts;
             BuildList();
         }
 
@@ -73,7 +71,6 @@ namespace TessMVP2.Presenter
                 else
                     dynControl.TextBoxText = _newContactDict.ElementAt(i).Value;
                 _controlList.Add(dynControl);
-                PaintPanel(dynControl, dynPanControl);
                 i++;
 
             }
@@ -86,32 +83,26 @@ namespace TessMVP2.Presenter
             dynControl = new DynamicControlViewModel();
             dynControl.ControlType = DynamicControlViewModel.ControlTypes.Button;
             dynControl.ButtonName = "F3BtnUpdate";
-            dynControl.ButtonText = "Update";
+            dynControl.ButtonText = "Kontakt aktualisieren";
             _controlList.Add(dynControl);
 
             dynControl = new DynamicControlViewModel();
             dynControl.ControlType = DynamicControlViewModel.ControlTypes.Button;
             dynControl.ButtonName = "F3BtnCreate";
-            dynControl.ButtonText = "Anlegen";
+            dynControl.ButtonText = "Kontakt Anlegen";
             _controlList.Add(dynControl);
 
             dynControl = new DynamicControlViewModel();
             dynControl.ControlType = DynamicControlViewModel.ControlTypes.Button;
             dynControl.ButtonName = "F3BtnCancel";
-            dynControl.ButtonText = "Cancel";
+            dynControl.ButtonText = "Abbrechen";
             _controlList.Add(dynControl);
 
-        }
-
-        private void PaintPanel(DynamicControlViewModel textbox, DynamicControlViewModel panel)
-        {
-            foreach (var kvp in _conformities)
-            {
-                if (kvp.Value == textbox.TextBoxText)
-                    panel.Col = DynamicControlViewModel.Colors.AliceBlue;
-                else
-                    panel.Col = DynamicControlViewModel.Colors.control;
-            }
+            dynControl = new DynamicControlViewModel();
+            dynControl.ControlType = DynamicControlViewModel.ControlTypes.ComboBox;
+            dynControl.ComboBoxName = "F3CbContacts";
+            dynControl.ComboBoxItems = _allContacts;
+            _controlList.Add(dynControl);
         }
 
 

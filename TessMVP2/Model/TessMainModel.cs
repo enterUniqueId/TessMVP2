@@ -17,6 +17,7 @@ namespace TessMVP2.Model
         public event OcrChangedHandler OcrResultChanged;
         public delegate void FinishedStringChangedHandler(object sender, EventArgs e);
         public event FinishedStringChangedHandler FinishedStringChanged;
+        private Dictionary<string, string> _resFields;
 
         public OutlookWork OlWork { get; set; }
         private string _imgPath;
@@ -24,6 +25,8 @@ namespace TessMVP2.Model
         private StringProcessor _stringProcessor;
         public string OcrResult { get; private set; }
         public Dictionary<string, List<string>> StringResult { get; private set; }
+        public Dictionary<string, string> ResFields { get { return _resFields; } set { _resFields = value; } }
+
         public string ImgPath
         {
             get { return _imgPath; }
@@ -54,9 +57,10 @@ namespace TessMVP2.Model
             if (this.OcrResultChanged != null)
                 this.OcrResultChanged(this, EventArgs.Empty);
 
-            this._stringProcessor = new StringProcessor(this);
-            this._stringProcessor.Start();
-            this.StringResult = _stringProcessor.ResDict;
+            _stringProcessor = new StringProcessor(this);
+            _stringProcessor.Start();
+            _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
+            //this.StringResult = _stringProcessor.ResDict;
             if (this.FinishedStringChanged != null)
                 this.FinishedStringChanged(this, EventArgs.Empty);
             //Detach(callback);

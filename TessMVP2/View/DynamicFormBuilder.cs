@@ -29,13 +29,13 @@ namespace TessMVP2.View
                 var fp = new FlowLayoutPanel();
                 var pbox = new PictureBox();
                 var cmenu = new ContextMenu();
+                var cb = new ComboBox();
                 foreach (DynamicControlViewModel model in value)
                 {
                     // build up user controls here....
                     switch (model.ControlType)
                     {
                         case DynamicControlViewModel.ControlTypes.TextBox:
-                            //if (!model.TextBoxName.ToLower().Contains("name"))
                             tb = new TextBox();
                             tb.Name = model.TextBoxName;
                             tb.Text = model.TextBoxText;
@@ -50,7 +50,7 @@ namespace TessMVP2.View
                             btn.Name = model.ButtonName;
                             btn.Text = model.ButtonText;
                             SetDefaultButtonProps(btn, rtb);
-                            fp.Controls.Add(btn);
+                            pan.Controls.Add(btn);
                             break;
                         case DynamicControlViewModel.ControlTypes.Label:
                             //if (!model.LabelName.ToLower().Contains("name"))
@@ -77,7 +77,8 @@ namespace TessMVP2.View
                             break;
                         case DynamicControlViewModel.ControlTypes.Panel:
                             pan = new Panel();
-                            SetPanProps(pan,model.Col);
+                            SetPanProps(pan, model.Col);
+                            pan.Name = model.PanelName;
                             fp.Controls.Add(pan);
                             break;
                         case DynamicControlViewModel.ControlTypes.Pbox:
@@ -93,6 +94,16 @@ namespace TessMVP2.View
                         case DynamicControlViewModel.ControlTypes.CmenuItem:
                             cmenu.MenuItems.Add(model.CmenuItemName);
                             break;
+                        case DynamicControlViewModel.ControlTypes.ComboBox:
+                            cb = new ComboBox();
+                            cb.Name = model.ComboBoxName;
+                            foreach (var item in model.ComboBoxItems)
+                            {
+                                cb.Items.Add(item.ToString());
+                            }
+                            SetComboBoxProps(cb, fp);
+                            fp.Controls.Add(cb);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -102,6 +113,7 @@ namespace TessMVP2.View
 
         }
 
+
         public DynamicFormBuilder(Form form, IEnumerable<DynamicControlViewModel> list)
         {
             this._form = form;
@@ -109,6 +121,12 @@ namespace TessMVP2.View
             this._pboxImageChecked = Image.FromFile(imgFile);
             DynamicControls = list;
 
+        }
+
+        private void SetComboBoxProps(ComboBox box, FlowLayoutPanel fpan)
+        {
+            var parentPanel = fpan.Controls[fpan.Controls.Count - 1] as Panel;
+            box.Margin = new Padding((int)(parentPanel.Width / 2 - box.Width / 2), 25, 0, 0);
         }
 
         private void SetTextboxProps(TextBox tb)

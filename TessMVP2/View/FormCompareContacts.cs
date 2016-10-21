@@ -14,10 +14,13 @@ namespace TessMVP2.View
 
     public partial class FormCompareContacts : Form, IViewModelFormCompare
     {
+        private ComboBox _contactComboBox;
         private IEnumerable<DynamicControlViewModel> _dynamicControls;
         private Control.ControlCollection _formCompareClist;
         private List<Control> _contlist;
         public Control.ControlCollection FormCompareClist { get { return this._formCompareClist; } }
+        public string FormBezeichnung { get { return this.Text; } set { this.Text = value; } }
+                
 
 
         public IEnumerable<DynamicControlViewModel> DynamicControls
@@ -43,11 +46,16 @@ namespace TessMVP2.View
         {
             var dfb = new DynamicFormBuilder(this, list);
             this._formCompareClist = this.Controls as ControlCollection;
-            var bla = this.Controls;
-            _update = this.Controls.Find("F3BtnUpdate", true)[0] as Button;
-            _createNew= this.Controls.Find("F3BtnCreate", true)[0] as Button;
-            _cancel = this.Controls.Find("F3BtnCancel", true)[0] as Button;
+            var bla = Controls;
+            _update = Controls.Find("F3BtnUpdate", true)[0] as Button;
+            _createNew = Controls.Find("F3BtnCreate", true)[0] as Button;
+            _cancel = Controls.Find("F3BtnCancel", true)[0] as Button;
+            var panel = Controls.Find("F3BtnPanel", true)[0] as Panel;
             SetFormProps();
+            
+            SetButtonProps(_update,panel);
+            SetButtonProps(_createNew, panel);
+            SetButtonProps(_cancel, panel);
             //InitializeComponent();
         }
 
@@ -55,16 +63,16 @@ namespace TessMVP2.View
         {
             this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowOnly;
-            this.Text = "Übereinstimmung gefunden";
         }
 
 
         private void SetButtonProps(Button btn, Panel parent)
         {
             btn.AutoSize = true;
+            btn.Width = _update.Width;
             btn.Dock = DockStyle.None;
             int xloc = (int)(parent.Width / 2 - btn.Width / 2);
-            int yloc = (int)(parent.Height / 3 - btn.Height / parent.Controls.Count) * parent.Controls.Count;
+            int yloc = (int)(parent.Height / 3 - btn.Height / parent.Controls.Count) * parent.Controls.IndexOf(btn)+10;
             //btn.Margin = new Padding(padlr, 15, padlr, 0);
             btn.Location = new Point(xloc, yloc);
         }
@@ -98,7 +106,7 @@ namespace TessMVP2.View
                 {
                     for (int i = 0; i < c.ContextMenu.MenuItems.Count; i++)
                     {
-                        
+
                         c.ContextMenu.MenuItems[i].Click += new EventHandler(callback.OnCmClick);
                     }
                 }

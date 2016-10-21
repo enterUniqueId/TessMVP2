@@ -22,9 +22,11 @@ namespace TessMVP2.Model
         public List<Dictionary<string, string>> OutlookContacts { get { return this._outlookContacts; } set { this._outlookContacts = value; } }
         public Dictionary<string, string> Hits { get { return this._hits; } private set { this._hits = value; } }
         public Dictionary<string,string> OutlookCurrentContact{ get { return _outlookCurrentContact; }}
+
         public delegate void DuplicateHitHandler(object sender, EventArgs e);
         public event DuplicateHitHandler DuplicateHit;
-
+        public delegate void NoDuplicateHitHandler(object sender, EventArgs e);
+        public event NoDuplicateHitHandler NoDuplicatesFound;
 
         public OutlookWork(Dictionary<string, string> inputResults, IMyPresenterOutlookCallbacks callback)
         {
@@ -53,8 +55,7 @@ namespace TessMVP2.Model
         public void GetContacts()
         {
             bool hit = false;
-            // OutlookContacts = new List<Dictionary<string, string>>();
-            var outlookApplication = new ApplicationClass();  //outlook interop einbetten false; wie bei WIA
+            var outlookApplication = new ApplicationClass(); 
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
             foreach (ContactItem cont in contacts.Items)
@@ -63,7 +64,25 @@ namespace TessMVP2.Model
                 hit = true;
             }
             if (!hit)
-                CreateContact();
+                if (NoDuplicatesFound != null)
+                    NoDuplicatesFound(this, EventArgs.Empty);
+                    
+                    //CreateContact();
+        }
+
+        public List<object> GetAllContacts()
+        {
+            var contactsList = new List<object>();
+            var outlookApplication = new ApplicationClass();
+            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+            foreach (ContactItem c in contacts.Items) {
+                var contactObject = new object[2];
+                contactObject[0] = new { name =c.FullName };
+                contactObject[1] = new { id = c.EntryID };
+                contactsList.Add(contactObject);
+            }
+            return contactsList;
         }
 
         public void CreateContact()
@@ -71,8 +90,6 @@ namespace TessMVP2.Model
             bool hasCustomProps = false;
             var outlookApplication = new ApplicationClass();
             var customFields = new Dictionary<string, string>();
-            //################ evtl. noch implementieren
-            //MAPIFolder oContactsFolder = mapiNamespace.PickFolder();###############
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
 
@@ -213,8 +230,8 @@ namespace TessMVP2.Model
             {
                 this._entryID = outlookContact["EntryID"];
                 _outlookCurrentContact = outlookContact;
-                if (this.DuplicateHit != null)
-                    this.DuplicateHit(this, EventArgs.Empty);
+                if (DuplicateHit != null)
+                        DuplicateHit(this, EventArgs.Empty);
                 _hits.Clear();
             }
             return hit;
@@ -224,6 +241,7 @@ namespace TessMVP2.Model
         private void Attach(IMyPresenterOutlookCallbacks callback)
         {
             DuplicateHit += (sender, e) => callback.OnRedundantEntryFound();
+            NoDuplicatesFound += (sender, e) => callback.OnNoDuplicatesFound();
         }
 
         private Dictionary<string, string> BuildOlDict(ContactItem contact)

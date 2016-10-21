@@ -11,11 +11,11 @@ namespace TessMVP2.View.Interfaces
 {
     public interface IMyViewFormStart : IView<IMyPresenterFormStartCallbacks>
     {
-        string RichTextBoxText { get; set; }
         ToolStripItem TsiFuji { get; }
         ToolStripItem TsiWia { get; }
-        string FormStartText { get; set; }
-        string F1Btn1Text { get; set; }
+        string FormStartText { set; }
+        string F1Btn1Text { set; }
+        string F1lbl1Text { set; }
         bool BtnStatus { get; set; }
         void FormClose();
         void FormHide();

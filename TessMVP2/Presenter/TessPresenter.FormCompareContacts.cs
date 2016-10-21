@@ -89,9 +89,8 @@ namespace TessMVP2.Presenter
 
         public void OnButtonUpdateClick()
         {
-            _processUserInput.Clist = this._clist;
             _processUserInput.ResDict.Clear();
-            _processUserInput.GetInputs(true, true, 5);
+            _processUserInput.GetInputs(null, true, 5);
             this._inputResults = _processUserInput.ResDict;
             this._inputResults.Add("EntryID", _outlook.EntryID);
             _outlook.UpdateExistingContact(_inputResults);

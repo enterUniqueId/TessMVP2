@@ -19,7 +19,8 @@ namespace TessMVP2.View
             Panel,
             Pbox,
             Cmenu,
-            CmenuItem
+            CmenuItem,
+            ComboBox
 
         }
 
@@ -46,6 +47,9 @@ namespace TessMVP2.View
         public string PboxName { get; set; }
         public string CmenuName { get; set; }
         public string CmenuItemName { get; set; }
+        public string ComboBoxName { get; set; }
+        public bool Panvis { get; set; }
+        public List<object> ComboBoxItems { get; set; }       
         public ControlTypes ControlType { get; set; }
         public Colors Col { get; set; }
     }

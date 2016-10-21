@@ -65,6 +65,7 @@ namespace TessMVP2.Presenter
             _view1.BtnStatus = false;
             this._fuji = new FujiFolderObs(this, _fujiFolder, _fujiFormat);
             _fuji.FSW.SynchronizingObject = _view1 as Form;
+            _view1.F1lbl1Text = "Bitte scannen Sie das Objekt";
 
         }
 
@@ -91,14 +92,6 @@ namespace TessMVP2.Presenter
 
         public void OnOcrResultChanged()
         {
-            try
-            {
-                _view1.RichTextBoxText = _model.OcrResult;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         public void OnStringFinished()
@@ -107,24 +100,27 @@ namespace TessMVP2.Presenter
             //_view2 = new FormFieldControl(bffc.ControlList, this);
             //_view2.DynamicControls = bffc.ControlList;
 
-            var processInput = new ProcessUserResults(_view2.FormFieldClist[0]);
-            this._processUserInput = processInput;
-            processInput.GetInputs();
-            this._inputResults = new Dictionary<string, string>();
-            this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults, this);
-            this._model.OlWork = this._outlook;
-
-            this._view1.FormHide();
-            this._view2.FormShow();
+            //var processInput = new ProcessUserResults(_view2.FormFieldClist[0]);
+            //this._processUserInput = processInput;
+            //processInput.GetInputs();
+            //this._inputResults = new Dictionary<string, string>();
+            //this._inputResults = processInput.ResDict;
+            _outlook = new OutlookWork(_model.ResFields, this);
+            _model.OlWork = _outlook;
+            _outlook.GetContacts();
+            //this._view1.FormHide();
+            //this._view2.FormShow();
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits);
+            var allContacts = _outlook.GetAllContacts();
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
             _view3 = new FormCompareContacts(bfc.ControlList);
-            this._clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
-            _view3.FormShowDialog(_clist,this);
+            _processUserInput = new ProcessUserResults();
+            _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+            _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
+            _view3.FormShowDialog(_clist, this);
         }
 
 
@@ -141,6 +137,17 @@ namespace TessMVP2.Presenter
             _model.ImgPath = _imgEdit.NewFilepath;
             _model.Start(this);
             _fuji.Attach(this);
+        }
+
+        public void OnNoDuplicatesFound()
+        {
+            var allContacts = _outlook.GetAllContacts();
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
+            _view3 = new FormCompareContacts(bfc.ControlList);
+            _processUserInput = new ProcessUserResults();
+            _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+            _view3.FormBezeichnung = "Scandaten bearbeiten";
+            _view3.FormShowDialog(_clist, this);
         }
     }
 }

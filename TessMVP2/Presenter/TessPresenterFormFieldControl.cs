@@ -32,11 +32,11 @@ namespace TessMVP2.Presenter
 
         public void OnBtnCommitClick()
         {
-            var processInput = new ProcessUserResults(_view2.FormFieldClist[0]);
-            this._processUserInput = processInput;
-            processInput.GetInputs();
-            this._inputResults = new Dictionary<string, string>();
-            this._inputResults = processInput.ResDict;
+            var processInput = new ProcessUserResults();
+            //this._processUserInput = processInput;
+            //processInput.GetInputs();
+            //this._inputResults = new Dictionary<string, string>();
+            //this._inputResults = processInput.ResDict;
             this._outlook = new OutlookWork(this._inputResults, this);
             this._model.OlWork = this._outlook;
             _outlook.GetContacts();
