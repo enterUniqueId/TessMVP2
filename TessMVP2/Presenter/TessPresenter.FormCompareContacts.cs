@@ -12,6 +12,7 @@ namespace TessMVP2.Presenter
         private IViewModelFormCompare _view3;
         public object View3 { get { return _view3; } }
         private List<Control> _clist;
+        private string _lastContactIDSelected;
 
 
 
@@ -19,6 +20,9 @@ namespace TessMVP2.Presenter
         {
             TextBox tb = sender as TextBox;
             tb.Size = TbAutosize(tb);
+            var pan = tb.Parent as Panel;
+            var lbl = pan.Controls[2] as Label;
+            lbl.Text = lbl.Text.Substring(0, lbl.Text.IndexOf(":") + 1) + tb.Text;
         }
 
         private Size TbAutosize(TextBox tb)
@@ -54,14 +58,36 @@ namespace TessMVP2.Presenter
             return null;
         }
 
+        private void SetupOwnPanel(object sender, string cmText)
+        {
+            var mi = sender as MenuItem;
+            var mm = mi.GetContextMenu();
+            var lbl = mm.SourceControl as Label;
+            string oldLabelName = lbl.Name;
+            var panel = lbl.Parent as Panel;
+            var fpan = panel.Parent as FlowLayoutPanel;
+            var tb = panel.Controls.Find("F3Tb" + oldLabelName.Substring(5), true)[0] as TextBox;
+            var tb2 = fpan.Controls.Find("F3Tb" + cmText, true)[0] as TextBox;
+            var lbl2 = fpan.Controls.Find("F3lbl" + cmText, true)[0] as Label;
+
+
+            tb2.Name ="F3Tb"+ oldLabelName.Substring(5);
+            lbl2.Text = oldLabelName.Substring(5)+":";
+            lbl2.Name = oldLabelName;
+            lbl.Name = "F3lbl" + cmText;
+            lbl.Text = cmText + ":" + tb.Text;
+            tb.Name = "F3Tb" + cmText;
+            
+        }
+
         public void BuildNewLabelText(MenuItem item, string tbText)
         {
             ContextMenu owner = item.Parent as ContextMenu;
             if (owner != null)
             {
                 var lbl = owner.SourceControl as Label;
-                string sr = lbl.Text.Substring(0, lbl.Text.IndexOf(":") + 1);
-                lbl.Text = sr + tbText;
+                //string sr = lbl.Text.Substring(0, lbl.Text.IndexOf(":") + 1);
+                lbl.Text = item.Text + tbText;
 
                 var pan = lbl.Parent as Panel;
                 //pan.BackColor = SystemColors.Control;
@@ -82,8 +108,10 @@ namespace TessMVP2.Presenter
             MenuItem item = sender as MenuItem;
             if (item != null)
             {
-                var tbText = GetTextBoxTextFromCmItem(sender, item.Text);
-                BuildNewLabelText(item, tbText);
+                //SetupPanelItemsFromCm(sender, item.Text);
+                //var tbText = GetTextBoxTextFromCmItem(sender, item.Text);
+                //BuildNewLabelText(item, tbText);
+                SetupOwnPanel(sender, item.Text);
             }
         }
 
@@ -92,22 +120,16 @@ namespace TessMVP2.Presenter
             _processUserInput.ResDict.Clear();
             _processUserInput.GetInputs(null, true, 5);
             this._inputResults = _processUserInput.ResDict;
+            if (_outlook.EntryID == null)
+                _outlook.EntryID = _lastContactIDSelected;
             this._inputResults.Add("EntryID", _outlook.EntryID);
             _outlook.UpdateExistingContact(_inputResults);
             _view3.FormClose();
-            try
-            {
-                _view2.FormClose();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         public void OnButtonCreateClick()
         {
-            this._outlook.CreateContact();
+            this._outlook.CreateContact(_outlook.ResultDict);
             _view3.FormClose();
             _view2.FormClose();
         }
@@ -120,6 +142,15 @@ namespace TessMVP2.Presenter
         public void OnForm3Closed()
         {
             //todo
+        }
+
+        public void OnCbSelectedItemChange(object sender, EventArgs e)
+        {
+            var cb = sender as ComboBox;
+            _lastContactIDSelected = cb.SelectedValue.ToString();
+            var contact = _outlook.GetContactItemFromID(_lastContactIDSelected);
+            var labelList = _outlook.BuildLabelFromContact(contact);
+            _view3.SetNewLabelText(labelList);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace TessMVP2.Model
         public void GetInputs(Control rootControl, bool isUpdate = false, int subStrIndex = 4)
         {
             var clist = new List<Control>();
-            if (rootControl==null)
+            if (rootControl!=null)
             {
                 clist = getControls(rootControl);
             }

@@ -15,6 +15,7 @@ namespace TessMVP2.Presenter.Interfaces.View
         void OnForm3Closed();
         void OnCmClick(object sender, EventArgs e);
         void OnTbTextChanged(object sender, EventArgs e);
+        void OnCbSelectedItemChange(object sender, EventArgs e);
 
     }
 }

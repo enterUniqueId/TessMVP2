@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Outlook;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace TessMVP2.View
         private Form _form;
         private Image _pboxImageChecked;
         public Form DynForm { get { return _form; } }
+
 
         public IEnumerable<DynamicControlViewModel> DynamicControls
         {
@@ -97,10 +99,25 @@ namespace TessMVP2.View
                         case DynamicControlViewModel.ControlTypes.ComboBox:
                             cb = new ComboBox();
                             cb.Name = model.ComboBoxName;
-                            foreach (var item in model.ComboBoxItems)
+                            var contlist = new List<object>();
+                            foreach (ContactItem item in model.ComboBoxItems)
                             {
-                                cb.Items.Add(item.ToString());
+                                if (item.FullName == "dummy")
+                                {
+                                    item.Delete();
+                                    continue;
+                                }
+                                contlist.Add(new { FullName = item.FullName, EntryID = item.EntryID });
                             }
+
+                            cb.DataSource = null;
+                            cb.Items.Clear();
+                            cb.DataSource = new BindingSource(contlist, null);
+                            cb.DisplayMember = "FullName";
+                            cb.ValueMember = "EntryID";
+                            if (cb.Items.Count > 0)
+                                cb.SelectedItem = 0;
+
                             SetComboBoxProps(cb, fp);
                             fp.Controls.Add(cb);
                             break;

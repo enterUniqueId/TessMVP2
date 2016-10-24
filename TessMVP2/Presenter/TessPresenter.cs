@@ -114,8 +114,9 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
+            // var allContacts = _outlook.GetAllContacts();
             var allContacts = _outlook.GetAllContacts();
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
+             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
             _view3 = new FormCompareContacts(bfc.ControlList);
             _processUserInput = new ProcessUserResults();
             _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
@@ -141,7 +142,9 @@ namespace TessMVP2.Presenter
 
         public void OnNoDuplicatesFound()
         {
+            //var allContacts = _outlook.GetAllContacts();
             var allContacts = _outlook.GetAllContacts();
+
             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
             _view3 = new FormCompareContacts(bfc.ControlList);
             _processUserInput = new ProcessUserResults();

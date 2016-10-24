@@ -245,6 +245,7 @@ namespace TessMVP2.Model
                                 {
                                     var plz = new Regex(@"(\d{5})");
                                     CheckRegEx(plz,"Postleitzahl", kvp.Value);
+                                    //abziehen noch
 
                                 }
                                 else

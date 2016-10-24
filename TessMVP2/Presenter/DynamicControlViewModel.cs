@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Outlook;
 
 namespace TessMVP2.View
 {
@@ -49,7 +50,8 @@ namespace TessMVP2.View
         public string CmenuItemName { get; set; }
         public string ComboBoxName { get; set; }
         public bool Panvis { get; set; }
-        public List<object> ComboBoxItems { get; set; }       
+        //public List<object> ComboBoxItems { get; set; }       
+        public Items ComboBoxItems { get; set; }
         public ControlTypes ControlType { get; set; }
         public Colors Col { get; set; }
     }

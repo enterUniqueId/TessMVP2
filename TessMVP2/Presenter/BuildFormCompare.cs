@@ -1,22 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TessMVP2.View;
+using Microsoft.Office.Interop.Outlook;
 
 namespace TessMVP2.Presenter
 {
     class BuildFormCompare
     {
-        private List<object> _allContacts;
+        //private List<object> _allContacts;
+        private Items _allContacts;
         private Dictionary<string, string> _conformities;
         private Dictionary<string, string> _newContactDict;
         private Dictionary<string, string> _oldContactDict;
         private List<DynamicControlViewModel> _controlList;
         public List<DynamicControlViewModel> ControlList { get { return this._controlList; } }
-        
 
+
+
+        //public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
+        //                           List<object> allContacts)
+        //{
+        //    this._oldContactDict = oldContactVals;
+        //    this._oldContactDict.Remove("EntryID");
+        //    this._newContactDict = newContactvals;
+        //    this._newContactDict.Remove("EntryID");
+        //    this._conformities = conforms;
+        //    this._allContacts = allContacts;
+        //    BuildList();
+        //}
 
         public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
-                                   List<object> allContacts)
+                         Items allContacts)
         {
             this._oldContactDict = oldContactVals;
             this._oldContactDict.Remove("EntryID");
@@ -26,6 +40,7 @@ namespace TessMVP2.Presenter
             this._allContacts = allContacts;
             BuildList();
         }
+
 
         private void BuildList()
         {

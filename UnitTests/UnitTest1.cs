@@ -17,7 +17,7 @@ namespace UnitTests
         {
             int number = Number();
             Assert.AreEqual(number, 40);
-            Assert.
+            //Assert.
         }
 
 

@@ -64,28 +64,42 @@ namespace TessMVP2.Model
                 hit = true;
             }
             if (!hit)
+            {
+                var dummy = new Dictionary<string, string>() { { "name", "dummy" } };
+                var contact=CreateContact(dummy);
+                _outlookCurrentContact= BuildOlDict(contact);
                 if (NoDuplicatesFound != null)
                     NoDuplicatesFound(this, EventArgs.Empty);
-                    
-                    //CreateContact();
+            }
         }
 
-        public List<object> GetAllContacts()
+        public void DeleteContact(ContactItem contact)
         {
-            var contactsList = new List<object>();
+            contact.Delete();
+        }
+
+        public Items GetAllContacts()
+        {
             var outlookApplication = new ApplicationClass();
             NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
             MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-            foreach (ContactItem c in contacts.Items) {
-                var contactObject = new object[2];
-                contactObject[0] = new { name =c.FullName };
-                contactObject[1] = new { id = c.EntryID };
-                contactsList.Add(contactObject);
-            }
-            return contactsList;
+            return contacts.Items;
         }
 
-        public void CreateContact()
+        //public List<object> GetAllContacts()
+        //{
+        //    var contactsList = new List<object>();
+        //    var outlookApplication = new ApplicationClass();
+        //    NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+        //    MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+        //    foreach (ContactItem c in co)
+        //    {
+        //        contactsList.Add(contacts.Items);
+        //    }
+        //    return contactsList;
+        //}
+
+        public ContactItem CreateContact(Dictionary<string,string> contactToCreate)
         {
             bool hasCustomProps = false;
             var outlookApplication = new ApplicationClass();
@@ -94,7 +108,7 @@ namespace TessMVP2.Model
             ContactItem contact = outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
 
             //zuordnung der ergebnisse zu den outlook contacts feldern
-            foreach (var kvp in _resultDict)
+            foreach (var kvp in contactToCreate)
             {
                 switch (kvp.Key.ToLower())
                 {
@@ -155,6 +169,7 @@ namespace TessMVP2.Model
             contact.Save();
             if (hasCustomProps)
                 CreateCustomFields(contact, customFields);
+            return contact;
         }
 
         public void CreateCustomFields(ContactItem contact, Dictionary<string, string> fields)
@@ -242,6 +257,30 @@ namespace TessMVP2.Model
         {
             DuplicateHit += (sender, e) => callback.OnRedundantEntryFound();
             NoDuplicatesFound += (sender, e) => callback.OnNoDuplicatesFound();
+        }
+
+        public ContactItem GetContactItemFromID(string entryID)
+        {
+            var outlookApplication = new ApplicationClass();
+            NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
+            MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
+
+            foreach(ContactItem c in contacts.Items)
+            {
+                if (c.EntryID == entryID)
+                    return c;
+            }
+            return null;
+            //return contacts.Items.Find(String.Format("[EntryID]='{0}'",entryID)) as ContactItem;
+        }
+
+        public List<string> BuildLabelFromContact(ContactItem contact)
+        {
+            var list = new List<string>();
+            var dict = BuildOlDict(contact);
+            foreach (var kvp in dict)
+                list.Add(kvp.Key + ":" + kvp.Value);
+            return list;
         }
 
         private Dictionary<string, string> BuildOlDict(ContactItem contact)

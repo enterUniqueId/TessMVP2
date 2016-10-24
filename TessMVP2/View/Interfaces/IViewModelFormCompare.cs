@@ -14,6 +14,7 @@ namespace TessMVP2.View.Interfaces
         IEnumerable<DynamicControlViewModel> DynamicControls { set; }
         Control.ControlCollection FormCompareClist { get; }
         string FormBezeichnung { get; set; }
+        void SetNewLabelText(List<string> texts);
         void FormClose();
         void FormShowDialog(List<Control> clist, IPresenterFormCompareCallbacks callback);
     }
