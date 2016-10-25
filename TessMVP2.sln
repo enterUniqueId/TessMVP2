@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TessMVP2", "TessMVP2\TessMVP2.csproj", "{0C13698E-5674-4A8B-B5D9-952C9A47EE09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{73410B14-02C0-45D0-98F2-4FAE33FE0EC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TessMVP2UnitTests", "UnitTests\TessMVP2UnitTests.csproj", "{73410B14-02C0-45D0-98F2-4FAE33FE0EC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

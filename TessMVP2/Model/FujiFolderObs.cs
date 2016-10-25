@@ -7,9 +7,13 @@ using System.Windows.Forms;
 using System.IO;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("UnitTests")]
 
 namespace TessMVP2.Model
 {
+    
     class FujiFolderObs:IFujiModel
     {
         private FileSystemWatcher _fsw;

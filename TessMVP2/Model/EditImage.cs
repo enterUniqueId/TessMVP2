@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace TessMVP2.Model
 {
-    class EditImage
+    public class EditImage
     {
         private string _newFilepath;
         public string NewFilepath { get { return this._newFilepath; } set { this._newFilepath = value; } }
