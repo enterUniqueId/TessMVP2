@@ -19,7 +19,8 @@ namespace TessMVP2.Model.Tests
         private ManualResetEventSlim _me;
         private MAPIFolder _contacts;
         private OutlookWork _outlookObj;
-        private Dictionary<string,string> _testDict;
+        private Dictionary<string, string> _testDict;
+        private delegate bool Predicate(string y, string x);
 
         public OutlookWorkTests()
         {
@@ -33,31 +34,17 @@ namespace TessMVP2.Model.Tests
             _outlookObj = new OutlookWork(dict, this);
         }
 
-        private bool FindContact(string entryId)
+        private bool FindContact(string entryID)
         {
             foreach (ContactItem contact in _contacts.Items)
             {
-                if(contact.EntryID == entryId)
-                {
+                if (contact.EntryID == entryID)
                     return true;
-                }      
             }
             return false;
         }
 
-        private Dictionary<string,string> CreateTestDict()
-        {
-            ContactItem contact = _contacts.Items[1] as ContactItem;
-            var dict = new Dictionary<string, string>();
-            foreach (ItemProperty prop in contact.ItemProperties)
-            {
-                if (prop.Name == "FullName")
-                    dict.Add(prop.Name, "UnitTest");
-                else
-                    dict.Add(prop.Name, "");
-            }
-            return dict;
-        }
+
 
 
         [TestMethod()]
@@ -70,7 +57,7 @@ namespace TessMVP2.Model.Tests
         public void GetContactsTest()
         {
             _isRedundand = false;
-            
+
 
             //bereits vorhandene Kontaktdaten generieren
             var contact = _contacts.Items[1] as ContactItem;
@@ -96,7 +83,12 @@ namespace TessMVP2.Model.Tests
         [TestMethod()]
         public void DeleteContactTest()
         {
-            Assert.Fail();
+            var createdContact = _outlookObj.CreateContact(_testDict);
+            bool a = (FindContact(createdContact.EntryID));
+            string sr = createdContact.EntryID;
+            createdContact.Delete();
+            Assert.IsTrue(!FindContact(sr) && a);
+
         }
 
         [TestMethod()]
@@ -109,7 +101,7 @@ namespace TessMVP2.Model.Tests
         [TestMethod()]
         public void CreateContactTest()
         {
-            var createdContact=_outlookObj.CreateContact(_testDict);
+            var createdContact = _outlookObj.CreateContact(_testDict);
             Assert.IsTrue(FindContact(createdContact.EntryID));
             createdContact.Delete();
         }
@@ -148,6 +140,30 @@ namespace TessMVP2.Model.Tests
         {
             _isRedundand = false;
             _me.Set();
+        }
+
+
+        private Dictionary<string, string> CreateTestDict()
+        {
+            var dict = new Dictionary<string, string>()
+            {
+                { "Name","UnitTest" },
+                { "Telefon-Nummer","" },
+                { "Telefon-Nummer2","" },
+                { "Mobil-Nummer","" },
+                { "Fax-Nummer",""},
+                { "Strasse","" },
+                { "Postleitzahl",""},
+                { "Ort",""},
+                { "Postfach",""},
+                { "Position","" },
+                { "Inet","" },
+                { "Firma",""},
+                { "Email",""},
+                { "Email2","" },
+                { "Email3","" }
+        };
+            return dict;
         }
     }
 }
