@@ -1,13 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TessMVP2.Model;
-using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using System.IO;
 using System.Threading;
 

@@ -10,9 +10,12 @@ using System.Collections.Generic;
 using System.IO;
 using TessMVP2.Presenter.Interfaces.View;
 using WIA;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("UnitTests")]
 namespace TessMVP2.Presenter
 {
+
     partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks, IMyPresenterFormStartCallbacks
     {
         private IMyViewFormStart _view1;
@@ -21,7 +24,7 @@ namespace TessMVP2.Presenter
         private Device _device;
 
 
-        public object View1 { get { return _view1; } }
+        public object View1 { get { return _view1; }  }
         public object Model { get { return _model; } }
 
         private Dictionary<string, string> _inputResults;
@@ -35,12 +38,22 @@ namespace TessMVP2.Presenter
 
         public TessPresenter()
         {
-            FormStart view = new FormStart(this);
-            this._view1 = view;
-            view.Show();
-            TessMainModel model = new TessMainModel();
-            this._model = model;
-            this._fujiFolder = @"/temp";
+            _view1 = new FormStart(this);
+            _view1.FormShow();
+            _model = new TessMainModel();
+            ctorHelper();
+        }
+
+        public TessPresenter(IMyViewFormStart view1, IMyModel model)
+        {
+            _view1 = view1;
+            _model = model;
+            ctorHelper();
+        }
+
+        private void ctorHelper()
+        {
+            this._fujiFolder = @"\temp";
             this._fujiFormat = "*jpg";
         }
 
@@ -92,24 +105,15 @@ namespace TessMVP2.Presenter
 
         public void OnOcrResultChanged()
         {
+            
         }
 
         public void OnStringFinished()
         {
-            //var bffc = new BuildFormFieldControl(_model.StringResult);
-            //_view2 = new FormFieldControl(bffc.ControlList, this);
-            //_view2.DynamicControls = bffc.ControlList;
 
-            //var processInput = new ProcessUserResults(_view2.FormFieldClist[0]);
-            //this._processUserInput = processInput;
-            //processInput.GetInputs();
-            //this._inputResults = new Dictionary<string, string>();
-            //this._inputResults = processInput.ResDict;
             _outlook = new OutlookWork(_model.ResFields, this);
             _model.OlWork = _outlook;
             _outlook.GetContacts();
-            //this._view1.FormHide();
-            //this._view2.FormShow();
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()

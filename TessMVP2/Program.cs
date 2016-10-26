@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using TessMVP2.Presenter;
+using TessMVP2.View.Interfaces;
 
 namespace TessMVP2
 {

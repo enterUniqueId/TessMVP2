@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Office.Interop.Outlook;
 using TessMVP2.Presenter.Interfaces;
 using System.Threading;
+using Moq;
 
 
 namespace TessMVP2.Model.Tests
@@ -44,9 +45,6 @@ namespace TessMVP2.Model.Tests
             return false;
         }
 
-
-
-
         [TestMethod()]
         public void OutlookWorkTest()
         {
@@ -57,7 +55,6 @@ namespace TessMVP2.Model.Tests
         public void GetContactsTest()
         {
             _isRedundand = false;
-
 
             //bereits vorhandene Kontaktdaten generieren
             var contact = _contacts.Items[1] as ContactItem;
@@ -101,9 +98,23 @@ namespace TessMVP2.Model.Tests
         [TestMethod()]
         public void CreateContactTest()
         {
-            var createdContact = _outlookObj.CreateContact(_testDict);
-            Assert.IsTrue(FindContact(createdContact.EntryID));
-            createdContact.Delete();
+            var ns = new Mock<NameSpace>();
+            var folder = new Mock<MAPIFolder>();
+            var contact = new Mock<ContactItem>();
+            ns.Setup(r => r.GetDefaultFolder(OlDefaultFolders.olPublicFoldersAllPublicFolders).Equals(folder));
+            folder.Setup(r => r.Items).Equals(contact);
+
+
+            //contact.Setup(r => r.Save(It.IsAny<ContactItem>() )).ret
+
+
+
+
+
+
+            //var createdContact = _outlookObj.CreateContact(_testDict);
+            //Assert.IsTrue(FindContact(createdContact.EntryID));
+            //createdContact.Delete();
         }
 
         [TestMethod()]
