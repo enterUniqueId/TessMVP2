@@ -6,16 +6,15 @@ namespace TessMVP2.Model
 {
     public class TessOcr
     {
-
-        private TessMainModel _mainModel;
+        private string _imgPath;
         private string _ocrResult;
         public string OcrResult { get { return _ocrResult; } }
 
 
 
-        public TessOcr(TessMainModel parentModel)
+        public TessOcr(string imgPath)
         {
-            this._mainModel = parentModel;
+            _imgPath = imgPath;
         }
 
         public void Start()
@@ -31,7 +30,7 @@ namespace TessMVP2.Model
                 using (TesseractEngine engine = new TesseractEngine(@"./tessdata", "deu", EngineMode.Default))
                 {
 
-                    using (Pix img = Pix.LoadFromFile( _mainModel.ImgPath ) )
+                    using (Pix img = Pix.LoadFromFile( _imgPath ) )
                     {
 
                         using (Page page = engine.Process(img))

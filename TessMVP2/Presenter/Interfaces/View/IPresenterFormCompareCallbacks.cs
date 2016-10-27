@@ -7,7 +7,7 @@ using TessMVP2.View;
 
 namespace TessMVP2.Presenter.Interfaces.View
 {
-    public interface IPresenterFormCompareCallbacks:IPresenter
+    public interface IPresenterFormCompareCallbacks:IMyPresenter
     {
         void OnButtonUpdateClick();
         void OnButtonCreateClick();

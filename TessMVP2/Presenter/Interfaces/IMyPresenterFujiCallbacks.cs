@@ -7,7 +7,7 @@ using System.IO;
 
 namespace TessMVP2.Presenter.Interfaces
 {
-    public interface IMyPresenterFujiCallbacks
+    public interface IMyPresenterFujiCallbacks:IMyPresenter
     {
         void OnImgFileCreated(object sender, FileSystemEventArgs e);
     }

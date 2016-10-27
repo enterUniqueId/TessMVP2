@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 namespace TessMVP2.Model
 {
     
-    class FujiFolderObs:IFujiModel
+    public class FujiFolderObs:IFujiModel
     {
         private FileSystemWatcher _fsw;
         private string _tempDir;

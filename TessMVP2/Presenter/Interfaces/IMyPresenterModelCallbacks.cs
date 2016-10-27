@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces
 {
-    public interface IMyPresenterModelCallbacks
+    public interface IMyPresenterModelCallbacks:IMyPresenter
     {
         void OnOcrResultChanged();
         void OnStringFinished();

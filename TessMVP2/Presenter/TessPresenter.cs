@@ -26,8 +26,6 @@ namespace TessMVP2.Presenter
         private OutlookWork _outlook;
         private ProcessUserResults _processUserInput;
         private FujiFolderObs _fuji;
-        private string _fujiFolder = @"\temp";
-        private string _fujiFormat = "*jpg";
         private EditImage _imgEdit;
 
         public object View1 { get { return _view1; } }
@@ -71,10 +69,9 @@ namespace TessMVP2.Presenter
         public void OnFujitsuClick()
         {
             _view1.BtnStatus = false;
-            this._fuji = new FujiFolderObs(this, _fujiFolder, _fujiFormat);
+            _fuji = _model.CreateFSW(this);
             _fuji.FSW.SynchronizingObject = _view1 as Form;
             _view1.F1lbl1Text = "Bitte scannen Sie das Objekt";
-
         }
 
         public void OnWiaClick()
@@ -111,7 +108,6 @@ namespace TessMVP2.Presenter
            
             var list=_model.BuildCompareForm();
             _view3 = new FormCompareContacts(list);
-           
             var clist=_model.GetControlInput(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
             _view3.FormShowDialog(clist, this);
@@ -125,9 +121,7 @@ namespace TessMVP2.Presenter
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)
         {
             _fuji.Detach(this);
-            _imgEdit = new EditImage();
-            _imgEdit.ImgBW(e.FullPath);
-            _model.ImgPath = _imgEdit.NewFilepath;
+            _model.EditImg(e.FullPath);
             _model.Start(this);
             _fuji.Attach(this);
         }
@@ -135,14 +129,12 @@ namespace TessMVP2.Presenter
         public void OnNoDuplicatesFound()
         {
             //var allContacts = _outlook.GetAllContacts();
-            var allContacts = _outlook.GetAllContacts();
-
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
-            _view3 = new FormCompareContacts(bfc.ControlList);
+            var list = _model.BuildCompareForm();
+            _view3 = new FormCompareContacts(list);
             _processUserInput = new ProcessUserResults();
-            _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+            var clist  = _model.GetControlInput(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Scandaten bearbeiten";
-            _view3.FormShowDialog(_clist, this);
+            _view3.FormShowDialog(clist, this);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces.View
 {
-    public interface IMyPresenterFormStartCallbacks:IPresenter
+    public interface IMyPresenterFormStartCallbacks:IMyPresenter
     {
         void OnButtonClick();
         void OnFujitsuClick();

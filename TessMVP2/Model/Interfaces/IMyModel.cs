@@ -22,5 +22,7 @@ namespace TessMVP2.Model.Interfaces
         bool WiaScan();
         List<DynamicControlViewModel> BuildCompareForm();
         List<Control> GetControlInput(Control cont);
+        string EditImg(string pathToImg);
+        FujiFolderObs CreateFSW(IMyPresenterFujiCallbacks callbacks);
     }
 }

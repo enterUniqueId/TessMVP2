@@ -8,6 +8,7 @@ using Tesseract;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
 using System.Windows.Forms;
+using System.IO;
 using WIA;
 using TessMVP2.View;
 
@@ -16,6 +17,8 @@ namespace TessMVP2.Model
     public class TessMainModel : IMyModel
     {
         private string _imgPath;
+        private string _fujiFolder = @"\temp";
+        private string _fujiFormat = "*jpg";
         private TessOcr _ocr;
         private StringProcessor _stringProcessor;
         private Scanner _scanner;
@@ -30,7 +33,7 @@ namespace TessMVP2.Model
         public string OcrResult { get; private set; }
         public Dictionary<string, List<string>> StringResult { get; private set; }
         public Dictionary<string, string> ResFields { get { return _resFields; } set { _resFields = value; } }
-        public ProcessUserResults ProcessUserInput { get { return _processUserInput; }set { _processUserInput = value; } }
+        public ProcessUserResults ProcessUserInput { get { return _processUserInput; } set { _processUserInput = value; } }
 
         public string ImgPath
         {
@@ -42,30 +45,30 @@ namespace TessMVP2.Model
         public void Attach(IMyPresenterModelCallbacks callback)
         {
             //this.RedundandEntryFound += (sender, e) => callback.OnRedundandEntryFound();
-            this.FinishedStringChanged += (sender, e) => callback.OnStringFinished();
+            FinishedStringChanged += (sender, e) => callback.OnStringFinished();
 
         }
 
         public void Detach(IMyPresenterModelCallbacks callback)
         {
-            this.FinishedStringChanged -= (sender, e) => callback.OnStringFinished();
+            FinishedStringChanged -= (sender, e) => callback.OnStringFinished();
         }
 
         public void Start(IMyPresenterModelCallbacks callback)
         {
             Attach(callback);
-            this._ocr = new TessOcr(this);
-            this.OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
-            this._ocr.Start();
-            this.OcrResult = this._ocr.OcrResult;
-            if (this.OcrResultChanged != null)
-                this.OcrResultChanged(this, EventArgs.Empty);
+            _ocr = new TessOcr(this);
+            OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
+            _ocr.Start();
+            OcrResult= _ocr.OcrResult;
+            if (OcrResultChanged != null)
+                OcrResultChanged(this, EventArgs.Empty);
 
             _stringProcessor = new StringProcessor(this);
             _stringProcessor.Start();
             _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
-            if (this.FinishedStringChanged != null)
-                this.FinishedStringChanged(this, EventArgs.Empty);
+            if (FinishedStringChanged != null)
+                FinishedStringChanged(this, EventArgs.Empty);
             FinishedStringChanged = null;
         }
 
@@ -129,13 +132,34 @@ namespace TessMVP2.Model
         {
             var allContacts = _outlook.GetAllContacts();
             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
-            return bfc.BuildList();          
+            return bfc.BuildList();
         }
 
         public List<Control> GetControlInput(Control cont)
         {
             _processUserInput = new ProcessUserResults();
             return _processUserInput.getControls(cont);
+        }
+
+        public string EditImg(string pathToImg)
+        {
+            var imgEdit = new EditImage();
+            try
+            {
+                imgEdit.ImgBW(pathToImg);
+                _imgPath = imgEdit.NewFilepath;
+                return imgEdit.NewFilepath;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public FujiFolderObs CreateFSW(IMyPresenterFujiCallbacks callbacks)
+        {
+            return new FujiFolderObs(callbacks, _fujiFolder, _fujiFormat);
+
         }
     }
 

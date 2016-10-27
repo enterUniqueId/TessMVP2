@@ -19,21 +19,7 @@ namespace TessMVP2.Presenter.Tests
         IMyPresenterModelCallbacks model;
         IMyViewFormStart view;
 
-        public object View1
-        {
-            get
-            {
-                return view;
-            }
-        }
-
-        public object View2
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public object View1 { get { return view; } }
 
         public object View3
         {
@@ -43,13 +29,7 @@ namespace TessMVP2.Presenter.Tests
             }
         }
 
-        public object Model
-        {
-            get
-            {
-                return model;
-            }
-        }
+        public object Model { get { return model; } }
 
         [TestInitialize()]
         public void MyTestInitialize()
