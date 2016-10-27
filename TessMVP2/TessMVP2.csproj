@@ -58,6 +58,7 @@
     <Compile Include="Model\FujiFolderObs.cs" />
     <Compile Include="Model\Interfaces\IFujiModel.cs" />
     <Compile Include="Model\Interfaces\IOutlookModel.cs" />
+    <Compile Include="Model\ScannerBase.cs" />
     <Compile Include="Presenter\BuildFormCompare.cs" />
     <Compile Include="Model\Dict.cs" />
     <Compile Include="Model\OutlookWork.cs" />

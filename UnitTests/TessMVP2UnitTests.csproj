@@ -59,12 +59,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Mocks\Interfaces\IMockModel.cs" />
-    <Compile Include="Mocks\Interfaces\IMockModelForm1.cs" />
-    <Compile Include="Mocks\Interfaces\IMockPresModelF1Callbacks.cs" />
-    <Compile Include="Mocks\Interfaces\IMockViewF1Callbacks.cs" />
-    <Compile Include="Mocks\Interfaces\IMockViewFormStart.cs" />
-    <Compile Include="Mocks\MockModelFormStart.cs" />
+    <Compile Include="Mocks\MockModel.cs" />
+    <Compile Include="Mocks\MockScanner.cs" />
     <Compile Include="Mocks\MockViewFormStart.cs" />
     <Compile Include="Model\EditImageTests.cs" />
     <Compile Include="Model\FujiFolderObsTests.cs" />
@@ -112,6 +108,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

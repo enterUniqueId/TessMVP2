@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using TessMVP2.Model;
 using TessMVP2.View.Interfaces;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
@@ -20,7 +21,7 @@ namespace TessMVP2.Presenter.Tests
     {
 
         private MockViewFormStart _view1;
-        private MockModelFormStart _model1;
+        private MockModel _model1;
         TessPresenter presenter;
         //zum übergeben an den presenter
         IMyPresenterModelCallbacks model;
@@ -62,7 +63,7 @@ namespace TessMVP2.Presenter.Tests
         public void MyTestInitialize()
         {
 
-            _model1 = new MockModelFormStart(this);
+            _model1 = new MockModel(this);
             _view1 = new MockViewFormStart(this);
             presenter = new TessPresenter(_view1, _model1);
 
@@ -77,7 +78,6 @@ namespace TessMVP2.Presenter.Tests
         [TestMethod()]
         public void OnButtonClickTest()
         {
-
             presenter.OnButtonClick();
             Assert.IsTrue(_view1.BtnStatus.Equals(true));
 
@@ -100,20 +100,17 @@ namespace TessMVP2.Presenter.Tests
         [TestMethod()]
         public void OnForm1ClosingTest()
         {
-            Assert.Fail();
-        }
-
-
-        [TestMethod()]
-        public void OnOcrResultChangedTest()
-        {
+            presenter.OnForm1Closing();
             Assert.Fail();
         }
 
         [TestMethod()]
         public void OnStringFinishedTest()
         {
-            Assert.Fail();
+            _model1.ResFields = new Dictionary<string, string>();
+
+            presenter.OnStringFinished();
+            Assert.IsNotNull(_model1.OlWork);
         }
 
         [TestMethod()]

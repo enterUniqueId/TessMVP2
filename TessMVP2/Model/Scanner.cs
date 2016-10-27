@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace TessMVP2.Model
 {
-    class Scanner
+    class Scanner:ScannerBase
     {
         // Scanner only device properties (DPS)
         const string WIA_SCAN_COLOR_DEPTH = "4104";
@@ -38,7 +38,7 @@ namespace TessMVP2.Model
             this.Device = null;
             try
             {
-                this.Device = dialog.ShowSelectDevice(
+                Device = dialog.ShowSelectDevice(
                 WiaDeviceType.ScannerDeviceType, true, false);
             }
             catch (Exception ex)

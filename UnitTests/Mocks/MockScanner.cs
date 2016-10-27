@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TessMVP2.Model;
 
-namespace UnitTests.Mocks.Interfaces
+namespace UnitTests.Mocks
 {
-    interface IMockModelForm1:IMockModel<IMockModelF1Callbacks>
+    class MockScanner:ScannerBase
     {
 
     }

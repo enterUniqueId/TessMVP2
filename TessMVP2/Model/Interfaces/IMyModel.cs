@@ -15,5 +15,9 @@ namespace TessMVP2.Model.Interfaces
         string ImgPath { get; set; }
         void Start(IMyPresenterModelCallbacks callbacks);
         OutlookWork OlWork { get; set; }
+        bool CreateScanner();
+        bool CleanupTempfolder();
+        bool CreateOutlook(IMyPresenterOutlookCallbacks callbacks);
+        bool WiaScan();
     }
 }

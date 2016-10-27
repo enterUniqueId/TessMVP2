@@ -22,49 +22,44 @@ namespace TessMVP2.Presenter
         private IMyModel _model;
         private Scanner _scanner;
         private Device _device;
-
-
-        public object View1 { get { return _view1; }  }
-        public object Model { get { return _model; } }
-
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
         private ProcessUserResults _processUserInput;
         private FujiFolderObs _fuji;
-        private string _fujiFolder;
-        private string _fujiFormat;
+        private string _fujiFolder = @"\temp";
+        private string _fujiFormat = "*jpg";
         private EditImage _imgEdit;
 
+        public object View1 { get { return _view1; } }
+        public object Model { get { return _model; } }
+        public bool ScannerIsSet { get; private set; }
+        public bool FolderCleaned { get; private set; }
+        public bool OutlookSet { get; private set; }
+        public bool ScanSucceeded { get; private set; }
 
         public TessPresenter()
         {
             _view1 = new FormStart(this);
             _view1.FormShow();
             _model = new TessMainModel();
-            ctorHelper();
         }
 
         public TessPresenter(IMyViewFormStart view1, IMyModel model)
         {
             _view1 = view1;
             _model = model;
-            ctorHelper();
+            ScannerIsSet = false;
+            _view1.BtnStatus = false;
         }
-
-        private void ctorHelper()
-        {
-            this._fujiFolder = @"\temp";
-            this._fujiFormat = "*jpg";
-        }
-
 
         public void OnButtonClick()
         {
-            if (_device != null)
+            if (ScannerIsSet)
             {
                 OnFujitsuClick();
                 _view1.BtnStatus = true;
-                _scanner.Scan();
+                if (ScannerIsSet)
+                    ScanSucceeded = _model.WiaScan() ? true : false;
             }
             else
             {
@@ -85,14 +80,12 @@ namespace TessMVP2.Presenter
         public void OnWiaClick()
         {
             _view1.BtnStatus = true;
-            _scanner = new Scanner();
-            _scanner.selectDevice();
-            this._device = _scanner.Device;
+            ScannerIsSet = _model.CreateScanner() ? true : false;
         }
 
         public void OnForm1Closing()
         {
-            CleanUpTempfolder.Cleanup();
+            FolderCleaned = _model.CleanupTempfolder() ? true : false;
             Application.Exit();
         }
 
@@ -102,32 +95,28 @@ namespace TessMVP2.Presenter
             _view1.F1Btn1Text = "Scan";
         }
 
-
         public void OnOcrResultChanged()
         {
-            
+            //ersetzt durch fsw
         }
 
         public void OnStringFinished()
         {
-
-            _outlook = new OutlookWork(_model.ResFields, this);
-            _model.OlWork = _outlook;
-            _outlook.GetContacts();
+            OutlookSet = _model.CreateOutlook(this) ? true : false;
+            _outlook = _model.OlWork;  //
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
             // var allContacts = _outlook.GetAllContacts();
             var allContacts = _outlook.GetAllContacts();
-             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
             _view3 = new FormCompareContacts(bfc.ControlList);
             _processUserInput = new ProcessUserResults();
             _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
             _view3.FormShowDialog(_clist, this);
         }
-
 
         private void OnButtonCancelCompareClick()
         {
