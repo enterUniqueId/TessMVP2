@@ -17,7 +17,6 @@ namespace TessMVP2.Model
 
         public ProcessUserResults()
         {
-            
             _resDict = new Dictionary<string, string>();
         }
 

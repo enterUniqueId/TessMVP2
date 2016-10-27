@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TessMVP2.View;
+﻿using System.Collections.Generic;
 using TessMVP2.Presenter.Interfaces.View;
 using System.Windows.Forms;
+using TessMVP2.Model;
 
 namespace TessMVP2.View.Interfaces
 {

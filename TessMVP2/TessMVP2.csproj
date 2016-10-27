@@ -59,34 +59,27 @@
     <Compile Include="Model\Interfaces\IFujiModel.cs" />
     <Compile Include="Model\Interfaces\IOutlookModel.cs" />
     <Compile Include="Model\ScannerBase.cs" />
-    <Compile Include="Presenter\BuildFormCompare.cs" />
+    <Compile Include="Model\BuildFormCompare.cs" />
     <Compile Include="Model\Dict.cs" />
     <Compile Include="Model\OutlookWork.cs" />
     <Compile Include="Model\ProcessUserResults.cs" />
     <Compile Include="Model\Scanner.cs" />
-    <Compile Include="Presenter\BuildFormFieldControl.cs" />
+    <Compile Include="Model\BuildFormFieldControl.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\View\IPresenterFormCompareCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\View\IPresenterFormFieldControlCallbacks.cs" />
-    <Compile Include="Presenter\TessPresenterFormFieldControl.cs" />
-    <Compile Include="Presenter\DynamicControlViewModel.cs" />
+    <Compile Include="Model\DynamicControlViewModel.cs" />
     <Compile Include="View\DynamicFormBuilder.cs" />
+    <Compile Include="View\Interfaces\IDynamicControlViewModel.cs" />
     <Compile Include="View\Interfaces\IViewModelFormCompare.cs" />
-    <Compile Include="View\Interfaces\IViewModelFormFieldControl.cs" />
     <Compile Include="Presenter\Interfaces\View\IMyPresenterFormStartCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.FormCompareContacts.cs" />
     <Compile Include="View\FormCompareContacts.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Presenter\Interfaces\IPresenter.cs" />
-    <Compile Include="View\FormFieldControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\FormFieldControl.Designer.cs">
-      <DependentUpon>FormFieldControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\FormStart.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,9 +99,6 @@
     <Compile Include="View\Interfaces\IView.cs" />
     <EmbeddedResource Include="View\FormCompareContacts.resx">
       <DependentUpon>FormCompareContacts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\FormFieldControl.resx">
-      <DependentUpon>FormFieldControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\FormStart.resx">
       <DependentUpon>FormStart.cs</DependentUpon>

@@ -7,7 +7,9 @@ using System.Diagnostics;
 using Tesseract;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
+using System.Windows.Forms;
 using WIA;
+using TessMVP2.View;
 
 namespace TessMVP2.Model
 {
@@ -17,6 +19,7 @@ namespace TessMVP2.Model
         private TessOcr _ocr;
         private StringProcessor _stringProcessor;
         private Scanner _scanner;
+        private ProcessUserResults _processUserInput;
         private Dictionary<string, string> _resFields;
         private OutlookWork _outlook;
         public delegate void OcrChangedHandler(object sender, EventArgs e);
@@ -27,6 +30,7 @@ namespace TessMVP2.Model
         public string OcrResult { get; private set; }
         public Dictionary<string, List<string>> StringResult { get; private set; }
         public Dictionary<string, string> ResFields { get { return _resFields; } set { _resFields = value; } }
+        public ProcessUserResults ProcessUserInput { get { return _processUserInput; }set { _processUserInput = value; } }
 
         public string ImgPath
         {
@@ -60,10 +64,8 @@ namespace TessMVP2.Model
             _stringProcessor = new StringProcessor(this);
             _stringProcessor.Start();
             _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
-            //this.StringResult = _stringProcessor.ResDict;
             if (this.FinishedStringChanged != null)
                 this.FinishedStringChanged(this, EventArgs.Empty);
-            //Detach(callback);
             FinishedStringChanged = null;
         }
 
@@ -123,6 +125,18 @@ namespace TessMVP2.Model
 
         }
 
+        public List<DynamicControlViewModel> BuildCompareForm()
+        {
+            var allContacts = _outlook.GetAllContacts();
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
+            return bfc.BuildList();          
+        }
+
+        public List<Control> GetControlInput(Control cont)
+        {
+            _processUserInput = new ProcessUserResults();
+            return _processUserInput.getControls(cont);
+        }
     }
 
 

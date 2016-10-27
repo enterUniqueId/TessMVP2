@@ -9,6 +9,9 @@ using System.Drawing;
 using TessMVP2.Presenter.Interfaces.View;
 
 
+
+using TessMVP2.Model;
+
 namespace TessMVP2.View
 {
 
@@ -52,6 +55,13 @@ namespace TessMVP2.View
         public Button BtnCreateNew { get { return this._update; } set { this._update = value; } }
         public Button BtnCancel { get { return this._cancel; } set { this._cancel = value; } }
 
+        IEnumerable<DynamicControlViewModel> IViewModelFormCompare.DynamicControls
+        {
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public FormCompareContacts(IEnumerable<DynamicControlViewModel> list)
         {

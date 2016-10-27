@@ -1,16 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TessMVP2.Presenter;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
-using TessMVP2.Model;
 using TessMVP2.View.Interfaces;
-using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
-using UnitTests.Mocks.Interfaces;
 using UnitTests.Mocks;
 using TessMVP2.Presenter.Interfaces.View;
 

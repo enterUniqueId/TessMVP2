@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TessMVP2.View;
 using TessMVP2.View.Interfaces;
 
-namespace TessMVP2.Presenter
+namespace TessMVP2.Model
 {
     class BuildFormFieldControl
     {

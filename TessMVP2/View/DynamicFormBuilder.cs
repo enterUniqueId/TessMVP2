@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TessMVP2.View.Interfaces;
+using TessMVP2.Model;
 
 namespace TessMVP2.View
 {
-    class DynamicFormBuilder
+    class DynamicFormBuilder:IDynamicControlViewModel
     {
         private Form _form;
         private Image _pboxImageChecked;
@@ -34,7 +35,6 @@ namespace TessMVP2.View
                 var cb = new ComboBox();
                 foreach (DynamicControlViewModel model in value)
                 {
-                    // build up user controls here....
                     switch (model.ControlType)
                     {
                         case DynamicControlViewModel.ControlTypes.TextBox:
@@ -55,7 +55,6 @@ namespace TessMVP2.View
                             pan.Controls.Add(btn);
                             break;
                         case DynamicControlViewModel.ControlTypes.Label:
-                            //if (!model.LabelName.ToLower().Contains("name"))
                             lbl = new Label();
                             lbl.Name = model.LabelName;
                             lbl.Text = model.LabelText;
@@ -66,7 +65,6 @@ namespace TessMVP2.View
                             gb.Controls.Add(tb);
                             gb.Controls.Add(lbl);
                             fp.Controls.Add(gb);
-                            //SetDefaultGBoxProps(gb);
                             break;
                         case DynamicControlViewModel.ControlTypes.FlowLayoutPanel:
                             fp = new FlowLayoutPanel();

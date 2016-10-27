@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TessMVP2.Presenter.Interfaces;
+using System.Windows.Forms;
 
 namespace TessMVP2.Model.Interfaces
 {
@@ -19,5 +20,7 @@ namespace TessMVP2.Model.Interfaces
         bool CleanupTempfolder();
         bool CreateOutlook(IMyPresenterOutlookCallbacks callbacks);
         bool WiaScan();
+        List<DynamicControlViewModel> BuildCompareForm();
+        List<Control> GetControlInput(Control cont);
     }
 }

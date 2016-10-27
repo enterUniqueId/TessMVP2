@@ -108,14 +108,13 @@ namespace TessMVP2.Presenter
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            // var allContacts = _outlook.GetAllContacts();
-            var allContacts = _outlook.GetAllContacts();
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
-            _view3 = new FormCompareContacts(bfc.ControlList);
-            _processUserInput = new ProcessUserResults();
-            _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+           
+            var list=_model.BuildCompareForm();
+            _view3 = new FormCompareContacts(list);
+           
+            var clist=_model.GetControlInput(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
-            _view3.FormShowDialog(_clist, this);
+            _view3.FormShowDialog(clist, this);
         }
 
         private void OnButtonCancelCompareClick()
@@ -126,7 +125,7 @@ namespace TessMVP2.Presenter
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)
         {
             _fuji.Detach(this);
-            this._imgEdit = new EditImage();
+            _imgEdit = new EditImage();
             _imgEdit.ImgBW(e.FullPath);
             _model.ImgPath = _imgEdit.NewFilepath;
             _model.Start(this);

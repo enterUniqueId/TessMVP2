@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Outlook;
 
-namespace TessMVP2.View
+namespace TessMVP2.Model
 {
     public class DynamicControlViewModel
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using TessMVP2.View;
 using Microsoft.Office.Interop.Outlook;
 
-namespace TessMVP2.Presenter
+namespace TessMVP2.Model
 {
     class BuildFormCompare
     {
@@ -32,17 +32,16 @@ namespace TessMVP2.Presenter
         public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
                          Items allContacts)
         {
-            this._oldContactDict = oldContactVals;
-            this._oldContactDict.Remove("EntryID");
-            this._newContactDict = newContactvals;
-            this._newContactDict.Remove("EntryID");
-            this._conformities = conforms;
-            this._allContacts = allContacts;
-            BuildList();
+            _oldContactDict = oldContactVals;
+            _oldContactDict.Remove("EntryID");
+            _newContactDict = newContactvals;
+            _newContactDict.Remove("EntryID");
+            _conformities = conforms;
+            _allContacts = allContacts;
         }
 
 
-        private void BuildList()
+        public List<DynamicControlViewModel> BuildList()
         {
             int i = 0;
             _controlList = new List<DynamicControlViewModel>();
@@ -118,6 +117,7 @@ namespace TessMVP2.Presenter
             dynControl.ComboBoxName = "F3CbContacts";
             dynControl.ComboBoxItems = _allContacts;
             _controlList.Add(dynControl);
+            return _controlList;
         }
 
 
