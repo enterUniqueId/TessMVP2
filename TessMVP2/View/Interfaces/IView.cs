@@ -9,7 +9,7 @@ namespace TessMVP2.View.Interfaces
 {
     public interface IView<TCallbacks>
     {
-        void Attach(TCallbacks presenter);
-        void Detach(TCallbacks presenter);
+        void Attach(TCallbacks callback);
+        void Detach(TCallbacks callback);
     }
 }

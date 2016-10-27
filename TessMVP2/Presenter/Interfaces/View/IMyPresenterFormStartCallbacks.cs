@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace TessMVP2.Presenter.Interfaces.View
 {
-    public interface IMyPresenterFormStartCallbacks
+    public interface IMyPresenterFormStartCallbacks:IPresenter
     {
         void OnButtonClick();
-        void OnForm1Closed();
-        void OnButton2Click();
-        void OnButton3Click();
         void OnFujitsuClick();
         void OnWiaClick();
-        void OnForm1Closing();
         void OnForm1Shown();
+        void OnForm1Closing();
+
     }
 }

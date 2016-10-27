@@ -10,16 +10,13 @@ namespace TessMVP2.Model
 {
     public class ProcessUserResults
     {
-        private Control _ownerCont;
         private List<Control> _clist;
         public List<Control> Clist { get { return this._clist; } set { this._clist = value; } }
-        public Control OwnerCont { get { return this._ownerCont; } set { this._ownerCont = value; } }
         private Dictionary<string, string> _resDict;
         public Dictionary<string, string> ResDict { get { return this._resDict; } private set { this._resDict = value; } }
 
-        public ProcessUserResults(Control contList)
+        public ProcessUserResults()
         {
-            this._ownerCont = contList;
             _resDict = new Dictionary<string, string>();
         }
 
@@ -34,16 +31,16 @@ namespace TessMVP2.Model
                     getControls(c, clist);
                 clist.Add(c);
             }
-            this._clist = clist;
+            _clist = clist;
             return clist;
         }
 
-        public void GetInputs(bool hasClist = false, bool isUpdate = false, int subStrIndex = 4)
+        public void GetInputs(Control rootControl, bool isUpdate = false, int subStrIndex = 4)
         {
             var clist = new List<Control>();
-            if (!hasClist)
+            if (rootControl!=null)
             {
-                clist = getControls(_ownerCont);
+                clist = getControls(rootControl);
             }
             else
             {

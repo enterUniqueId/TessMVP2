@@ -8,205 +8,141 @@ using TessMVP2.Model;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using TessMVP2.Presenter.Interfaces.View;
+using WIA;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("UnitTests")]
 namespace TessMVP2.Presenter
 {
-    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks
+
+    partial class TessPresenter : IMyPresenter, IMyPresenterModelCallbacks, IMyPresenterOutlookCallbacks, IMyPresenterFujiCallbacks, IMyPresenterFormStartCallbacks
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
-        private IMyViewFormFieldControl _view2;
-        private IViewFormYesNoCancel _view4;
-        public IMyViewFormFieldControl ViewForm2 { get { return _view2; } set { _view2 = value; } }
-        public IViewFormYesNoCancel ViewForm4 { get { return _view4; } set { _view4 = value; } }
-
-
-        public object View1 { get { return _view1; } }
-        public object View2 { get { return _view2; } }
-        public object View4 { get { return _view4; } }
-        public object Model { get { return _model; } }
-
+        private Scanner _scanner;
+        private Device _device;
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
         private ProcessUserResults _processUserInput;
         private FujiFolderObs _fuji;
-        private string _fujiFolder;
-        private string _fujiFormat;
+        private string _fujiFolder = @"\temp";
+        private string _fujiFormat = "*jpg";
         private EditImage _imgEdit;
+
+        public object View1 { get { return _view1; } }
+        public object Model { get { return _model; } }
+        public bool ScannerIsSet { get; private set; }
+        public bool FolderCleaned { get; private set; }
+        public bool OutlookSet { get; private set; }
+        public bool ScanSucceeded { get; private set; }
 
         public TessPresenter()
         {
-            FormStart view = new FormStart();
-            this._view1 = view;
-            view.Show();
-            TessMainModel model = new TessMainModel();
-            this._model = model;
-            AttachView1Events();
-            // kann auch aus Eingabe kommen
-            this._fujiFolder = @"/temp";
-            this._fujiFormat = "*jpg";
+            _view1 = new FormStart(this);
+            _view1.FormShow();
+            _model = new TessMainModel();
         }
 
-        OnForm1Shown()
+        public TessPresenter(IMyViewFormStart view1, IMyModel model)
         {
-
-        }
-        [Obsolete]
-        private void AttachView1Events()
-        {
-            this._view1.Form1Btn1.Click += (sender, e) => OnButtonClick();
-            this._view1.Form1.FormClosed += (sender, e) => OnForm1Closed();
-            this._view1.Form1Btn2.Click += (sender, e) => OnButton2Click();
-            this._view1.Form1Btn3.Click += (sender, e) => OnButton3Click();
-            this._view1.TsiFuji.Click += (sender, e) => OnFujitsuClick();
-            this._view1.TsiWia.Click += (sender, e) => OnWiaClick();
-            this._view1.Form1.FormClosing += (sender, e) => OnForm1Closing();
-        }
-
-        private void AttachView2Events()
-        {
-            this._view2.Form2.FormClosing += (sender, e) => OnForm2Closed();
-            this._view2.BtnCommit.Click += (sender, e) => OnButtonCommitClick();
-        }
-
-        private void AttachView4Events()
-        {
-            //this._view4.Form4.FormClosing += (sender, e) => OnButtonCancelClick();
-            this._view4.BtnYes.Click += (sender, e) => OnButtonYesClick();
-            this._view4.BtnNo.Click += (sender, e) => OnButtonNoClick();
-            this._view4.BtnCancel.Click += (sender, e) => OnButtonCancelClick();
-            //this._view4.Form4.Disposed += (sender, e) => OnButtonCancelClick();
+            _view1 = view1;
+            _model = model;
+            ScannerIsSet = false;
+            _view1.BtnStatus = false;
         }
 
         public void OnButtonClick()
         {
-            //_model.ImgPath = _view1.TextBoxText;
-            //_model.Start(this);
+            if (ScannerIsSet)
+            {
+                OnFujitsuClick();
+                _view1.BtnStatus = true;
+                if (ScannerIsSet)
+                    ScanSucceeded = _model.WiaScan() ? true : false;
+            }
+            else
+            {
+                OnWiaClick();
+            }
         }
 
-        public void OnButton2Click()
+
+        public void OnFujitsuClick()
         {
-            var scanner = new Scanner();
-            scanner.selectDevice();
-
-        }
-
-        public void OnButton3Click()
-        {
-            
-
-        }
-
-        private void OnFujitsuClick()
-        {
-            var parent = _view1.TsiFuji.OwnerItem as ToolStripMenuItem;
-            ((ToolStripDropDownMenu)parent.DropDown).ShowCheckMargin = true;
-            ((ToolStripDropDownMenu)parent.DropDown).ShowImageMargin = true;
-            this._fuji = new FujiFolderObs(this,_fujiFolder,_fujiFormat);
-            _fuji.FSW.SynchronizingObject = _view1.Form1;
+            _view1.BtnStatus = false;
+            this._fuji = new FujiFolderObs(this, _fujiFolder, _fujiFormat);
+            _fuji.FSW.SynchronizingObject = _view1 as Form;
+            _view1.F1lbl1Text = "Bitte scannen Sie das Objekt";
 
         }
 
-        private void OnWiaClick()
+        public void OnWiaClick()
         {
+            _view1.BtnStatus = true;
+            ScannerIsSet = _model.CreateScanner() ? true : false;
+        }
 
+        public void OnForm1Closing()
+        {
+            FolderCleaned = _model.CleanupTempfolder() ? true : false;
+            Application.Exit();
+        }
+
+        public void OnForm1Shown()
+        {
+            _view1.FormStartText = "Tess.Net-VScanner";
+            _view1.F1Btn1Text = "Scan";
         }
 
         public void OnOcrResultChanged()
         {
-            try
-            {
-                _view1.RichTextBoxText = _model.OcrResult;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void OnForm1Closing()
-        {
-            CleanUpTempfolder.Cleanup();
-        }
-        private void OnForm1Closed()
-        {
-            Application.Exit();
-            //Environment.Exit(0);
-        }
-
-        private void OnForm2Closed()
-        {
-            _view1.Form1.Show();
-            _view2.Form2.Dispose();
-            _view2 = null;
-        }
-
-        private void OnButtonCommitClick()
-        {
-            var processInput = new ProcessUserResults(_view2.Form2.Controls[0]);
-            this._processUserInput = processInput;
-            processInput.GetInputs();
-            this._inputResults = new Dictionary<string, string>();
-            this._inputResults = processInput.ResDict;
-            this._outlook = new OutlookWork(this._inputResults, this);
-            this._model.OlWork = this._outlook;
-            _outlook.GetContacts();
+            //ersetzt durch fsw
         }
 
         public void OnStringFinished()
         {
-            var bffc = new BuildFormFieldControl(_model.StringResult, this);
-
-            //this._view1.Form1.Hide();
-            this._view2.Form2.Show();
-            AttachView2Events();
+            OutlookSet = _model.CreateOutlook(this) ? true : false;
+            _outlook = _model.OlWork;  //
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookContacts[_outlook.CurrentContact], this, _outlook.Hits);
-            this._clist = _processUserInput.getControls(_view3.Form3.Controls[0]);
-            AttachView3Events();
-            _view3.Form3.ShowDialog();
-
-            /*  if (this._FormcompareContactsList == null)
-                  this._FormcompareContactsList = new List<FormCompareContacts>();
-              string sr = "Der neue Kontakt stimmte zu _____ % mit Kontakt-Nr. ______ (OL-ID: _____  überein.\nDatensatz anzeigen?";
-              var msgbox = new BuildFormYesNoCancel(this, sr);
-              AttachView4Events();
-              this._view4.Form4.ShowDialog();*/
-        }
-
-        private void OnButtonYesClick()
-        {
-            //man könnte auch NUR den oldcontact übergeben
-
-        }
-
-        private void OnButtonNoClick()
-        {
-            this._outlook.CreateContact();
-            _view4.Form4.Close();
-        }
-
-        private void OnButtonCancelClick()
-        {
-            _view4.Form4.Close();
+           
+            var list=_model.BuildCompareForm();
+            _view3 = new FormCompareContacts(list);
+           
+            var clist=_model.GetControlInput(_view3.FormCompareClist[0]);
+            _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
+            _view3.FormShowDialog(clist, this);
         }
 
         private void OnButtonCancelCompareClick()
         {
-            _view3.Form3.Close();
+            _view3.FormClose();
         }
 
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)
         {
             _fuji.Detach(this);
-            this._imgEdit = new EditImage();
+            _imgEdit = new EditImage();
             _imgEdit.ImgBW(e.FullPath);
             _model.ImgPath = _imgEdit.NewFilepath;
             _model.Start(this);
             _fuji.Attach(this);
+        }
+
+        public void OnNoDuplicatesFound()
+        {
+            //var allContacts = _outlook.GetAllContacts();
+            var allContacts = _outlook.GetAllContacts();
+
+            var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
+            _view3 = new FormCompareContacts(bfc.ControlList);
+            _processUserInput = new ProcessUserResults();
+            _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
+            _view3.FormBezeichnung = "Scandaten bearbeiten";
+            _view3.FormShowDialog(_clist, this);
         }
     }
 }

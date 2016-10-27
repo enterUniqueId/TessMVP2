@@ -14,11 +14,10 @@ using System.Windows.Forms;
 
 namespace TessMVP2.Model
 {
-    class EditImage
+    public class EditImage
     {
         private string _newFilepath;
         public string NewFilepath { get { return this._newFilepath; } set { this._newFilepath = value; } }
-        private FujiFolderObs _fuji;
 
 
         //https://dotnet-snippets.de/snippet/bitmap-in-graustufen-wandeln/70
@@ -107,7 +106,7 @@ namespace TessMVP2.Model
 
                     var ia = new ImageAttributes();
                     ia.SetColorMatrix(new ColorMatrix(gray_matrix));
-                    float d = (float)0.85;
+                    float d = (float)0.8;
                     //durch Schwellenwert S/W
                     ia.SetThreshold(d);
                     var rc = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
@@ -115,7 +114,7 @@ namespace TessMVP2.Model
                     EncodeAndSave(file, sourceImage);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Ein Fehler im Bildformat ist aufgetreten. Scannen Sie das Bild bitte erneut ein.");
             }
