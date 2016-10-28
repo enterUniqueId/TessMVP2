@@ -131,7 +131,6 @@ namespace TessMVP2.Presenter
         {
             this._outlook.CreateContact(_outlook.ResultDict);
             _view3.FormClose();
-            _view2.FormClose();
         }
 
         public void OnButtonCancelClick()

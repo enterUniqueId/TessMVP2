@@ -107,7 +107,9 @@ namespace TessMVP2.View
                                     item.Delete();
                                     continue;
                                 }
-                                contlist.Add(new { FullName = item.FullName, EntryID = item.EntryID });
+
+                                item.FullName = item.FullName == null ? "kein Name" : item.FullName;    
+                                    contlist.Add(new { FullName = item.FullName, EntryID = item.EntryID });
                             }
 
                             cb.DataSource = null;

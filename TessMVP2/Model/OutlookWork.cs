@@ -86,19 +86,6 @@ namespace TessMVP2.Model
             return _contactFolder.Items;
         }
 
-        //public List<object> GetAllContacts()
-        //{
-        //    var contactsList = new List<object>();
-        //    var outlookApplication = new ApplicationClass();
-        //    NameSpace mapiNamespace = outlookApplication.GetNamespace("MAPI");
-        //    MAPIFolder contacts = mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
-        //    foreach (ContactItem c in co)
-        //    {
-        //        contactsList.Add(contacts.Items);
-        //    }
-        //    return contactsList;
-        //}
-
         public ContactItem CreateContact(Dictionary<string,string> contactToCreate)
         {
             bool hasCustomProps = false;

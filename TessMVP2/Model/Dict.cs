@@ -18,7 +18,7 @@ namespace TessMVP2.Model
                 {"Fax-Nummer", new List<string> {"fax" } },
                 {"Strasse", new List<string> {"weg","straße","strasse","allee","chaussee","rue","street","platz","str.","5tr." } },
                 {"Postleitzahl", new List<string> {"|dummy|" } },
-                {"Ort", new List<string> {"|dummy|" } },
+                {"Ort", new List<string> {"stadt","hausen","heim" } },
                 {"Postfach", new List<string> {"postfach" } },
                 {"Position", new List<string> {"einkauf","marketing","business","personal","abteilung","leiter","department","management","consultant","logistik","developer" } },
                 {"Inet", new List<string> {"www.", "http://","https://","Internet" } },

@@ -57,6 +57,7 @@
     <Compile Include="Model\EditImage.cs" />
     <Compile Include="Model\FujiFolderObs.cs" />
     <Compile Include="Model\Interfaces\IFujiModel.cs" />
+    <Compile Include="Model\Interfaces\IImgFileSave.cs" />
     <Compile Include="Model\Interfaces\IOutlookModel.cs" />
     <Compile Include="Presenter\BuildFormCompare.cs" />
     <Compile Include="Model\Dict.cs" />

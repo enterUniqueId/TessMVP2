@@ -57,7 +57,7 @@ namespace TessMVP2.Model
             if (this.OcrResultChanged != null)
                 this.OcrResultChanged(this, EventArgs.Empty);
 
-            _stringProcessor = new StringProcessor(this);
+            _stringProcessor = new StringProcessor(OcrResult);
             _stringProcessor.Start();
             _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
             //this.StringResult = _stringProcessor.ResDict;

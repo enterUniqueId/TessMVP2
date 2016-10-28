@@ -19,13 +19,13 @@ namespace TessMVP2.Model
         private FileSystemWatcher _fsw;
         private string _tempDir;
         private string _format;
-        public FileSystemWatcher FSW { get { return this._fsw; } }
+        public FileSystemWatcher FSW { get { return _fsw; } }
         
 
         public FujiFolderObs(IMyPresenterFujiCallbacks callback,string tempDir, string format)
         {
-            this._format = format;
-            this._tempDir = tempDir;
+            _format = format;
+            _tempDir = tempDir;
             Initialize(callback);
         }
 

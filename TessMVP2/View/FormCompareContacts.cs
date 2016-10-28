@@ -107,7 +107,7 @@ namespace TessMVP2.View
             _update.Click += (sender, e) => callback.OnButtonUpdateClick();
             _createNew.Click += (sender, e) => callback.OnButtonCreateClick();
             _cancel.Click += (sender, e) => callback.OnButtonCancelClick();
-            _comboBox.SelectedIndexChanged += new EventHandler (callback.OnCbSelectedItemChange);
+            _comboBox.SelectedIndexChanged += new EventHandler(callback.OnCbSelectedItemChange);
             WireView3ContextMenus(callback);
         }
 
@@ -135,7 +135,15 @@ namespace TessMVP2.View
         {
             _contlist = clist;
             Attach(callback);
-            this.ShowDialog();
+            try
+            {
+                this.ShowDialog();
+            }
+            catch
+            {
+
+            }
+
         }
     }
 }

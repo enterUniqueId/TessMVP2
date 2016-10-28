@@ -9,49 +9,18 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Forms;
-
+using TessMVP2.Model.Interfaces;
 
 
 namespace TessMVP2.Model
 {
-    public class EditImage
+    public class EditImage:IImgFileSave
     {
         private string _newFilepath;
         public string NewFilepath { get { return this._newFilepath; } set { this._newFilepath = value; } }
 
 
-        //https://dotnet-snippets.de/snippet/bitmap-in-graustufen-wandeln/70
-
-        public void BildSW(string file)
-        {
-            Image img = Image.FromFile(file);
-            Bitmap bmp = new Bitmap(img);
-            PixelFormat pxf = PixelFormat.Format24bppRgb;
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, pxf);
-            IntPtr ptr = bmpData.Scan0;
-            int numBytes = bmpData.Stride * bmp.Height;
-            byte[] rgbValues = new byte[numBytes];
-            Marshal.Copy(ptr, rgbValues, 0, numBytes);
-            int tmpSW;
-
-            for (int counter = 0; counter < rgbValues.Length; counter += 3)
-            {
-                //farbwerte angepasst
-                tmpSW = (int)(rgbValues[counter] * 0.3);
-                tmpSW += (int)(rgbValues[counter + 1] * 0.59);
-                tmpSW += (int)(rgbValues[counter + 2] * 0.11);
-
-                //tmpSW /= 3;
-
-                rgbValues[counter] = rgbValues[counter + 1] = rgbValues[counter + 2] = Convert.ToByte(tmpSW);
-            }
-
-            Marshal.Copy(rgbValues, 0, ptr, numBytes);
-            bmp.UnlockBits(bmpData);
-        }
-
-        private void EncodeAndSave(string file, Bitmap bmp)
+        public string EncodeAndSave(string file, Bitmap bmp)
         {
             var anEncoder = System.Drawing.Imaging.Encoder.Quality;
             //Zielformat
@@ -66,8 +35,8 @@ namespace TessMVP2.Model
             file = file.Replace(fileNameEnd, "");
             file += "GS";
             file += fileNameEnd;
-            _newFilepath = file;
-            bmp.Save(_newFilepath, aImageCodecInfo, encoderParams);
+            bmp.Save(file, aImageCodecInfo, encoderParams);
+            return file;
         }
 
         private ImageCodecInfo GetEncoderInfo(String mimeType)
@@ -111,7 +80,7 @@ namespace TessMVP2.Model
                     ia.SetThreshold(d);
                     var rc = new Rectangle(0, 0, sourceImage.Width, sourceImage.Height);
                     gr.DrawImage(sourceImage, rc, 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel, ia);
-                    EncodeAndSave(file, sourceImage);
+                    _newFilepath = EncodeAndSave(file, sourceImage);
                 }
             }
             catch (Exception)
