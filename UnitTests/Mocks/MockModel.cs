@@ -93,8 +93,6 @@ namespace UnitTests.Mocks
         public void Start(IMyPresenterModelCallbacks callback)
         {
             Attach(callback);
-            _ocr = new Mock(new TessOcr(this));
-                TessOcr(this);
 
             OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
             _ocr.Start();
@@ -102,7 +100,7 @@ namespace UnitTests.Mocks
             if (OcrResultChanged != null)
                 OcrResultChanged(this, EventArgs.Empty);
 
-            _stringProcessor = new StringProcessor(this);
+           // _stringProcessor = new StringProcessor(this);
             _stringProcessor.Start();
             _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
             if (FinishedStringChanged != null)

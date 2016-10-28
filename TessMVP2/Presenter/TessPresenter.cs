@@ -20,13 +20,10 @@ namespace TessMVP2.Presenter
     {
         private IMyViewFormStart _view1;
         private IMyModel _model;
-        private Scanner _scanner;
-        private Device _device;
         private Dictionary<string, string> _inputResults;
         private OutlookWork _outlook;
         private ProcessUserResults _processUserInput;
         private FujiFolderObs _fuji;
-        private EditImage _imgEdit;
 
         public object View1 { get { return _view1; } }
         public object Model { get { return _model; } }

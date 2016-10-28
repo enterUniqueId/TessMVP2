@@ -11,7 +11,6 @@ namespace TessMVP2.Presenter
     {
         private IViewModelFormCompare _view3;
         public object View3 { get { return _view3; } }
-        private List<Control> _clist;
         private string _lastContactIDSelected;
 
 
