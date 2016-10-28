@@ -87,6 +87,7 @@ namespace TessMVP2.Model.Tests
             var resDict = stringprocessor.GetField(dict, _ocrStrings);
 
             Assert.IsTrue(resDict.Count == 16);
+            Assert.IsTrue(resDict["Fax"].Count == 1);
         }
 
         [TestMethod()]
