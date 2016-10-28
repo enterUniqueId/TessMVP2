@@ -11,7 +11,6 @@ namespace TessMVP2.Presenter.Interfaces
         //
         //void Initialize();
         object View1 { get; }
-        object View2 { get; }
         object View3 { get; }
         object Model { get; }
     }

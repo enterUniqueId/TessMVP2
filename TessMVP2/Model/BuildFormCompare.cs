@@ -13,21 +13,8 @@ namespace TessMVP2.Model
         private Dictionary<string, string> _newContactDict;
         private Dictionary<string, string> _oldContactDict;
         private List<DynamicControlViewModel> _controlList;
-        public List<DynamicControlViewModel> ControlList { get { return this._controlList; } }
+        public List<DynamicControlViewModel> ControlList { get { return _controlList; } }
 
-
-
-        //public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
-        //                           List<object> allContacts)
-        //{
-        //    this._oldContactDict = oldContactVals;
-        //    this._oldContactDict.Remove("EntryID");
-        //    this._newContactDict = newContactvals;
-        //    this._newContactDict.Remove("EntryID");
-        //    this._conformities = conforms;
-        //    this._allContacts = allContacts;
-        //    BuildList();
-        //}
 
         public BuildFormCompare(Dictionary<string, string> newContactvals, Dictionary<string, string> oldContactVals, Dictionary<string, string> conforms,
                          Items allContacts)
@@ -38,6 +25,7 @@ namespace TessMVP2.Model
             _newContactDict.Remove("EntryID");
             _conformities = conforms;
             _allContacts = allContacts;
+            BuildList();
         }
 
 

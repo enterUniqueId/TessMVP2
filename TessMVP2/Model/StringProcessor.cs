@@ -21,19 +21,20 @@ namespace TessMVP2.Model
             this._ocrResult = _mainModel.OcrResult;
         }
         public Dictionary<string, List<string>> ResDict { get { return this._resDict; } }
-        public void Start()
+        public void Start(string ocrResult)
         {
+            _ocrResult = ocrResult;
             splitString();
-            //GetEmail();
             SearchKeyWords();
             GetField();
         }
 
-        public Dictionary<string,string> TransformResDict(Dictionary<string,List<string>> dictIn) {
+        public Dictionary<string, string> TransformResDict(Dictionary<string, List<string>> dictIn)
+        {
             var dictOut = new Dictionary<string, string>();
-            foreach(var kvp in dictIn)
+            foreach (var kvp in dictIn)
             {
-                for(int i = 0; i < kvp.Value.Count;i++)
+                for (int i = 0; i < kvp.Value.Count; i++)
                 {
                     if (i < 1)
                         dictOut.Add(kvp.Key, kvp.Value[i]);
@@ -48,25 +49,32 @@ namespace TessMVP2.Model
         {
             //liste mit gängigen ocr fehlern; zu erweitern
             var emailReplaceList = new Dictionary<string, string>() { { "—", "-" } };
-            _specificStrings = this._ocrResult.Split('\n').ToList();
-            //leere array-felder entfernen
-            while (_specificStrings.Contains("") || _specificStrings.Contains(" "))
+            try
             {
-                _specificStrings.Remove("");
-                _specificStrings.Remove(" ");
-            }
-
-            for (int i = 0; i < _specificStrings.Count; i++)
-            {
-                //strings korrigieren und reinigen
-                //œ
-                _specificStrings[i] = _specificStrings[i].Replace("æ", "es");
-                _specificStrings[i] = _specificStrings[i].Replace(":", "");
-                _specificStrings[i] = _specificStrings[i].Replace(";", "");
-                foreach (KeyValuePair<string, string> kvp in emailReplaceList)
+                _specificStrings = _ocrResult.Split('\n').ToList();
+                //leere array-felder entfernen
+                while (_specificStrings.Contains("") || _specificStrings.Contains(" "))
                 {
-                    _specificStrings[i] = _specificStrings[i].Replace(kvp.Key, kvp.Value);
+                    _specificStrings.Remove("");
+                    _specificStrings.Remove(" ");
                 }
+
+                for (int i = 0; i < _specificStrings.Count; i++)
+                {
+                    //strings korrigieren und reinigen
+                    //œ
+                    _specificStrings[i] = _specificStrings[i].Replace("æ", "es");
+                    _specificStrings[i] = _specificStrings[i].Replace(":", "");
+                    _specificStrings[i] = _specificStrings[i].Replace(";", "");
+                    foreach (KeyValuePair<string, string> kvp in emailReplaceList)
+                    {
+                        _specificStrings[i] = _specificStrings[i].Replace(kvp.Key, kvp.Value);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message); 
             }
         }
 
@@ -169,8 +177,8 @@ namespace TessMVP2.Model
                             for (int i = kvp.Value.Count - 1; i >= 0; i--)
                                 if (kvp.Value[i].Contains("internet"))
                                 {
-                                    kvp.Value[i]=kvp.Value[i].Replace("internet", "");
-                                    kvp.Value[i]=kvp.Value[i].Replace(": ", "");
+                                    kvp.Value[i] = kvp.Value[i].Replace("internet", "");
+                                    kvp.Value[i] = kvp.Value[i].Replace(": ", "");
                                 }
                             var inet = new Regex(@"^(w{3}\.|https?:\/{2}).*(\.[a-z]{2,4})$");
                             if (kvp.Value.Count > 0)
@@ -244,7 +252,7 @@ namespace TessMVP2.Model
                                 if (CheckRegEx(city, kvp.Key, _specificStrings))
                                 {
                                     var plz = new Regex(@"(\d{5})");
-                                    CheckRegEx(plz,"Postleitzahl", kvp.Value);
+                                    CheckRegEx(plz, "Postleitzahl", kvp.Value);
                                     //abziehen noch
 
                                 }
@@ -345,7 +353,7 @@ namespace TessMVP2.Model
                     stringsToCompare[i] = Regex.Replace(stringsToCompare[i], replacePattern, "");
                     if (sr.Contains(stringsToCompare[i]))
                     {
-                        
+
                         replaced = true;
                         break;
                     }

@@ -54,15 +54,14 @@ namespace TessMVP2.Model
         public void Start(IMyPresenterModelCallbacks callback)
         {
             Attach(callback);
-            this._ocr = new TessOcr(this);
-            this.OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
-            this._ocr.Start();
-            this.OcrResult = this._ocr.OcrResult;
+            _ocr = new TessOcr(this);
+            OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
+            string ocr=_ocr.Start();
             if (this.OcrResultChanged != null)
                 this.OcrResultChanged(this, EventArgs.Empty);
 
             _stringProcessor = new StringProcessor(this);
-            _stringProcessor.Start();
+            _stringProcessor.Start(ocr);
             _resFields = _stringProcessor.TransformResDict(_stringProcessor.ResDict);
             if (this.FinishedStringChanged != null)
                 this.FinishedStringChanged(this, EventArgs.Empty);

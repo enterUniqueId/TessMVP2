@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TessMVP2.View.Interfaces;
 using TessMVP2.Model;
+using System.IO;
 
 namespace TessMVP2.View
 {
@@ -131,9 +132,10 @@ namespace TessMVP2.View
 
         public DynamicFormBuilder(Form form, IEnumerable<DynamicControlViewModel> list)
         {
-            this._form = form;
+            _form = form;
             string imgFile = Environment.CurrentDirectory + "\\img\\chk2.png";
-            this._pboxImageChecked = Image.FromFile(imgFile);
+            if(File.Exists(imgFile))
+               // _pboxImageChecked = Image.FromFile(imgFile);
             DynamicControls = list;
 
         }

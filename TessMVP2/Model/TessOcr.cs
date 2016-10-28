@@ -18,12 +18,12 @@ namespace TessMVP2.Model
             this._mainModel = parentModel;
         }
 
-        public void Start()
+        public string Start()
         {
-            doOcr();
+           return doOcr();
         }
 
-        private void doOcr()
+        private string doOcr()
         {
 
             try
@@ -37,6 +37,7 @@ namespace TessMVP2.Model
                         using (Page page = engine.Process(img))
                         {
                             _ocrResult = page.GetText();
+                            return _ocrResult;
                         }
                     }
                 }
@@ -44,7 +45,7 @@ namespace TessMVP2.Model
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                //Application.Exit();
+                return null;
             }
         }
     }

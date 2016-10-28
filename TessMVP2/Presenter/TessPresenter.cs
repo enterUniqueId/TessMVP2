@@ -139,7 +139,7 @@ namespace TessMVP2.Presenter
 
             var bfc = new BuildFormCompare(_outlook.ResultDict, _outlook.OutlookCurrentContact, _outlook.Hits, allContacts);
             _view3 = new FormCompareContacts(bfc.ControlList);
-            _processUserInput = new ProcessUserResults();
+           _processUserInput = new ProcessUserResults();
             _clist = _processUserInput.getControls(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Scandaten bearbeiten";
             _view3.FormShowDialog(_clist, this);
