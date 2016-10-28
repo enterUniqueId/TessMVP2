@@ -7,10 +7,11 @@ using WIA;
 using System.IO;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using TessMVP2.Model.Interfaces;
 
 namespace TessMVP2.Model
 {
-    class Scanner:ScannerBase
+    class Scanner:IScanner
     {
         // Scanner only device properties (DPS)
         const string WIA_SCAN_COLOR_DEPTH = "4104";
@@ -30,20 +31,22 @@ namespace TessMVP2.Model
         public Device Device { get; private set; }
         private WIA.CommonDialog dialog { get; set; }
 
-        public void selectDevice()
+        public bool SelectDevice()
         {
             this.dialog = new WIA.CommonDialog();
             //kann nicht eingebettet werden, deswegen WIA interop einbetten auf false
             DeviceManager deviceManager = new DeviceManagerClass();
-            this.Device = null;
+            Device = null;
             try
             {
-                Device = dialog.ShowSelectDevice(
+                Device= dialog.ShowSelectDevice(
                 WiaDeviceType.ScannerDeviceType, true, false);
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Konnte keine Verbindung zu Scanner herstellen. "+ ex.Message);
+                return false;
             }
         }
 
@@ -72,12 +75,12 @@ namespace TessMVP2.Model
             prop.set_Value(ref propValue);
         }
 
-        public void Scan()
+        public string Scan()
         {
             ImageFile scannedImage = null;
-            Item item = this.Device.Items[1];
+            Item item = Device.Items[1];
             SetA4(item.Properties, 300);
-            scannedImage = this.dialog.ShowTransfer(item, FormatID.wiaFormatJPEG, false) as ImageFile;
+            scannedImage = dialog.ShowTransfer(item, FormatID.wiaFormatJPEG, false) as ImageFile;
             string path = Environment.CurrentDirectory + "\\temp\\";
             string format = "jpg";
             if (File.Exists(path + "scan_img0." + format))
@@ -104,11 +107,13 @@ namespace TessMVP2.Model
                 string counterNum = Convert.ToString(nums.Max() + 1);
                 string k = path + "scan_img" + counterNum + "." + format;
                 scannedImage.SaveFile(k);
+                return k;
             }
             else
             {
                 string k = path + "scan_img0." + format;
                 scannedImage.SaveFile(k);
+                return k;
             }
         }
     }

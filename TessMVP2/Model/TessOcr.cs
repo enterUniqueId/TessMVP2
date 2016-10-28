@@ -1,10 +1,11 @@
 ﻿using System;
 using Tesseract;
 using System.Windows.Forms;
+using TessMVP2.Model.Interfaces;
 
 namespace TessMVP2.Model
 {
-    public class TessOcr
+    public class TessOcr:ITessOcr
     {
         private string _imgPath;
         private string _ocrResult;
@@ -17,12 +18,12 @@ namespace TessMVP2.Model
             _imgPath = imgPath;
         }
 
-        public void Start()
+        public string Start()
         {
-            doOcr();
+            return doOcr();
         }
 
-        private void doOcr()
+        private string doOcr()
         {
 
             try
@@ -36,6 +37,7 @@ namespace TessMVP2.Model
                         using (Page page = engine.Process(img))
                         {
                             _ocrResult = page.GetText();
+                            return _ocrResult;
                         }
                     }
                 }
@@ -43,7 +45,7 @@ namespace TessMVP2.Model
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                //Application.Exit();
+                return "";
             }
         }
     }

@@ -16,6 +16,7 @@ namespace TessMVP2.Model
 {
     public class TessMainModel : IMyModel
     {
+        //private
         private string _imgPath;
         private string _fujiFolder = @"\temp";
         private string _fujiFormat = "*jpg";
@@ -25,6 +26,7 @@ namespace TessMVP2.Model
         private ProcessUserResults _processUserInput;
         private Dictionary<string, string> _resFields;
         private OutlookWork _outlook;
+        //public
         public delegate void OcrChangedHandler(object sender, EventArgs e);
         public event OcrChangedHandler OcrResultChanged;
         public delegate void FinishedStringChangedHandler(object sender, EventArgs e);
@@ -77,7 +79,7 @@ namespace TessMVP2.Model
             _scanner = new Scanner();
             try
             {
-                _scanner.selectDevice();
+                _scanner.SelectDevice();
                 return true;
             }
             catch
