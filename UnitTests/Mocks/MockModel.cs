@@ -8,7 +8,7 @@ using TessMVP2.Model;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
 using Moq;
-
+/*
 namespace UnitTests.Mocks
 {
     class MockModel:IMyModel,IFujiModel,IOutlookModel
@@ -93,8 +93,8 @@ namespace UnitTests.Mocks
         public void Start(IMyPresenterModelCallbacks callback)
         {
             Attach(callback);
-            _ocr = new Mock(new TessOcr(this));
-                TessOcr(this);
+            //_ocr = new Mock(new TessOcr(this));
+              //  TessOcr(this);
 
             OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
             _ocr.Start();

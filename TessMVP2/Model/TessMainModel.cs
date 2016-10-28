@@ -57,7 +57,7 @@ namespace TessMVP2.Model
         public void Start(IMyPresenterModelCallbacks callback)
         {
             Attach(callback);
-            _ocr = new TessOcr(this);
+            _ocr = new TessOcr(_imgPath);
             OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
             _ocr.Start();
             OcrResult= _ocr.OcrResult;
