@@ -100,15 +100,21 @@ namespace TessMVP2.View
                             cb = new ComboBox();
                             cb.Name = model.ComboBoxName;
                             var contlist = new List<object>();
+                            //aufräumen
+                            //es werden mehr kontakte ausgelesen als im adressbuch angezeigt werden
                             foreach (ContactItem item in model.ComboBoxItems)
                             {
-                                if (item.FullName == "dummy")
+                                if (item.FullName == "dummy" || item.FullName=="UnitTest")
                                 {
                                     item.Delete();
                                     continue;
                                 }
+                                //
+                                //item.FullName = item.FullName == null ? "kein Name" : item.FullName;   
+                                if (item.FullName == null)
+                                {
 
-                                item.FullName = item.FullName == null ? "kein Name" : item.FullName;    
+                                } 
                                     contlist.Add(new { FullName = item.FullName, EntryID = item.EntryID });
                             }
 
@@ -139,6 +145,7 @@ namespace TessMVP2.View
             string imgFile = Environment.CurrentDirectory + "\\img\\chk2.png";
             this._pboxImageChecked = Image.FromFile(imgFile);
             DynamicControls = list;
+            _form.Icon = new Icon(Environment.CurrentDirectory + "\\img\\scanner.ico");
 
         }
 
