@@ -26,6 +26,7 @@ namespace TessMVP2.Model
         private ProcessUserResults _processUserInput;
         private Dictionary<string, string> _resFields;
         private OutlookWork _outlook;
+        private FujiFolderObs _fujiObj;
         //public
         public delegate void OcrChangedHandler(object sender, EventArgs e);
         public event OcrChangedHandler OcrResultChanged;
@@ -36,7 +37,6 @@ namespace TessMVP2.Model
         public Dictionary<string, List<string>> StringResult { get; private set; }
         public Dictionary<string, string> ResFields { get { return _resFields; } set { _resFields = value; } }
         public ProcessUserResults ProcessUserInput { get { return _processUserInput; } set { _processUserInput = value; } }
-
         public string ImgPath
         {
             get { return _imgPath; }
@@ -56,13 +56,16 @@ namespace TessMVP2.Model
             FinishedStringChanged -= (sender, e) => callback.OnStringFinished();
         }
 
-        public void Start(IMyPresenterModelCallbacks callback)
+        public void Start(IMyPresenterModelCallbacks callback, string path = "")
         {
             Attach(callback);
-            _ocr = new TessOcr(_imgPath);
+            if (_imgPath == null)
+                _ocr = new TessOcr(path);
+            else
+                _ocr = new TessOcr(_imgPath);
             OcrResultChanged += (sender, e) => callback.OnOcrResultChanged();
             _ocr.Start();
-            OcrResult= _ocr.OcrResult;
+            OcrResult = _ocr.OcrResult;
             if (OcrResultChanged != null)
                 OcrResultChanged(this, EventArgs.Empty);
 
@@ -114,20 +117,14 @@ namespace TessMVP2.Model
             }
         }
 
-        public bool CreateOutlook(IMyPresenterOutlookCallbacks callbacks)
+        public void CreateOutlook(IMyPresenterOutlookCallbacks callbacks)
         {
-            try
-            {
-                _outlook = new OutlookWork(ResFields, callbacks);
-                _outlook.GetContacts();
-                return true;
-            }
-            catch
-            {
+            if (_outlook != null)
+                _outlook.Dispose();
 
-                return false;
-            }
-
+            _outlook = new OutlookWork(ResFields, callbacks);
+            _outlook.GetContacts();
+            
         }
 
         public List<DynamicControlViewModel> BuildCompareForm()
@@ -148,9 +145,13 @@ namespace TessMVP2.Model
             var imgEdit = new EditImage();
             try
             {
-                imgEdit.ImgBW(pathToImg);
-                _imgPath = imgEdit.NewFilepath;
-                return imgEdit.NewFilepath;
+                if (imgEdit.ImgBW(pathToImg))
+                {
+                    _imgPath = imgEdit.NewFilepath;
+                    return imgEdit.NewFilepath;
+                }
+                else
+                    return null;
             }
             catch
             {
@@ -160,8 +161,14 @@ namespace TessMVP2.Model
 
         public FujiFolderObs CreateFSW(IMyPresenterFujiCallbacks callbacks)
         {
-            return new FujiFolderObs(callbacks, _fujiFolder, _fujiFormat);
+            _fujiObj = new FujiFolderObs(callbacks, _fujiFolder, _fujiFormat);
+            return _fujiObj;
+        }
 
+        public bool DisposeFuji()
+        {
+            _fujiObj.Dispose();
+            return true;
         }
     }
 

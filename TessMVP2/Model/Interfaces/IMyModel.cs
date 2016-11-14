@@ -14,15 +14,16 @@ namespace TessMVP2.Model.Interfaces
         Dictionary<string, List<string>> StringResult { get; }
         Dictionary<string, string> ResFields { get;}
         string ImgPath { get; set; }
-        void Start(IMyPresenterModelCallbacks callbacks);
+        void Start(IMyPresenterModelCallbacks callbacks,string path="");
         OutlookWork OlWork { get; set; }
         bool CreateScanner();
         bool CleanupTempfolder();
-        bool CreateOutlook(IMyPresenterOutlookCallbacks callbacks);
+        void CreateOutlook(IMyPresenterOutlookCallbacks callbacks);
         bool WiaScan();
         List<DynamicControlViewModel> BuildCompareForm();
         List<Control> GetControlInput(Control cont);
         string EditImg(string pathToImg);
         FujiFolderObs CreateFSW(IMyPresenterFujiCallbacks callbacks);
+        bool DisposeFuji();
     }
 }

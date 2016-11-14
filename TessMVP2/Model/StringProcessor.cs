@@ -48,7 +48,7 @@ namespace TessMVP2.Model
         {
             //liste mit gängigen ocr fehlern; zu erweitern
             var emailReplaceList = new Dictionary<string, string>() { { "—", "-" } };
-            _specificStrings = this._ocrResult.Split('\n').ToList();
+            _specificStrings = _ocrResult.Split('\n').ToList();
             //leere array-felder entfernen
             while (_specificStrings.Contains("") || _specificStrings.Contains(" "))
             {

@@ -10,7 +10,7 @@ using TessMVP2.Presenter.Interfaces;
 
 namespace TessMVP2.Model
 {
-    public class OutlookWork : TessMainModel
+    public class OutlookWork : TessMainModel,IDisposable
     {
         private Dictionary<string, string> _outlookCurrentContact;
         private Dictionary<string, string> _resultDict;
@@ -34,15 +34,20 @@ namespace TessMVP2.Model
 
         public OutlookWork(Dictionary<string, string> inputResults, IMyPresenterOutlookCallbacks callback)
         {
-            this._resultDict = new Dictionary<string, string>();
-            this._resultDict = inputResults;
-            this.Hits = new Dictionary<string, string>();
+            _resultDict = new Dictionary<string, string>();
+            _resultDict = inputResults;
+            Hits = new Dictionary<string, string>();
+            CreateNewOutlookAppClass();
+            Attach(callback);
+            NormalizeResultDict();
+        }
+
+        private void CreateNewOutlookAppClass()
+        {
             _outlookApplication = new ApplicationClass();
             _mapiNamespace = _outlookApplication.GetNamespace("MAPI");
             _contactFolder = _mapiNamespace.GetDefaultFolder(OlDefaultFolders.olFolderContacts);
             contact = _outlookApplication.CreateItem(OlItemType.olContactItem) as ContactItem;
-            Attach(callback);
-            NormalizeResultDict();
         }
 
 
@@ -101,6 +106,7 @@ namespace TessMVP2.Model
 
         public ContactItem CreateContact(Dictionary<string,string> contactToCreate)
         {
+            CreateNewOutlookAppClass();
             bool hasCustomProps = false;
             
             var customFields = new Dictionary<string, string>();
@@ -288,6 +294,11 @@ namespace TessMVP2.Model
                                                 { "EntryID", contact.EntryID }
             };
             return dict;
+        }
+
+        public void Dispose()
+        {
+            //
         }
     }
 }

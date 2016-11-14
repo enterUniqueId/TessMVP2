@@ -69,10 +69,9 @@
     <Compile Include="Model\OutlookWork.cs" />
     <Compile Include="Model\ProcessUserResults.cs" />
     <Compile Include="Model\Scanner.cs" />
-    <Compile Include="Model\BuildFormFieldControl.cs" />
-    <Compile Include="Presenter\Interfaces\IMyPresenter.cs" />
-    <Compile Include="Presenter\Interfaces\IMyPresenterFujiCallbacks.cs" />
-    <Compile Include="Presenter\Interfaces\IMyPresenterOutlookCallbacks.cs" />
+    <Compile Include="Presenter\Interfaces\Model\IMyPresenter.cs" />
+    <Compile Include="Presenter\Interfaces\Model\IMyPresenterFujiCallbacks.cs" />
+    <Compile Include="Presenter\Interfaces\Model\IMyPresenterOutlookCallbacks.cs" />
     <Compile Include="Presenter\Interfaces\View\IPresenterFormCompareCallbacks.cs" />
     <Compile Include="Model\DynamicControlViewModel.cs" />
     <Compile Include="View\DynamicFormBuilder.cs" />
@@ -83,7 +82,7 @@
     <Compile Include="View\FormCompareContacts.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Presenter\Interfaces\IPresenter.cs" />
+    <Compile Include="Presenter\Interfaces\Model\IPresenter.cs" />
     <Compile Include="View\FormStart.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,7 +94,7 @@
     <Compile Include="Model\StringProcessor.cs" />
     <Compile Include="Model\TessMainModel.cs" />
     <Compile Include="Model\TessOcr.cs" />
-    <Compile Include="Presenter\Interfaces\IMyPresenterModelCallbacks.cs" />
+    <Compile Include="Presenter\Interfaces\Model\IMyPresenterModelCallbacks.cs" />
     <Compile Include="Presenter\TessPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -184,9 +183,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Presenter\Interfaces\Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

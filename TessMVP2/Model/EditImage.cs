@@ -55,7 +55,7 @@ namespace TessMVP2.Model
         }
 
         //http://stackoverflow.com/questions/2746103/what-would-be-a-good-true-black-and-white-colormatrix
-        public void ImgBW(string file)
+        public bool ImgBW(string file)
         {
             try
             {
@@ -82,10 +82,12 @@ namespace TessMVP2.Model
                     gr.DrawImage(sourceImage, rc, 0, 0, sourceImage.Width, sourceImage.Height, GraphicsUnit.Pixel, ia);
                     EncodeAndSave(file, sourceImage);
                 }
+                return true;
             }
             catch (Exception)
             {
                 MessageBox.Show("Ein Fehler im Bildformat ist aufgetreten. Scannen Sie das Bild bitte erneut ein.");
+                return false;
             }
         }
     }

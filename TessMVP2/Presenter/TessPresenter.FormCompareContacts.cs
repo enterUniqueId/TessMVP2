@@ -57,6 +57,8 @@ namespace TessMVP2.Presenter
             return null;
         }
 
+
+        //Datenfelder gemäß contextmenuItem finden, in entsprechendes Feld eintragen und Daten aus überschriebenem Feld holen
         private void SetupOwnPanel(object sender, string cmText)
         {
             var mi = sender as MenuItem;
@@ -66,17 +68,18 @@ namespace TessMVP2.Presenter
             var panel = lbl.Parent as Panel;
             var fpan = panel.Parent as FlowLayoutPanel;
             var tb = panel.Controls.Find("F3Tb" + oldLabelName.Substring(5), true)[0] as TextBox;
+            var pb = panel.Controls.Find("F3Pb" + oldLabelName.Substring(5), true)[0] as PictureBox;
             var tb2 = fpan.Controls.Find("F3Tb" + cmText, true)[0] as TextBox;
             var lbl2 = fpan.Controls.Find("F3lbl" + cmText, true)[0] as Label;
+            var pb2 = fpan.Controls.Find("F3Pb" + cmText, true)[0] as PictureBox;
+
+            pb2.Show();
+            string tbtemp = tb2.Text;
+            lbl2.Text = cmText + ": " + tb.Text;
+            tb2.Text = tb.Text;
+            tb.Text = tbtemp;
 
 
-            tb2.Name ="F3Tb"+ oldLabelName.Substring(5);
-            lbl2.Text = oldLabelName.Substring(5)+":";
-            lbl2.Name = oldLabelName;
-            lbl.Name = "F3lbl" + cmText;
-            lbl.Text = cmText + ":" + tb.Text;
-            tb.Name = "F3Tb" + cmText;
-            
         }
 
         public void BuildNewLabelText(MenuItem item, string tbText)
@@ -117,38 +120,58 @@ namespace TessMVP2.Presenter
         public void OnButtonUpdateClick()
         {
             _processUserInput.ResDict.Clear();
-            _processUserInput.GetInputs(null, true, 5);
+
+            if (_processUserInput.Clist == null)
+                _processUserInput.GetInputs(_view3.FormCompareClist[0], true, 5);
+            else
+                _processUserInput.GetInputs(null, true, 5);
             this._inputResults = _processUserInput.ResDict;
             if (_outlook.EntryID == null)
                 _outlook.EntryID = _lastContactIDSelected;
             this._inputResults.Add("EntryID", _outlook.EntryID);
             _outlook.UpdateExistingContact(_inputResults);
+            _fuji.Attach(this);
             _view3.FormClose();
         }
 
         public void OnButtonCreateClick()
         {
-            this._outlook.CreateContact(_outlook.ResultDict);
+            if (_outlook == null)
+            {
+                _model.CreateOutlook(this);
+                _outlook = _model.OlWork;
+            }
+            _outlook.CreateContact(_outlook.ResultDict);
+            _fuji.Attach(this);
             _view3.FormClose();
         }
 
         public void OnButtonCancelClick()
         {
+
+            _fuji.Attach(this);
             _view3.FormClose();
         }
 
         public void OnForm3Closed()
         {
-            //todo
+            if (_fuji == null)
+                _fuji.Attach(this);
         }
 
         public void OnCbSelectedItemChange(object sender, EventArgs e)
         {
             var cb = sender as ComboBox;
             _lastContactIDSelected = cb.SelectedValue.ToString();
+            if (_outlook == null)
+            {
+                _model.CreateOutlook(this);
+                _outlook = _model.OlWork;
+            }
             var contact = _outlook.GetContactItemFromID(_lastContactIDSelected);
             var labelList = _outlook.BuildLabelFromContact(contact);
             _view3.SetNewLabelText(labelList);
+
         }
     }
 }

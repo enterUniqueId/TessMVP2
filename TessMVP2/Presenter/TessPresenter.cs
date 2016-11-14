@@ -54,7 +54,7 @@ namespace TessMVP2.Presenter
                 OnFujitsuClick();
                 _view1.BtnStatus = true;
                 if (ScannerIsSet)
-                    ScanSucceeded = _model.WiaScan() ? true : false;
+                    ScanSucceeded = _model.WiaScan();
             }
             else
             {
@@ -69,6 +69,8 @@ namespace TessMVP2.Presenter
             _fuji = _model.CreateFSW(this);
             _fuji.FSW.SynchronizingObject = _view1 as Form;
             _view1.F1lbl1Text = "Bitte scannen Sie das Objekt";
+            if (_fuji.FSW.EnableRaisingEvents == false)
+                _fuji.Attach(this);
         }
 
         public void OnWiaClick()
@@ -96,16 +98,16 @@ namespace TessMVP2.Presenter
 
         public void OnStringFinished()
         {
-            OutlookSet = _model.CreateOutlook(this) ? true : false;
-            _outlook = _model.OlWork;  //
+            _model.CreateOutlook(this);
+            _outlook = _model.OlWork;
         }
 
         void IMyPresenterOutlookCallbacks.OnRedundantEntryFound()
         {
-           
-            var list=_model.BuildCompareForm();
+
+            var list = _model.BuildCompareForm();
             _view3 = new FormCompareContacts(list);
-            var clist=_model.GetControlInput(_view3.FormCompareClist[0]);
+            var clist = _model.GetControlInput(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Übereinstimmung gefunden(bestehender Kontakt/neuer Kontakt)";
             _view3.FormShowDialog(clist, this);
         }
@@ -117,10 +119,14 @@ namespace TessMVP2.Presenter
 
         public void OnImgFileCreated(object sender, FileSystemEventArgs e)
         {
-            _fuji.Detach(this);
-            _model.EditImg(e.FullPath);
-            _model.Start(this);
-            _fuji.Attach(this);
+            //_fuji.Detach(this);
+            _model.DisposeFuji();
+            if (_model.EditImg(e.FullPath) != null)
+                _model.Start(this, e.FullPath);
+            else
+                _fuji.Attach(this);
+
+            //_fuji.Attach(this);
         }
 
         public void OnNoDuplicatesFound()
@@ -129,7 +135,7 @@ namespace TessMVP2.Presenter
             var list = _model.BuildCompareForm();
             _view3 = new FormCompareContacts(list);
             _processUserInput = new ProcessUserResults();
-            var clist  = _model.GetControlInput(_view3.FormCompareClist[0]);
+            var clist = _model.GetControlInput(_view3.FormCompareClist[0]);
             _view3.FormBezeichnung = "Scandaten bearbeiten";
             _view3.FormShowDialog(clist, this);
         }

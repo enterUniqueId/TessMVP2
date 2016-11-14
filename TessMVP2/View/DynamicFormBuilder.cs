@@ -83,7 +83,7 @@ namespace TessMVP2.View
                             break;
                         case DynamicControlViewModel.ControlTypes.Pbox:
                             pbox = new PictureBox();
-                            SetPboxProps(pbox, lbl);
+                            SetPboxProps(pbox, lbl, model);
                             pan.Controls.Add(pbox);
                             break;
                         case DynamicControlViewModel.ControlTypes.Cmenu:
@@ -225,13 +225,13 @@ namespace TessMVP2.View
             }
         }
 
-        private void SetPboxProps(PictureBox pb, Label lbl)
+        private void SetPboxProps(PictureBox pb, Label lbl, DynamicControlViewModel model)
         {
             pb.Image = _pboxImageChecked;
             pb.SizeMode = PictureBoxSizeMode.AutoSize;
             pb.Location = new Point(lbl.Location.X + lbl.Width, lbl.Location.Y - (pb.Height - lbl.Height));
             pb.Margin = new Padding(30, 0, 0, 0);
-            pb.Name = lbl.Name.Substring(3);
+            pb.Name = model.PboxName;
             pb.Dock = DockStyle.None;
             pb.Hide();
         }

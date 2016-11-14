@@ -8,13 +8,15 @@ using System.IO;
 using TessMVP2.Model.Interfaces;
 using TessMVP2.Presenter.Interfaces;
 using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.ComponentModel;
 
 [assembly: InternalsVisibleTo("UnitTests")]
 
 namespace TessMVP2.Model
 {
     
-    public class FujiFolderObs:IFujiModel
+    public class FujiFolderObs:IFujiModel,IDisposable
     {
         private FileSystemWatcher _fsw;
         private string _tempDir;
@@ -32,21 +34,30 @@ namespace TessMVP2.Model
         private void Initialize(IMyPresenterFujiCallbacks callback)
         {
            _fsw = new FileSystemWatcher();
-            Attach(callback);
             var curPath = Directory.GetCurrentDirectory();
             _fsw.Path = curPath+_tempDir;
             _fsw.Filter = _format;
-            _fsw.EnableRaisingEvents = true;
+            //Attach(callback);
         }
 
         public void Attach(IMyPresenterFujiCallbacks callback)
         {
+            Initialize(callback);
             _fsw.Created += new FileSystemEventHandler(callback.OnImgFileCreated);
+            _fsw.EnableRaisingEvents = true;
+            
         }
 
         public void Detach(IMyPresenterFujiCallbacks callback)
         {
             _fsw.Created -= new FileSystemEventHandler(callback.OnImgFileCreated);
+            _fsw.EnableRaisingEvents = false;
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            _fsw.Dispose();
         }
     }
 }
